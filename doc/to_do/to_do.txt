@@ -1,0 +1,66 @@
+Read:
+- [Done] Baqaee & Farhi (2019) HA in IO
+- Akcigit & Ates (2019) 10 facts ***
+- Baqaee & Farhi (2019) Productivity and Misallocation in GE
+- Baqaee (2015) Target fiscal
+- De Locker Eckhout (2018) Rise of market power
+- Superstar firms paper (2019)
+
+Problem:
+- Big threat from paper by B&F, which studies markups with input-output linkages BUT:
+	- No dynamic evolution of the network
+	- No modelling of endogenous choice of suppliers a la Acemoglu and Azar
+	- Only secondary aspect of their paper. Surely can be improved
+	- Rely on input-output matrices at the sector level
+
+Refine:
+- Overall research idea
+- Three projects:
+	- MRes paper: network and mark-ups (+inequality), time dimension is essential
+	- Larger theoretical paper: different models of growth and technological change nested in network theory of growth
+	- Tax evasion as a cause of the rise of profitability of big firms -> decline of dynamism
+	(- Relate compustat data to Patents?)
+
+Include:
+	- Proof
+	- Network growth, evolution of network over time
+	- Inequality (heterogeneous agents)
+	- Mark-ups or decline in labour share
+	- Task-based model of technological change?
+	- Graph with mark-up time-series from DL&E, compared with network adjusted measure
+
+Organisation of work:
+	- Work heavily on theory first
+		- Find question that I want to study
+	- Then produce stylized facts about Compustat network
+
+
+Organisation of paper:
+	I. Introduction
+		Importance of mark ups for welfare and business dynamism
+		Lot of attention recently
+		This paper highlights channels through which mark-ups propagates (double counting?)
+		Contributions:
+			- Put in perspective result by De Loecker and Eeckhout
+			- Theoretical contribution 1: Explain growth of mark-ups and core-periphery of the network jointly
+							Importantly, we need to deal with directed network
+			- Theoretical contribution 2: Present dynamic model of network formation related to economic fundamentals
+							while so far it has been pretty static
+			- Econometric contribution: network formation with truncation of edges
+
+
+	II. Brief literature review
+		Propagation of shocks on networks
+
+	III. Model of edge formation related to fundamentals and markups
+		We need to model the choice of suppliers (Acemoglu and Pablo Azar)
+			- How rational decisions lead to more concentration in edges
+
+	IV. Econometric decomposition of the evolution of mark-ups: network coumpounding versus greed
+
+Empirical exercise:
+	- Reproduce mark-up calculations with both techniques used in the De Loecker and Eeckhout paper
+		- Costs shares
+		- Control function approach a la Olley & Pakes
+	- Put that n perspective in network formation model
+
