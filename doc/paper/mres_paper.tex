@@ -1,0 +1,136 @@
+
+\documentclass{amsart}
+
+\usepackage{graphicx}
+%\usepackage[altbullet]{lucidabr}
+%two lines below change font (font intalled manually (i.e. uploaded))
+%\usepackage{fontspec}
+%\setmainfont[Ligatures=TeX]{LucidaBrightRegular.ttf}
+%\usepackage{kpfonts}    % for nice fonts
+% option [light] for more aery documents
+\usepackage{color}  %for color of references
+\usepackage[dvipsnames]{xcolor} %for color of references
+\usepackage{caption}
+\usepackage{fancyhdr}
+\usepackage[pagebackref,colorlinks, citecolor=Brown,urlcolor=Brown]{hyperref}
+\usepackage{natbib}
+\usepackage{multicol}
+\usepackage{multirow}
+%\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{dsfont}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{pgf}
+\usepackage{tikz}
+\usepackage{soul}
+\usepackage{tikz}
+\usepackage{tikz,fullpage}
+\usepackage{pgf}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows} %to create flow charts
+\usepackage{bold-extra} %for bold small caps in the title
+\usepackage{dirtree} % to create lists as tree
+
+%\renewcommand{\familydefault}{\sfdefault} %for the sans serif font
+
+%AMS original setup for mathematical elements
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{xca}[theorem]{Exercise}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\numberwithin{equation}{section}
+
+%    Absolute value notation
+\newcommand{\abs}[1]{\lvert#1\rvert}
+
+%    Blank box placeholder for figures (to avoid requiring any
+%    particular graphics capabilities for printing this document).
+\newcommand{\blankbox}[2]{%
+  \parbox{\columnwidth}{\centering
+%    Set fboxsep to 0 so that the actual size of the box will match the
+%    given measurements more closely.
+    \setlength{\fboxsep}{0pt}%
+    \fbox{\raisebox{0pt}[#2]{\hspace{#1}}}%
+  }%
+}
+
+%Tikz setup for a flow chart
+\tikzstyle{modelblock} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=white, text ragged]
+
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+\begin{document}
+
+\title{MRes Paper Draft}
+
+%    Information for first author
+\author{Arnaud Dy\`evre}
+%\address{}
+%\curraddr{}
+%\email{a.dyevre@lse.ac.uk}
+%\thanks{}
+
+%    Information for second author
+%\author{}
+%\address{}
+%\email{}
+%\thanks{}
+
+%    General info
+%\subjclass[2000]{}
+
+\date{\today. First created October 19, 2019}
+
+%\dedicatory{}
+%\keywords{}
+
+%\begin{abstract}
+
+%\end{abstract}
+
+\maketitle
+
+\begin{center}
+     Preliminary and incomplete -- Not for sharing
+\end{center}
+
+
+\vspace{12pt}
+
+%% The correct journal style for \specialsection is all uppercase; a known bug
+%% in amsart.cls prevents this, so input must be uppercase until it is fixed.
+%\specialsection*{This is a Special Section Head}
+%\specialsection*{THIS IS A SPECIAL SECTION HEAD}
+%This is an example of a special section head%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\footnote{Here is an example of a footnote. Notice that this footnote text is running on so that it can stand as an example of how a footnote with separate paragraphs should be written.
+%\par
+%And here is the beginning of the second paragraph.}%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\tableofcontents
+
+\newpage
+
+\section{Literature review}
+
+\newpage
+
+\bibliographystyle{ecta}
+\bibliography{MathsForEcon}
+
+\end{document}
+
+%------------------------------------------------------------------------------
+% End of journal.tex
+%------------------------------------------------------------------------------
