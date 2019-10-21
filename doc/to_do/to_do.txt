@@ -12,6 +12,7 @@ Read:
 - Ackerberg, Benkard, Berry & Pakes (2007) Econometric tools for analysing market outcomes
 di Giovanni Levchenko & Mejean (2014) Firms destinations & agg fluctuations [FRENCH DATA]
 
+- Gabaix, Xavier, Jean-Michel Lasry, Pierre-Louis Lions, and Benjamin Moll (2016) The Dynamics of Inequality
 
 Potential titles
 	
