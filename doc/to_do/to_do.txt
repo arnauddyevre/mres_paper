@@ -1,5 +1,9 @@
 Read:
 - Zou (2018) Endogenous Input-Output Linkages and Structural Changes
+- Bigio & La'O (2019) Distorsions in production networks
+- Baqaee, D. R. (2018). Cascading failures in production networks
+- Grassi (2018) IO in I-O
+- Liu (2019) Industrial policy in production networks
 - [Done] Baqaee & Farhi (2019) HA in IO
 - *** Akcigit & Ates (2019) 10 facts
 - Magerman, Bernard, Dhyne, Manova & Moxnes (2019) The Origins of Firm Heterogeneity: A Production Network Approach
