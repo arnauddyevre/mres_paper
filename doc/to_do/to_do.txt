@@ -1,5 +1,7 @@
 Read:
-- Zou (2018) Endogenous Input-Output Linkages and Structural Changes
+- Atalay (2017) How Important Are Sectoral Shocks?
+- Pasten Schoenle Weber (2018) Price rig and orig of agg fluctuations
+- [Done] Zou (2018) Endogenous Input-Output Linkages and Structural Changes
 - Bigio & La'O (2019) Distorsions in production networks
 - Baqaee, D. R. (2018). Cascading failures in production networks
 - Grassi (2018) IO in I-O
