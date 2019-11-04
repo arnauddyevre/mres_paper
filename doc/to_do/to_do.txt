@@ -1,9 +1,15 @@
 Read:
-- Zou (2018) Endogenous Input-Output Linkages and Structural Changes
+- Atalay (2017) How Important Are Sectoral Shocks?
+- Pasten Schoenle Weber (2018) Price rig and orig of agg fluctuations
+- [Done] Zou (2018) Endogenous Input-Output Linkages and Structural Changes
+- Bigio & La'O (2019) Distorsions in production networks
+- Baqaee, D. R. (2018). Cascading failures in production networks
+- Grassi (2018) IO in I-O
+- Liu (2019) Industrial policy in production networks
 - [Done] Baqaee & Farhi (2019) HA in IO
 - *** Akcigit & Ates (2019) 10 facts
 - Magerman, Bernard, Dhyne, Manova & Moxnes (2019) The Origins of Firm Heterogeneity: A Production Network Approach
-- [Currently reading...] *** Baqaee & Farhi (2019) Productivity and Misallocation in GE
+- [Done] *** Baqaee & Farhi (2019) Productivity and Misallocation in GE
 - Baqaee (2015) Target fiscal
 - [Done] *** De Locker Eckhout (2018) Rise of market power
 - Superstar firms paper (2019)
@@ -11,11 +17,10 @@ Read:
 - Jackson & Kanik (2019) How Automation that Substitutes for Labor Affects Production Networks, Growth, and Income Inequality
 - Ackerberg, Benkard, Berry & Pakes (2007) Econometric tools for analysing market outcomes
 di Giovanni Levchenko & Mejean (2014) Firms destinations & agg fluctuations [FRENCH DATA]
-
 - Gabaix, Xavier, Jean-Michel Lasry, Pierre-Louis Lions, and Benjamin Moll (2016) The Dynamics of Inequality
 
 Potential titles
-	
+	- Double marginalization and the rise of market power
 	- "Heterogeneous firms and markups in production networks"
 
 Problem:
@@ -40,6 +45,7 @@ Include:
 	- Mark-ups or decline in labour share
 	- Task-based model of technological change?
 	- Graph with mark-up time-series from DL&E, compared with network adjusted measure
+	- Mention of \eta, the elasticity of substitution between labour and capital
 
 Organisation of work:
 	- Work heavily on theory first
