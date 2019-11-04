@@ -1,0 +1,9 @@
+Data access: Compustat
+
+Compustat Segments - Customer
+https://wrds-web.wharton.upenn.edu/wrds/ds/compd/seghistcust/index.cfm?navId=87
+
+Compustat Daily Updates - Segments (Non-Historical) - Customer
+https://wrds-web.wharton.upenn.edu/wrds/ds/compd/segcust/index.cfm?navId=83
+
+Downloading all historical segment data (1976-2019):
