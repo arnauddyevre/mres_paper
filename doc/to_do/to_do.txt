@@ -1,4 +1,8 @@
 Read:
+- Special issue of JEP on increasing markups
+	- Berry Gaynor Morton (2019) Do Increasing Markups Matter
+	- Syverson (2019) Macroeconomics and Market Power
+	- Basu (2019) Are Price Cost markups rising in the US 
 - Atalay (2017) How Important Are Sectoral Shocks?
 - Pasten Schoenle Weber (2018) Price rig and orig of agg fluctuations
 - [Done] Zou (2018) Endogenous Input-Output Linkages and Structural Changes
