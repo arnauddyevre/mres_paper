@@ -5,14 +5,16 @@ Compustat Segments - Customer
     
 https://wrds-web.wharton.upenn.edu/wrds/ds/compd/seghistcust/index.cfm?navId=87
     - company codes:  TIC  GVKEY  CUSIP  SIC  NAICS  CIK  GIC Sub-Industry
+        This is the REPORTING COMPANY
+        Its name is reported in the field "conm"
     - cid: This item represents a unique identifier for every customer reported by a company.
-    - cnms: This item represents the customer name reported by a company.
+    - cnms: This item represents the customer name reported by a company.          [NOTE: The match will happen on this variable!]
     - conm: This identifies the company or index for which data is presented. The Company Name may contain special characters and punctuation.
     - ctype: This item represents the method used by a company to organize its customers. There are 7 Customer types:
             Customer Type      Description
             COMPANY            Company name, Not Reported or Number of Customers
-            GEOREG             Geographic Region
-            MARKET             Market
+            GEOREG             Geographic Region                                   [DROP]
+            MARKET             Market                                              [DROP: exemple "Latin America", "Manufacturing"]
             GOVSTATE           State Government
             GOVLOC             Local Government
             GOVDOM             Domestic Government
@@ -31,6 +33,7 @@ https://wrds-web.wharton.upenn.edu/wrds/ds/compd/seghistcust/index.cfm?navId=87
             Stseg                    State Segment - reports the information by US geographic information, a hybrid method of reporting that was derived to comply with SFAS 131
 
 
+Note: we have on average 13,000 links per year.
 
 Compustat Daily Updates - Segments (Non-Historical) - Customer
 https://wrds-web.wharton.upenn.edu/wrds/ds/compd/segcust/index.cfm?navId=83
