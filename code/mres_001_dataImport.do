@@ -61,7 +61,10 @@ twoway (scatter links year, connect(direct) msymbol(O) mfcolor(white) yaxis(1) y
 	legend(off) xtitle("")
 graph export "$outputs/${doNum}_descriptives/${doNum}_links&Companies.pdf", as(pdf) replace
 
-*Creating network datasets
+/*******************************************************************************
+	CREATING NETWORK DATASET
+*******************************************************************************/
+
 import delimited "$orig/compustat_segment_customer_76_19.csv", clear
 tostring srcdate, gen(dataStr)
 gen year = substr(dataStr, 1, 4)
@@ -101,6 +104,7 @@ graph bar count, over(ctype)
 
 tabstat 
 drop if 
+
 
 /*******************************************************************************
 	SUMMARY STATS: No network
