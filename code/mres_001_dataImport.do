@@ -22,12 +22,18 @@ macro drop _all
 set scheme s1color
 set matsize 10000
 
+*Useful modules
+ssc install charlist
+ssc install matchit
+ssc install strip
+
 *Paths
 global wd "C:/Users/dyevre/Documents/mres_paper"
 global orig "$wd/orig"
 global data "$wd/data"
 global outputs "$wd/outputs"
 global doc "$wd/doc"
+global code "$wd/code"
 
 global doNum "001"					// do-file number, used to save outputs 
 
@@ -74,12 +80,19 @@ drop srcdate dataStr
 preserve
 	keep if ctype == "COMPANY"
 	keep conm
-	gen count = 0
-	collapse count, by(conm)
+	gen count = 1
+	
+	*Cleaning company names
+	rename conm toClean
+	cd $code
+	do mres_xxx_cleanCompNames
+	rename toClean conm
+	
+	collapse (sum) count, by(conm)
 	drop if conm == ""
-	drop count
 	rename conm comp
 	*mkdir "$data/${doNum}_network"
+	drop count
 	save "$data/${doNum}_network/${doNum}_supplierList.dta", replace
 restore
 
@@ -87,12 +100,20 @@ preserve
 	keep if ctype == "COMPANY"
 	keep cnms
 	gen count = 1
+	
+	*Cleaning company names
+	rename cnms toClean
+	cd $code
+	do mres_xxx_cleanCompNames
+	rename toClean cnms
+	
 	collapse (sum) count, by(cnms)
 	drop if cnms == ""
 	drop count
 	rename cnms comp
 	save "$data/${doNum}_network/${doNum}_customerList.dta", replace
 restore
+
 
 use "$data/${doNum}_network/${doNum}_customerList.dta", clear
 merge 1:1 comp using "$data/${doNum}_network/${doNum}_supplierList.dta"
