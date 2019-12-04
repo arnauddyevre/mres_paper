@@ -1,4 +1,5 @@
 Read:
+- Papers by Lim, and the one by Kikkawa
 - Special issue of JEP on increasing markups
 	- Berry Gaynor Morton (2019) Do Increasing Markups Matter
 	- Syverson (2019) Macroeconomics and Market Power
