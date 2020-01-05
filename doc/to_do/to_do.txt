@@ -24,6 +24,9 @@ Read:
 di Giovanni Levchenko & Mejean (2014) Firms destinations & agg fluctuations [FRENCH DATA]
 - Gabaix, Xavier, Jean-Michel Lasry, Pierre-Louis Lions, and Benjamin Moll (2016) The Dynamics of Inequality
 
+Robustness check:
+	- Presented as in https://twitter.com/hhsievertsen/status/1188780383736909825
+
 Potential titles
 	- Double marginalization and the rise of market power
 	- "Heterogeneous firms and markups in production networks"
