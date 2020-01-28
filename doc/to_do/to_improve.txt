@@ -1,3 +1,3 @@
 
 - Keep customer other than companies in the dataset (ex: government, market)
-- 
+- Check with Compustat that the increase in the number of links is not an artifact of reporting

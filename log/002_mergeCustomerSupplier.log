@@ -89,3 +89,520 @@ end of do-file
 
 . sort comp
 
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/001_network/001_customerList.dta", clear
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. merge 1:m comp using "$data/001_network/001_companyList_6119.dta"                
+>                        // 1 to many merge as several companies in Compustat have 
+> the same name but different Gvkeys 
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        65,266
+        from master                    34,637  (_merge==1)
+        from using                     30,629  (_merge==2)
+
+    matched                             2,327  (_merge==3)
+    -----------------------------------------
+
+. 
+end of do-file
+
+. h count
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/001_network/001_customerList.dta", clear
+
+. merge 1:m comp using "$data/001_network/001_companyList_6119.dta"                
+>                        // 1 to many merge as several companies in Compustat have 
+> the same name but different Gvkeys 
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        65,266
+        from master                    34,637  (_merge==1)
+        from using                     30,629  (_merge==2)
+
+    matched                             2,327  (_merge==3)
+    -----------------------------------------
+
+.                 //4.1% merge 
+. count if _merge == 3
+  2,327
+
+. local merged = `r(N)'
+
+. count if _merge == 1
+  34,637
+
+. local master = `r(N)'
+
+. di `merged'/`master'
+.06718249
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/001_network/001_supplierList.dta", clear
+
+. merge 1:m comp using "$data/001_network/001_companyList_6119.dta"                
+>                        // 1 to many merge as several companies in Compustat have 
+> the same name but different Gvkeys 
+variable comp does not uniquely identify observations in the master data
+r(459);
+
+end of do-file
+
+r(459);
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/001_network/001_supplierList.dta", clear
+
+. merge 1:1 gvkey comp using "$data/001_network/001_companyList_6119.dta"          
+>                        // 1 to many merge as several companies in Compustat have 
+> the same name but different Gvkeys 
+(note: variable comp was str28, now str30 to accommodate using data's values)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        17,753
+        from master                       287  (_merge==1)
+        from using                     17,466  (_merge==2)
+
+    matched                            15,490  (_merge==3)
+    -----------------------------------------
+
+. count if _merge == 3
+  15,490
+
+. local merged = `r(N)'
+
+. count if _merge == 1
+  287
+
+. local master = `r(N)'
+
+. di `merged'/`master'                                                             
+>                                                        //6.72% merge
+53.972125
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/001_network/001_customerList.dta", clear
+
+. merge 1:m comp using "$data/001_network/001_companyList_6119.dta"                
+>                        // 1 to many merge as several companies in Compustat have 
+> the same name but different Gvkeys 
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        65,266
+        from master                    34,637  (_merge==1)
+        from using                     30,629  (_merge==2)
+
+    matched                             2,327  (_merge==3)
+    -----------------------------------------
+
+. count if _merge == 3
+  2,327
+
+. local merged = `r(N)'
+
+. count if _merge == 1
+  34,637
+
+. local master = `r(N)'
+
+. di `merged'/(`master'+`merged)'                                                  
+>                                                //6.72% merge
+too few ')' or ']'
+r(132);
+
+end of do-file
+
+r(132);
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/001_network/001_customerList.dta", clear
+
+. merge 1:m comp using "$data/001_network/001_companyList_6119.dta"                
+>                        // 1 to many merge as several companies in Compustat have 
+> the same name but different Gvkeys 
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        65,266
+        from master                    34,637  (_merge==1)
+        from using                     30,629  (_merge==2)
+
+    matched                             2,327  (_merge==3)
+    -----------------------------------------
+
+. count if _merge == 3
+  2,327
+
+. local merged = `r(N)'
+
+. count if _merge == 1
+  34,637
+
+. local master = `r(N)'
+
+. di `merged'/(`master'+`merged')                                                  
+>                                                //6.72% merge
+.06295314
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/001_network/001_supplierList.dta", clear
+
+. merge 1:1 gvkey comp using "$data/001_network/001_companyList_6119.dta"          
+>                        // 1 to many merge as several companies in Compustat have 
+> the same name but different Gvkeys 
+(note: variable comp was str28, now str30 to accommodate using data's values)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        17,753
+        from master                       287  (_merge==1)
+        from using                     17,466  (_merge==2)
+
+    matched                            15,490  (_merge==3)
+    -----------------------------------------
+
+. count if _merge == 3
+  15,490
+
+. local merged = `r(N)'
+
+. count if _merge == 1
+  287
+
+. local master = `r(N)'
+
+. di `merged'/(`master'+`merged')                                                  
+>                                                //6.72% merge
+.98180896
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/001_network/001_customerList.dta", clear
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/001_network/001_customerList.dta", clear
+
+. merge 1:m comp using "$data/001_network/001_companyList_6119.dta"               
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        65,266
+        from master                    34,637  (_merge==1)
+        from using                     30,629  (_merge==2)
+
+    matched                             2,327  (_merge==3)
+    -----------------------------------------
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. save tempmerge, replace
+(note: file tempmerge.dta not found)
+file tempmerge.dta saved
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Paths
+. global wd "C:/Users/dyevre/Documents/mres_paper"
+
+. global orig "$wd/orig"
+
+. global data "$wd/data/001_network"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "002"                                      
+
+. 
+. *log
+. cap log close
+-----------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/dyevre/Documents/mres_paper/log/002_mergeCustomerSupplier.log
+  log type:  text
+ opened on:  28 Jan 2020, 18:00:02
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/001_customerList.dta", clear
+
+. merge 1:m comp using "$data/001_companyList_6119.dta"           
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        65,266
+        from master                    34,637  (_merge==1)
+        from using                     30,629  (_merge==2)
+
+    matched                             2,327  (_merge==3)
+    -----------------------------------------
+
+. save tempmerge, replace
+file tempmerge.dta saved
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/001_customerList.dta", clear
+
+. merge 1:m comp using "$data/001_companyList_6119.dta"           
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        65,266
+        from master                    34,637  (_merge==1)
+        from using                     30,629  (_merge==2)
+
+    matched                             2,327  (_merge==3)
+    -----------------------------------------
+
+. save "$data/tempmerge.dta", replace
+(note: file C:/Users/dyevre/Documents/mres_paper/data/001_network/tempmerge.dta not
+>  found)
+file C:/Users/dyevre/Documents/mres_paper/data/001_network/tempmerge.dta saved
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. keep if _merge==3
+(65,266 observations deleted)
+
+. drop _merge
+
+. save "$data/matched.dta", replace
+(note: file C:/Users/dyevre/Documents/mres_paper/data/001_network/matched.dta not f
+> ound)
+file C:/Users/dyevre/Documents/mres_paper/data/001_network/matched.dta saved
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/tempmerge", clear
+
+. keep if _merge==1                                                                
+>                                                                //customer name on
+> ly, no match in Compustat company list
+(32,956 observations deleted)
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/001_customerList.dta", clear
+
+. merge 1:m comp using "$data/001_companyList_6119.dta"           
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        65,266
+        from master                    34,637  (_merge==1)
+        from using                     30,629  (_merge==2)
+
+    matched                             2,327  (_merge==3)
+    -----------------------------------------
+
+. save "$data/tempmerge.dta", replace
+file C:/Users/dyevre/Documents/mres_paper/data/001_network/tempmerge.dta saved
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. keep if _merge==3
+(65,266 observations deleted)
+
+. drop _merge
+
+. save "$data/matched.dta", replace
+file C:/Users/dyevre/Documents/mres_paper/data/001_network/matched.dta saved
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/tempmerge", clear
+
+. keep if _merge==1                                                                
+>                                                                //customer name on
+> ly, no match in Compustat company list
+(32,956 observations deleted)
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/tempmerge", clear
+
+. keep if _merge==1                                                                
+>                                                                //customer name on
+> ly, no match in Compustat company list
+(32,956 observations deleted)
+
+. keep comp
+
+. drop _merge
+variable _merge not found
+r(111);
+
+end of do-file
+
+r(111);
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/tempmerge", clear
+
+. keep if _merge==1                                                                
+>                                                                //customer name on
+> ly, no match in Compustat company list
+(32,956 observations deleted)
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. keep comp
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/tempmerge", clear
+
+. keep if _merge==1                                                                
+>                                                                //customer name on
+> ly, no match in Compustat company list
+(32,956 observations deleted)
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/tempmerge", clear
+
+. keep if _merge==1                                                                
+>                                                                //customer name on
+> ly, no match in Compustat company list
+(32,956 observations deleted)
+
+. keep comp
+
+. save "$data/resid1", replace
+(note: file C:/Users/dyevre/Documents/mres_paper/data/001_network/resid1.dta not fo
+> und)
+file C:/Users/dyevre/Documents/mres_paper/data/001_network/resid1.dta saved
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/tempmerge", clear
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. keep if _merge==2                                                                
+>                                                                //official company
+>  names in Compustat only, these companies have not found a match in the segmnent 
+> data as reported
+(36,964 observations deleted)
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/tempmerge", clear
+
+. keep if _merge==2                                                                
+>                                                                //official company
+>  names in Compustat only, these companies have not found a match in the segmnent 
+> data as reported
+(36,964 observations deleted)
+
+. keep comp
+
+. save "$data/resid2", replace
+(note: file C:/Users/dyevre/Documents/mres_paper/data/001_network/resid2.dta not fo
+> und)
+file C:/Users/dyevre/Documents/mres_paper/data/001_network/resid2.dta saved
+
+. 
+end of do-file
+

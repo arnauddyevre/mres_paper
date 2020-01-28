@@ -1,5 +1,5 @@
 READ ME presenting the steps required to create the production network from Compustat segment data
-Using the methodology of Atalay, Hortacsu, Roberts, and Syverson
+Using the methodology of Atalay, Hortacsu, Roberts, and Syverson (2011)
 
 Code and Data: in "create_links_data_set" in "data/Compustat_Name_Match"
 
@@ -8,3 +8,7 @@ From "README_CODE" in "create_link_data_set"
 	1) Compustat_nonsoundex: This file takes the compustat customer segments file and attempts to adjust all the names so they align with how they are named in the main compustat file.
 	2) pickinguppieces.do: I believe I made this file after I had already uploaded one version of the dataset. This file just creates some more linked transactions. From the residuals.
 	3) links.do: This file appends the results of do files 1) and 2). 
+
+- need to link customer to larger Compustat list of firms (to get gvkey and financial data)
+- follow methodology in https://faculty.chicagobooth.edu/thomas.winberry/teaching/phd_lectures/homework1.pdf to download Compustat data
+	- saved under the name "Standard - UChicago (quarterly)"
