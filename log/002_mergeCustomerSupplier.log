@@ -606,3 +606,239 @@ file C:/Users/dyevre/Documents/mres_paper/data/001_network/resid2.dta saved
 . 
 end of do-file
 
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/001_customerList.dta", clear
+
+. merge 1:m comp using "$data/001_companyList_6119.dta"           
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        65,266
+        from master                    34,637  (_merge==1)
+        from using                     30,629  (_merge==2)
+
+    matched                             2,327  (_merge==3)
+    -----------------------------------------
+
+. save "$data/tempmerge.dta", replace
+file C:/Users/dyevre/Documents/mres_paper/data/001_network/tempmerge.dta saved
+
+. 
+. *AHRS manual cleaning (re-used with permission given by Enghin Atalay, 03/12/2019
+> )
+. /*Matched results will go in a file*/
+. keep if _merge==3
+(65,266 observations deleted)
+
+. drop _merge
+
+. save "$data/matched.dta", replace
+file C:/Users/dyevre/Documents/mres_paper/data/001_network/matched.dta saved
+
+. 
+. use "$data/tempmerge", clear
+
+. keep if _merge==1                                                                
+>                                                                //customer name on
+> ly, no match in Compustat company list
+(32,956 observations deleted)
+
+. keep comp
+
+. save "$data/resid1", replace
+file C:/Users/dyevre/Documents/mres_paper/data/001_network/resid1.dta saved
+
+. 
+. use "$data/tempmerge", clear
+
+. keep if _merge==2                                                                
+>                                                                //official company
+>  names in Compustat only, these companies have not found a match in the segmnent 
+> data as reported
+(36,964 observations deleted)
+
+. keep comp
+
+. save "$data/resid2", replace
+file C:/Users/dyevre/Documents/mres_paper/data/001_network/resid2.dta saved
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. program merge3 
+  1.         confirm file "$data/matched.dta"
+  2.         confirm file "$data/resid1.dta" 
+  3.         confirm file "$data/resid2.dta" 
+  4. 
+.         use "$data/resid1", clear 
+  5.         merge comp using "$data/resid2"
+  6.         if _N==0{
+  7.                 exit
+  8.                 }
+  9.         save "$data/result.dta", replace
+ 10. 
+.         keep if _merge==3
+ 11.         drop _merge
+ 12.         append using "$data/matched.dta"
+ 13.         save "$data/matched.dta", replace
+ 14. 
+.         use "$data/result.dta", clear 
+ 15.         keep if _merge==1
+ 16.         keep comp
+ 17.         sort comp
+ 18.         merge comp using "$data/resid1"
+ 19.         keep if _merge==3
+ 20.         drop _merge
+ 21.         sort comp
+ 22.         save "$data/resid1", replace emptyok
+ 23. 
+.         use "$data/result.dta", clear 
+ 24.         keep if _merge==2
+ 25.         keep comp
+ 26.         sort comp
+ 27.         merge comp using "$data/resid2.dta" 
+ 28.         keep if _merge==3
+ 29.         drop _merge
+ 30.         sort comp
+ 31.         save "$data/resid2.dta" , replace emptyok
+ 32. 
+.         erase "$data/result.dta"
+ 33.         end
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/resid1.dta", clear
+
+. replace comp=subinstr(comp,"CORP","",.)
+(1,765 real changes made)
+
+. replace comp=subinstr(comp,"COMPANIES","",.)
+(76 real changes made)
+
+. replace comp=subinstr(comp,"COMPANY","",.)
+(689 real changes made)
+
+. replace comp=subinstr(comp,"CONSOLIDATED","",.)
+(16 real changes made)
+
+. replace comp=subinword(comp,"CO","",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"INC","",.)
+(3,620 real changes made)
+
+. replace comp=subinstr(comp,"LABORATORIES","LAB",.)
+(39 real changes made)
+
+. replace comp=subinstr(comp,"/"," ",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"-"," ",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"LP","",.)
+(728 real changes made)
+
+. replace comp=subinstr(comp,"LTD","",.)
+(2,011 real changes made)
+
+. replace comp=subinword(comp,"STORES","",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"MOTOR","MTR",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"GENERAL","GENL",.)
+(92 real changes made)
+
+. replace comp=subinstr(comp,"GENL","GEN",.)
+(105 real changes made)
+
+. replace comp=subinword(comp,"MOBIL","",.)
+(1 real change made)
+
+. replace comp=subinword(comp,"MICRO","MICR",.)
+(1 real change made)
+
+. replace comp=subinword(comp,"UNITED","UTD",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"TECHNOLOGIES","TECHS",.)
+(0 real changes made)
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\Documents\mres_paper\code\mres_001_dataImport.do"
+
+. 
+. /*******************************************************************************
+>         
+>         DESCRIPTION:
+>         
+>         INFILES:        - compustat_segment_customer_76_19.csv
+>         
+>         OUTFILES:       - Descriptive stats
+>         
+>         LOG: Created 02/12/2019
+>         
+> *******************************************************************************/
+. 
+. 
+. /*******************************************************************************
+>         SETUP
+> *******************************************************************************/
+. 
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Useful modules
+. ssc install charlist
+checking charlist consistency and verifying not already installed...
+all files already exist and are up to date.
+
+. ssc install matchit
+checking matchit consistency and verifying not already installed...
+all files already exist and are up to date.
+
+. ssc install strip
+checking strip consistency and verifying not already installed...
+all files already exist and are up to date.
+
+. 
+. *Paths
+. global wd "C:/Users/dyevre/Documents/mres_paper"
+
+. global orig "C:/Users/dyevre/Downloads/mres_paper_orig"                          
+>                        //using this folder for heavy files, otherwise I cannot co
+> mmit to GitHub
+
+. global data "$wd/data"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "001"                                      
+
+. 
+. *log
+. cap log close

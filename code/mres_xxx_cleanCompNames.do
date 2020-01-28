@@ -24,9 +24,13 @@ drop toClean
 rename toClean2 toClean
 
 *White space
-replace toClean = subinstr(toClean, " ", "", .)
+*replace toClean = subinstr(toClean, " ", "", .)
 
 *Upper case
 replace toClean=upper(toClean)
 
 *From Atalay, Hortacsu, Roberts, and Syverson's code (2011)
+
+
+
+
