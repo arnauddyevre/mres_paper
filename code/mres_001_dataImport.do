@@ -23,9 +23,9 @@ set scheme s1color
 set matsize 10000
 
 *Useful modules
-ssc install charlist
-ssc install matchit
-ssc install strip
+*ssc install charlist
+*ssc install matchit
+*ssc install strip
 
 *Paths
 global wd "C:/Users/dyevre/Documents/mres_paper"
@@ -34,6 +34,7 @@ global data "$wd/data"
 global outputs "$wd/outputs"
 global doc "$wd/doc"
 global code "$wd/code"
+global log "$wd/log"
 
 *do-file number, used to save outputs 
 global doNum "001"					
@@ -93,7 +94,7 @@ preserve
 	do mres_xxx_cleanCompNames
 	rename toClean conm
 	
-	collapse (sum) count, by(conm gvkey)
+	collapse (sum) count, by(conm /*gvkey*/)
 	drop if conm == ""
 	rename conm comp
 	*mkdir "$data/${doNum}_network"
@@ -134,7 +135,7 @@ cd $code
 do mres_xxx_cleanCompNames
 rename toClean conm
 	
-collapse (sum) count, by(conm gvkey)											//32,956 companies*gvkey
+collapse (sum) count, by(conm /*gvkey*/)											//32,956 companies*gvkey, 32,854 firms only
 drop if conm == ""
 drop count
 rename conm comp

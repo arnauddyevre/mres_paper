@@ -50,16 +50,16 @@ log using "$log/${doNum}_mergeCustomerSupplier", text append
 
 *Customer to company exact merge
 use "$data/001_customerList.dta", clear
-merge 1:m comp using "$data/001_companyList_6119.dta"					// 1 to many merge as several companies in Compustat have the same name but different Gvkeys 
+merge 1:1 comp using "$data/001_companyList_6119.dta"					// 1 to many merge as several companies in Compustat have the same name but different Gvkeys 
 count if _merge == 3
 local merged = `r(N)'
 count if _merge == 1
 local master = `r(N)'
-di `merged'/(`master'+`merged')													//6.30% merge
+di `merged'/(`master'+`merged')													//6.00% merge
 
 *Supplier to company exact merge
 use "$data/001_supplierList.dta", clear
-merge 1:1 gvkey comp using "$data/001_companyList_6119.dta"
+merge 1:1 /*gvkey*/ comp using "$data/001_companyList_6119.dta"
 count if _merge == 3
 local merged = `r(N)'
 count if _merge == 1
@@ -67,639 +67,929 @@ local master = `r(N)'
 di `merged'/(`master'+`merged')													//98.18% merge
 
 /*******************************************************************************
-	AHRS CLEANING ALGORITHM
+	AHRS CLEANING ALGORITHM: SETUP AND PROGRAMS
 *******************************************************************************/
 
 *Using the cleaning algorithm from AHRS
 use "$data/001_customerList.dta", clear
-merge 1:m comp using "$data/001_companyList_6119.dta"		
+merge 1:1 comp using "$data/001_companyList_6119.dta"		
 save "$data/tempmerge.dta", replace
 
 *AHRS manual cleaning (re-used with permission given by Enghin Atalay, 03/12/2019)
 /*Matched results will go in a file*/
 keep if _merge==3
 drop _merge
+count
+global merge_count = `r(N)'
 save "$data/matched.dta", replace
 
 use "$data/tempmerge", clear
 keep if _merge==1 																//customer name only, no match in Compustat company list
 keep comp
+count
+global resid1_count = `r(N)'
 save "$data/resid1", replace
 
 use "$data/tempmerge", clear
 keep if _merge==2 																//official company names in Compustat only, these companies have not found a match in the segmnent data as reported
 keep comp
+count
+global resid2_count = `r(N)'
 save "$data/resid2", replace
+
+di $merge_count/($resid1_count+$merge_count)
 
 *Program automating the merge of the residual datasets after each cleaning step
 *From http://www.stata.com/statalist/archive/2004-02/msg00246.html*/
+cap program drop merge3
 program merge3 
-	confirm file "$data/matched.dta"
-	confirm file "$data/resid1.dta" 
-	confirm file "$data/resid2.dta" 
+	qui{
+		confirm file "$data/matched.dta"
+		confirm file "$data/resid1.dta" 
+		confirm file "$data/resid2.dta" 
 
-	use "$data/resid1", clear 
-	merge comp using "$data/resid2"
-	if _N==0{
-		exit
+		use "$data/resid1", clear 
+		merge 1:1 comp using "$data/resid2"
+		if _N==0{
+			exit
+			}
+		save "$data/result.dta", replace
+
+		keep if _merge==3
+		drop _merge
+		append using "$data/matched.dta"
+		save "$data/matched.dta", replace
+
+		use "$data/result.dta", clear 
+		keep if _merge==1
+		keep comp
+		sort comp
+		merge 1:1 comp using "$data/resid1"
+		keep if _merge==3
+		drop _merge
+		sort comp
+		save "$data/resid1", replace emptyok
+
+		use "$data/result.dta", clear 
+		keep if _merge==2
+		keep comp
+		sort comp
+		merge 1:1 comp using "$data/resid2.dta" 
+		keep if _merge==3
+		drop _merge
+		sort comp
+		save "$data/resid2.dta" , replace emptyok
+
+		erase "$data/result.dta"
 		}
-	save "$data/result.dta", replace
-
-	keep if _merge==3
-	drop _merge
-	append using "$data/matched.dta"
-	save "$data/matched.dta", replace
-
-	use "$data/result.dta", clear 
-	keep if _merge==1
-	keep comp
-	sort comp
-	merge comp using "$data/result.dta"
-	keep if _merge==3
-	drop _merge
-	sort custname year
-	save resid1, replace emptyok
-
-	use result, clear 
-	keep if _merge==2
-	keep custname year
-sort custname year
-	merge custname year using resid2
-	keep if _merge==3
-	drop _merge
-	sort custname year
-	save resid2, replace emptyok
-
-	erase result.dta
 	end
 
-use resid1, clear
-replace custname=subinstr(custname,"CORP","",.)
-replace custname=subinstr(custname,"COMPANIES","",.)
-replace custname=subinstr(custname,"COMPANY","",.)
-replace custname=subinstr(custname,"CONSOLIDATED","",.)
-replace custname=subinword(custname,"CO","",.)
-replace custname=subinstr(custname,"INC","",.)
-replace custname=subinstr(custname,"LABORATORIES","LAB",.)
-replace custname=subinstr(custname,"/"," ",.)
-replace custname=subinstr(custname,"-"," ",.)
-replace custname=subinstr(custname,"LP","",.)
-replace custname=subinstr(custname,"LTD","",.)
-replace custname=subinword(custname,"STORES","",.)
-replace custname=subinword(custname,"MOTOR","MTR",.)
-replace custname=subinstr(custname,"GENERAL","GENL",.)
-replace custname=subinstr(custname,"GENL","GEN",.)
-replace custname=subinword(custname,"MOBIL","",.)
-replace custname=subinword(custname,"MICRO","MICR",.)
-replace custname=subinword(custname,"UNITED","UTD",.)
-replace custname=subinword(custname,"TECHNOLOGIES","TECHS",.)
+*Calculating improvement in matching rate
+cap program drop mergeRate
+program mergeRate 
+	qui{
+		use "$data/matched", clear
+		count
+		global merge_count = `r(N)'
+		use "$data/resid1", clear
+		count
+		global resid1_count = `r(N)'
+		use "$data/resid2", clear
+		count
+		global resid2_count = `r(N)'
+		}
+	di $merge_count/($resid1_count+$merge_count)	
+	end
 
-replace custname=trim(custname)
-sort custname year
-save resid1, replace
+/*******************************************************************************
+	AHRS CLEANING ALGORITHM: IMPLEMENTATION IN SEVERAL ROUNDS OF MANUAL CLEANING
+*******************************************************************************/
 
-use resid2, clear
-replace custname=subinstr(custname,"CORP","",.)
-replace custname=subinstr(custname,"COMPANIES","",.)
-replace custname=subinstr(custname,"COMPANY","",.)
-replace custname=subinstr(custname,"CONSOLIDATED","",.)
-replace custname=subinword(custname,"CO","",.)
-replace custname=subinstr(custname,"INC","",.)
-replace custname=subinstr(custname,"LABORATORIES","LAB",.)
-replace custname=subinstr(custname,"/"," ",.)
-replace custname=subinstr(custname,"-"," ",.)
-replace custname=subinstr(custname,"LP","",.)
-replace custname=subinstr(custname,"LTD","",.)
-replace custname=subinword(custname,"STORES","",.)
-replace custname=subinword(custname,"MOTOR","MTR",.)
-replace custname=subinstr(custname,"GENERAL","GENL",.)
-replace custname=subinstr(custname,"GENL","GEN",.)
-replace custname=subinword(custname,"MOBIL","",.)
-replace custname=trim(custname)
-sort custname year
-save resid2, replace
+*1st round
+use "$data/resid1.dta", clear
+replace comp=subinstr(comp,"CORP","",.)
+replace comp=subinstr(comp,"COMPANIES","",.)
+replace comp=subinstr(comp,"COMPANY","",.)
+replace comp=subinstr(comp,"CONSOLIDATED","",.)
+replace comp=subinword(comp,"CO","",.)
+replace comp=subinstr(comp,"INC","",.)
+replace comp=subinstr(comp,"LABORATORIES","LAB",.)
+replace comp=subinstr(comp,"/"," ",.)
+replace comp=subinstr(comp,"-"," ",.)
+replace comp=subinstr(comp,"LP","",.)
+replace comp=subinstr(comp,"LTD","",.)
+replace comp=subinword(comp,"STORES","",.)
+replace comp=subinword(comp,"MOTOR","MTR",.)
+replace comp=subinstr(comp,"GENERAL","GENL",.)
+replace comp=subinstr(comp,"GENL","GEN",.)
+replace comp=subinword(comp,"MOBIL","",.)
+replace comp=subinword(comp,"MICRO","MICR",.)
+replace comp=subinword(comp,"UNITED","UTD",.)
+replace comp=subinword(comp,"TECHNOLOGIES","TECHS",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid1.dta", replace
 
-merge3
-
-***Second set of string modifications
-use resid1, clear
-replace custname=subinstr(custname,"A T & T","AT&T",.)
-replace custname=subinstr(custname,"GROUP","",.)
-replace custname=subinstr(custname,"HEALTHCARE","HTHCR",.)
-replace custname=subinstr(custname,"SPON ADR","",.)
-replace custname=subinstr(custname,"ABF FREIGHT SYSTEM","ABF FREIGHT",.)
-replace custname=subinstr(custname,"ABF FREIGHT","ABF",.)
-replace custname=subinstr(custname,"PLC","",.)
-replace custname=subinstr(custname,"HOLDINGS","",.)
-replace custname=subinstr(custname,"ADR","",.)
-replace custname=subinstr(custname,"INDUSTRIES","IND",.)
-replace custname=subinstr(custname,"UNITED","UTD",.)
-replace custname=trim(custname)
-sort custname year
-save resid1, replace
-
-use resid2, clear
-replace custname=subinstr(custname,"A T & T","AT&T",.)
-replace custname=subinstr(custname,"SPON ADR","",.)
-replace custname=subinstr(custname,"PLC","",.)
-replace custname=subinstr(custname,"GROUP","",.)
-replace custname=subinstr(custname,"HEALTHCARE","HTHCR",.)
-replace custname=subinstr(custname,"ABF FREIGHT SYSTEM","ABF FREIGHT",.)
-replace custname=subinstr(custname,"ABF FREIGHT","ABF",.)
-replace custname=subinstr(custname,"HOLDINGS","",.)
-replace custname=subinstr(custname,"ADR","",.)
-replace custname=subinstr(custname,"INDUSTRIES","IND",.)
-replace custname=subinstr(custname,"UNITED","UTD",.)
-replace custname=trim(custname)
-sort custname year
-save resid2, replace
-
-***Third set of string modifications
-use resid1, clear
-replace custname=subinstr(custname,"TELECOMMUNICATIONS","TELEM",.)
-replace custname=subinstr(custname,"CL A","",.)
-replace custname=subinstr(custname,"MMUNICATIONS","MMUN",.)
-replace custname=subinstr(custname,"ADVANCED MICRO DEVICES","AMD",.)
-replace custname=subinstr(custname,"ADV MICRO DV","AMD",.)
-replace custname=subinstr(custname,"CP","",.)
-replace custname=subinstr(custname,"CMPTRS","MPUTERS",.)
-replace custname=subinstr(custname,"AHA BETA","AHA BETA TECHNOLOGY",.)
-replace custname=subinstr(custname,"PRDS&CH","PRODUCTS & CHEMICALS",.)
-replace custname=subinstr(custname,"AIRTOUCH CM","AIRTOUCH COMMUNICATIONS",.)
-replace custname=subinstr(custname,"INTERNATIONAL","INTL",.)
-replace custname=subinstr(custname,"POWER","PWR",.)
-replace custname=subinstr(custname,"'","",.)
-replace custname=subinstr(custname," & ","",.)
-
-sort custname year
-save resid1, replace
-
-use resid2, clear
-replace custname=subinstr(custname,"TELEMMUNICATIONS","TELEM",.)
-replace custname=subinstr(custname,"MMUNICATIONS","MMUN",.)
-replace custname=subinstr(custname,"ADVANCED MICRO DEVICES","AMD",.)
-replace custname=subinstr(custname,"ADV MICRO DV","AMD",.)
-replace custname=subinstr(custname,"CL A","",.)
-replace custname=subinstr(custname,"CP","",.)
-replace custname=subinstr(custname,"CMPTRS","MPUTERS",.)
-replace custname=subinstr(custname,"AHA BETA","AHA BETA TECHNOLOGY",.)
-replace custname=subinstr(custname,"PRDS&CH","PRODUCTS & CHEMICALS",.)
-replace custname=subinstr(custname,"AIRTOUCH CM","AIRTOUCH COMMUNICATIONS",.)
-replace custname=subinstr(custname,"INTERNATIONAL","INTL",.)
-replace custname=subinstr(custname,"POWER","PWR",.)
-replace custname=subinstr(custname,"'","",.)
-replace custname=subinstr(custname," & ","",.)
-sort custname year
-save resid2, replace
-merge3
-
-****
-*Fourth String Modification
-****
-use resid1, clear
-replace custname=subinword(custname,"SA","",.)
-replace custname=subinstr(custname,"PRODUCTS","PROD",.)
-replace custname=subinstr(custname,"ELECTRONICS","ELECT",.)
-replace custname=trim(custname)
-sort custname year
-save resid1, replace
-
-use resid2, clear
-replace custname=subinword(custname,"PRODUCTS","PROD",.)
-replace custname=subinstr(custname,"ELECTRONICS","ELECT",.)
-replace custname=subinword(custname,"SA","",.)
-replace custname=trim(custname)
-sort custname year
-save resid2, replace
+use "$data/resid2.dta", clear
+replace comp=subinstr(comp,"CORP","",.)
+replace comp=subinstr(comp,"COMPANIES","",.)
+replace comp=subinstr(comp,"COMPANY","",.)
+replace comp=subinstr(comp,"CONSOLIDATED","",.)
+replace comp=subinword(comp,"CO","",.)
+replace comp=subinstr(comp,"INC","",.)
+replace comp=subinstr(comp,"LABORATORIES","LAB",.)
+replace comp=subinstr(comp,"/"," ",.)
+replace comp=subinstr(comp,"-"," ",.)
+replace comp=subinstr(comp,"LP","",.)
+replace comp=subinstr(comp,"LTD","",.)
+replace comp=subinword(comp,"STORES","",.)
+replace comp=subinword(comp,"MOTOR","MTR",.)
+replace comp=subinstr(comp,"GENERAL","GENL",.)
+replace comp=subinstr(comp,"GENL","GEN",.)
+replace comp=subinword(comp,"MOBIL","",.)
+replace comp=subinword(comp,"MICRO","MICR",.)
+replace comp=subinword(comp,"UNITED","UTD",.)
+replace comp=subinword(comp,"TECHNOLOGIES","TECHS",.)
+replace comp=trim(comp)
+sort comp
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid2.dta", replace
 
 merge3
+mergeRate	//.09146594
 
-********
-***Fifth string modification
-********
-use resid1, clear
-replace custname=subinstr(custname,"AMERICA","AMER",.)
-replace custname=subinstr(custname,".","",.)
-replace custname=subinstr(custname,"HYDRO ELECTRIC","HYD",.)
-replace custname=subinstr(custname,"OLD","",.)
-replace custname=subinstr(custname,"TRUST","TR",.)
-replace custname=subinstr(custname,"BARCLAYS BANK","BARCLAYS",.)
-replace custname=subinstr(custname," & ","&",.)
-replace custname=subinstr(custname,"NOBLE","NOBL",.)
-replace custname=subinstr(custname,"BANK","BK",.)
-replace custname=subinstr(custname,"NEW","",.)
-replace custname=subinstr(custname,"WRIGHT","WRGHT",.)
-replace custname=trim(custname)
-sort custname year
-save resid1, replace
+*2nd
+use "$data/resid1.dta", clear
+replace comp=subinstr(comp,"A T & T","AT&T",.)
+replace comp=subinstr(comp,"GROUP","",.)
+replace comp=subinstr(comp,"HEALTHCARE","HTHCR",.)
+replace comp=subinstr(comp,"SPON ADR","",.)
+replace comp=subinstr(comp,"ABF FREIGHT SYSTEM","ABF FREIGHT",.)
+replace comp=subinstr(comp,"ABF FREIGHT","ABF",.)
+replace comp=subinstr(comp,"PLC","",.)
+replace comp=subinstr(comp,"HOLDINGS","",.)
+replace comp=subinstr(comp,"ADR","",.)
+replace comp=subinstr(comp,"INDUSTRIES","IND",.)
+replace comp=subinstr(comp,"UNITED","UTD",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid1.dta", replace
 
-
-use resid2, clear
-replace custname=subinstr(custname,"AMERICA","AMER",.)
-replace custname=subinstr(custname,".","",.)
-replace custname=subinstr(custname,"HYDRO ELECTRIC","HYD",.)
-replace custname=subinstr(custname,"OLD","",.)
-replace custname=subinstr(custname,"TRUST","TR",.)
-replace custname=subinstr(custname,"BARCLAYS BANK","BARCLAYS",.)
-replace custname=subinstr(custname," & ","&",.)
-replace custname=subinstr(custname,"NOBLE","NOBL",.)
-replace custname=subinstr(custname,"BANK","BK",.)
-replace custname=subinstr(custname,"NEW","",.)
-replace custname=subinstr(custname,"WRIGHT","WRGHT",.)
-replace custname=trim(custname)
-sort custname year
-save resid2, replace
-
-merge3
-
-*********
-**Fifth String Mod
-*********
-use resid1, clear
-replace custname=subinstr(custname,"A G","AG",.)
-replace custname=subinstr(custname,"AEROSPACE","AEROSPAC",.)
-replace custname=subinstr(custname,"(","",.)
-replace custname=subinstr(custname,")","",.)
-replace custname=subinstr(custname,"L L","LL",.)
-replace custname=subinstr(custname,"STEARNS","STRNS",.)
-replace custname=subinstr(custname,"DICKINSON &","DICK",.)
-replace custname=subinstr(custname,"AIRCRAFT","AIRCR",.)
-replace custname=subinstr(custname,"AIRCRFT","AIRCR",.)
-replace custname=subinstr(custname,"CANADA","CDA",.)
-replace custname=subinstr(custname,"PROJECTED","",.)
-replace custname=subinstr(custname,"TELEM","TEL",.)
-replace custname=subinstr(custname,"BETHLEHEM","BETHLHM",.)
-replace custname=subinstr(custname,"STEEL","STL",.)
-replace custname=subinstr(custname,"ENTERPRISES","ENT",.)
-replace custname=trim(custname)
-sort custname year
-save resid1, replace
-
-use resid2, clear
-replace custname=subinstr(custname,"A G","AG",.)
-replace custname=subinstr(custname,"AEROSPACE","AEROSPAC",.)
-replace custname=subinstr(custname,"(","",.)
-replace custname=subinstr(custname,")","",.)
-replace custname=subinstr(custname,"L L","LL",.)
-replace custname=subinstr(custname,"STEARNS","STRNS",.)
-replace custname=subinstr(custname,"DICKINSON &","DICK",.)
-replace custname=subinstr(custname,"AIRCRAFT","AIRCR",.)
-replace custname=subinstr(custname,"AIRCRFT","AIRCR",.)
-replace custname=subinstr(custname,"CANADA","CDA",.)
-replace custname=subinstr(custname,"PROJECTED","",.)
-replace custname=subinstr(custname,"TELEM","TEL",.)
-replace custname=subinstr(custname,"BETHLEHEM","BETHLHM",.)
-replace custname=subinstr(custname,"STEEL","STL",.)
-replace custname=subinstr(custname,"ENTERPRISES","ENT",.)
-replace custname=trim(custname)
-sort custname year
-save resid2, replace
+use "$data/resid2.dta", clear
+replace comp=subinstr(comp,"A T & T","AT&T",.)
+replace comp=subinstr(comp,"SPON ADR","",.)
+replace comp=subinstr(comp,"PLC","",.)
+replace comp=subinstr(comp,"GROUP","",.)
+replace comp=subinstr(comp,"HEALTHCARE","HTHCR",.)
+replace comp=subinstr(comp,"ABF FREIGHT SYSTEM","ABF FREIGHT",.)
+replace comp=subinstr(comp,"ABF FREIGHT","ABF",.)
+replace comp=subinstr(comp,"HOLDINGS","",.)
+replace comp=subinstr(comp,"ADR","",.)
+replace comp=subinstr(comp,"INDUSTRIES","IND",.)
+replace comp=subinstr(comp,"UNITED","UTD",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid2.dta", replace
 
 merge3
+mergeRate	//.09685959
 
-***6
-use resid1, clear
-replace custname=subinstr(custname,"BIG THREE","BIG THREE IND",.)
-replace custname=subinstr(custname,"LLC","",.)
-replace custname=subinstr(custname,"BORG WARNER","",.)
-replace custname=subinstr(custname,"SCIENTIFIC","SCI",.)
-replace custname=subinstr(custname,"ADS","BP",.)
-replace custname=subinstr(custname,"BRIGGS&STRATTON","BRIGG&STRN",.)
-replace custname=subinstr(custname,"MYERS SQUIBB","MYRS",.)
-replace custname=subinstr(custname,"CA CL","CA LA",.)
-replace custname=subinstr(custname,"GOLF","GF",.)
-replace custname=subinstr(custname,"SOUP","SP",.)
-replace custname=subinstr(custname,"CAMPBELL","CAMPBL",.)
-replace custname=subinstr(custname,"FINANCIAL","FINL",.)
-replace custname=subinstr(custname,"NATURAL GAS","NAT",.)
-replace custname=subinstr(custname,"CANADIAN","CDN",.)
-replace custname=subinstr(custname,"AIRCFT","AIRC",.)
-replace custname=subinstr(custname,"AIRCR","AIRC",.)
-replace custname=trim(custname)
-sort custname year
-save resid1, replace
+*3rd
+use "$data/resid1.dta", clear
+replace comp=subinstr(comp,"TELECOMMUNICATIONS","TELEM",.)
+replace comp=subinstr(comp,"CL A","",.)
+replace comp=subinstr(comp,"MMUNICATIONS","MMUN",.)
+replace comp=subinstr(comp,"ADVANCED MICRO DEVICES","AMD",.)
+replace comp=subinstr(comp,"ADV MICRO DV","AMD",.)
+replace comp=subinstr(comp,"CP","",.)
+replace comp=subinstr(comp,"CMPTRS","MPUTERS",.)
+replace comp=subinstr(comp,"AHA BETA","AHA BETA TECHNOLOGY",.)
+replace comp=subinstr(comp,"PRDS&CH","PRODUCTS & CHEMICALS",.)
+replace comp=subinstr(comp,"AIRTOUCH CM","AIRTOUCH COMMUNICATIONS",.)
+replace comp=subinstr(comp,"INTERNATIONAL","INTL",.)
+replace comp=subinstr(comp,"POWER","PWR",.)
+replace comp=subinstr(comp,"'","",.)
+replace comp=subinstr(comp," & ","",.)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid1.dta", replace
 
-use resid2, clear
-replace custname=subinstr(custname,"LLC","",.)
-replace custname=subinstr(custname,"BORG WARNER","",.)
-replace custname=subinstr(custname,"SCIENTIFIC","SCI",.)
-replace custname=subinstr(custname,"BP   ADS","BP",.)
-replace custname=subinstr(custname,"BRIGGS&STRATTON","BRIGG&STRN",.)
-replace custname=subinstr(custname,"MYERS SQUIBB","MYRS",.)
-replace custname=subinstr(custname,"CA CL","CA LA",.)
-replace custname=subinstr(custname,"GOLF","GF",.)
-replace custname=subinstr(custname,"SOUP","SP",.)
-replace custname=subinstr(custname,"CAMPBELL","CAMPBL",.)
-replace custname=subinstr(custname,"FINANCIAL","FINL",.)
-replace custname=subinstr(custname,"NATURAL GAS","NAT",.)
-replace custname=subinstr(custname,"CANADIAN","CDN",.)
-replace custname=subinstr(custname,"AIRCFT","AIRC",.)
-replace custname=subinstr(custname,"AIRCR","AIRC",.)
-replace custname=trim(custname)
-sort custname year
-save resid2, replace
-
-merge3
-
-use resid1, clear
-replace custname=subinstr(custname,"ROEBK","",.)
-replace custname=subinstr(custname,"ROEBUCK &","",.)
-replace custname=subinstr(custname,"AIR LINES","AIRL",.)
-replace custname=trim(custname)
-sort custname year
-save resid1, replace
-
-use resid2, clear
-replace custname=subinstr(custname,"ROEBK","",.)
-replace custname=subinstr(custname,"ROEBUCK &","",.)
-replace custname=subinstr(custname,"AIR LINES","AIRL",.)
-replace custname=trim(custname)
-sort custname year
-save resid2, replace
+use "$data/resid2.dta", clear
+replace comp=subinstr(comp,"TELEMMUNICATIONS","TELEM",.)
+replace comp=subinstr(comp,"MMUNICATIONS","MMUN",.)
+replace comp=subinstr(comp,"ADVANCED MICRO DEVICES","AMD",.)
+replace comp=subinstr(comp,"ADV MICRO DV","AMD",.)
+replace comp=subinstr(comp,"CL A","",.)
+replace comp=subinstr(comp,"CP","",.)
+replace comp=subinstr(comp,"CMPTRS","MPUTERS",.)
+replace comp=subinstr(comp,"AHA BETA","AHA BETA TECHNOLOGY",.)
+replace comp=subinstr(comp,"PRDS&CH","PRODUCTS & CHEMICALS",.)
+replace comp=subinstr(comp,"AIRTOUCH CM","AIRTOUCH COMMUNICATIONS",.)
+replace comp=subinstr(comp,"INTERNATIONAL","INTL",.)
+replace comp=subinstr(comp,"POWER","PWR",.)
+replace comp=subinstr(comp,"'","",.)
+replace comp=subinstr(comp," & ","",.)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid2.dta", replace
 
 merge3
-use matched, clear
-drop if custname==""
-*****
-**Seventh string mod
-*****
+mergeRate	//.09804468
 
-use resid1, clear
-replace custname=subinstr(custname,"SYSTEMS","SYS",.)
-replace custname=subinstr(custname,"DU PONT EI DE NEMOURS","DUPONT EI",.)
-replace custname=subinstr(custname,"EI","",.)
-replace custname=subinstr(custname,"PRO FORMA","",.)
-replace custname=subinstr(custname,"CREDIT","CR",.)
-replace custname=subinstr(custname,"LIGHT","LT",.)
-replace custname=subinstr(custname,"CHEMICAL","CHEMICL",.)
-replace custname=subinstr(custname,"&","",.)
-replace custname=subinstr(custname,"DISCREET","DISCRT",.)
-replace custname=subinstr(custname,"LOGIC","LGC",.)
-replace custname=subinstr(custname,"TELEKOM","TELE",.)
-replace custname=subinstr(custname,"TLKOM","TELE",.)
-replace custname=subinstr(custname,"DEUTSCHE","DTSCH",.)
+*4th
+use "$data/resid1.dta", clear
+replace comp=subinword(comp,"SA","",.)
+replace comp=subinstr(comp,"PRODUCTS","PROD",.)
+replace comp=subinstr(comp,"ELECTRONICS","ELECT",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid1.dta", replace
 
-replace custname=subinstr(custname,"PWRLIGHT","PL",.)
-replace custname=subinstr(custname,"SUPERMARKETS","SUPERMKTS",.)
-replace custname=subinstr(custname,"CAPITAL","CAP",.)
-replace custname=subinstr(custname,"GRAND ICE CREAM","",.)
-replace custname=subinstr(custname,"DREAMS","DRMS",.)
-replace custname=subinstr(custname,"EMPORIUM","EMPORM",.)
-replace custname=subinstr(custname,"HARDWAREGARDEN","HRDWR",.)
-replace custname=subinstr(custname,"KODAK","KDK",.)
-replace custname=subinstr(custname,"MAN","MN",.)
-replace custname=subinstr(custname,"STORES","",.)
-replace custname=subinstr(custname,"BROTHERS","BROS",.)
-replace custname=subinstr(custname,"AG","",.)
-replace custname=subinstr(custname,"ELECTRONIC","ELEC",.)
-replace custname=trim(custname)
-sort custname year
-save resid1, replace
-
-use resid2, clear
-replace custname=subinstr(custname,"SYSTEMS","SYS",.)
-replace custname=subinstr(custname,"DU PONT EI DE NEMOURS","DUPONT EI",.)
-replace custname=subinstr(custname,"EI","",.)
-replace custname=subinstr(custname,"PRO FORMA","",.)
-replace custname=subinstr(custname,"CREDIT","CR",.)
-replace custname=subinstr(custname,"LIGHT","LT",.)
-replace custname=subinstr(custname,"CHEMICAL","CHEMICL",.)
-replace custname=subinstr(custname,"&","",.)
-replace custname=subinstr(custname,"DISCREET","DISCRT",.)
-replace custname=subinstr(custname,"LOGIC","LGC",.)
-replace custname=subinstr(custname,"TELEKOM","TELE",.)
-replace custname=subinstr(custname,"TLKOM","TELE",.)
-replace custname=subinstr(custname,"DEUTSCHE","DTSCH",.)
-replace custname=subinstr(custname,"GENERAL","GENL",.)
-replace custname=subinstr(custname,"GENL","GEN",.)
-replace custname=subinstr(custname,"PWRLIGHT","PL",.)
-replace custname=subinstr(custname,"SUPERMARKETS","SUPERMKTS",.)
-replace custname=subinstr(custname,"CAPITAL","CAP",.)
-replace custname=subinstr(custname,"GRAND ICE CREAM","",.)
-replace custname=subinstr(custname,"DREAMS","DRMS",.)
-replace custname=subinstr(custname,"EMPORIUM","EMPORM",.)
-replace custname=subinstr(custname,"HARDWAREGARDEN","HRDWR",.)
-replace custname=subinstr(custname,"KODAK","KDK",.)
-replace custname=subinstr(custname,"MAN","MN",.)
-replace custname=subinstr(custname,"STORES","",.)
-replace custname=subinstr(custname,"BROTHERS","BROS",.)
-replace custname=subinstr(custname,"AG","",.)
-replace custname=subinstr(custname,"ELECTRONIC","",.)
-replace custname=trim(custname)
-sort custname year
-save resid2, replace
+use "$data/resid2.dta", clear
+replace comp=subinword(comp,"PRODUCTS","PROD",.)
+replace comp=subinstr(comp,"ELECTRONICS","ELECT",.)
+replace comp=subinword(comp,"SA","",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid2.dta", replace
 
 merge3
+mergeRate	//.10131343
 
-use resid1, clear
-replace custname=subinstr(custname,"GAS","GS",.)
-replace custname=subinstr(custname,"TOWN","TWN",.)
-replace custname=subinstr(custname,"L M","",.)
-replace custname=subinstr(custname,"LM","",.)
-replace custname=subinstr(custname,"TELEFON","TEL",.)
-replace custname=trim(custname)
-sort custname year
-save resid1, replace
+*5th
+use "$data/resid1.dta", clear
+replace comp=subinstr(comp,"AMERICA","AMER",.)
+replace comp=subinstr(comp,".","",.)
+replace comp=subinstr(comp,"HYDRO ELECTRIC","HYD",.)
+replace comp=subinstr(comp,"OLD","",.)
+replace comp=subinstr(comp,"TRUST","TR",.)
+replace comp=subinstr(comp,"BARCLAYS BANK","BARCLAYS",.)
+replace comp=subinstr(comp," & ","&",.)
+replace comp=subinstr(comp,"NOBLE","NOBL",.)
+replace comp=subinstr(comp,"BANK","BK",.)
+replace comp=subinstr(comp,"NEW","",.)
+replace comp=subinstr(comp,"WRIGHT","WRGHT",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid1.dta", replace
 
-use resid2, clear
-replace custname=subinstr(custname,"GAS","GS",.)
-replace custname=subinstr(custname,"TOWN","TWN",.)
-replace custname=subinstr(custname,"L M","",.)
-replace custname=subinstr(custname,"LM","",.)
-replace custname=subinstr(custname,"TELEFON","TEL",.)
-replace custname=trim(custname)
-sort custname year
-save resid2, replace
-
-merge3
-
-use resid1, clear
-replace custname=subinstr(custname,"ERICSSON TEL","ERCSON TELE",.)
-replace custname=subinstr(custname,"WHEELER","WHLR",.)
-replace custname=subinstr(custname,"FISHER","FISHR",.)
-replace custname=subinstr(custname,"SCIEN","SCI",.)
-replace custname=subinstr(custname,"INTL","",.)
-replace custname=subinstr(custname,"FED EXPRESS","FEDEX",.)
-replace custname=subinstr(custname,"WOOD","WD",.)
-replace custname=subinstr(custname,"FLA ROCK","FLORIDA ROCK",.)
-replace custname=subinstr(custname,"STONE","STN",.)
-replace custname=subinstr(custname,"TIRERUBBER","TIR",.)
-replace custname=subinstr(custname,"TIR","",.)
-replace custname=subinstr(custname,"CENTER","CNTR",.)
-replace custname=subinstr(custname,"YEAR","YR",.)
-replace custname=subinstr(custname,"NSOLIDATED","",.)
-replace custname=subinstr(custname,"MIC","MC",.)
-replace custname=subinstr(custname,"ELECTRIC","ELEC",.)
-replace custname=subinstr(custname,"ELEC","EL",.)
-replace custname=subinstr(custname,"NSOL","",.)
-replace custname=subinstr(custname,"PACIFIC","PAC",.)
-replace custname=subinstr(custname,"W R","WR",.)
-replace custname=trim(custname)
-sort custname year
-save resid1, replace
-
-use resid2, clear
-replace custname=subinstr(custname,"ERICSSON TEL","ERCSON TELE",.)
-replace custname=subinstr(custname,"WHEELER","WHLR",.)
-replace custname=subinstr(custname,"FISHER","FISHR",.)
-replace custname=subinstr(custname,"SCIEN","SCI",.)
-replace custname=subinstr(custname,"INTL","",.)
-replace custname=subinstr(custname,"FED EXPRESS","FEDEX",.)
-replace custname=subinstr(custname,"WOOD","WD",.)
-replace custname=subinstr(custname,"FLA ROCK","FLORIDA ROCK",.)
-replace custname=subinstr(custname,"STONE","STN",.)
-replace custname=subinstr(custname,"TIRERUBBER","TIR",.)
-replace custname=subinstr(custname,"TIR","",.)
-replace custname=subinstr(custname,"CENTER","CNTR",.)
-replace custname=subinstr(custname,"YEAR","YR",.)
-replace custname=subinstr(custname,"NSOLIDATED","",.)
-replace custname=subinstr(custname,"MIC","MC",.)
-replace custname=subinstr(custname,"ELECTRIC","ELEC",.)
-replace custname=subinstr(custname,"ELEC","EL",.)
-replace custname=subinstr(custname,"NSOL","",.)
-replace custname=subinstr(custname,"PACIFIC","PAC",.)
-replace custname=subinstr(custname,"W R","WR",.)
-replace custname=trim(custname)
-sort custname year
-save resid2, replace
+use "$data/resid2.dta", clear
+replace comp=subinstr(comp,"AMERICA","AMER",.)
+replace comp=subinstr(comp,".","",.)
+replace comp=subinstr(comp,"HYDRO ELECTRIC","HYD",.)
+replace comp=subinstr(comp,"OLD","",.)
+replace comp=subinstr(comp,"TRUST","TR",.)
+replace comp=subinstr(comp,"BARCLAYS BANK","BARCLAYS",.)
+replace comp=subinstr(comp," & ","&",.)
+replace comp=subinstr(comp,"NOBLE","NOBL",.)
+replace comp=subinstr(comp,"BANK","BK",.)
+replace comp=subinstr(comp,"NEW","",.)
+replace comp=subinstr(comp,"WRIGHT","WRGHT",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid2.dta", replace
 
 merge3
+mergeRate 	//.10332145
 
-use resid1, clear
-replace custname=subinstr(custname,"METRO","MET",.)
-replace custname=subinstr(custname,"TECHNOLOGIES","TECHNOL",.)
-replace custname=subinstr(custname,"DATA MM","DATAM",.)
-replace custname=subinstr(custname,"DATAMM","DATAM",.)
-replace custname=subinstr(custname,"INSTRUMENT","INSTR",.)
-replace custname=subinstr(custname,"INSTRMN","INSTR",.)
-replace custname=subinstr(custname,"MOTORS","MTR",.)
-replace custname=subinstr(custname,"INSTITUTE","INST",.)
-replace custname=subinword(custname,"GENUINE","GENUIN",.)
-replace custname=subinword(custname,"PARTS","PART",.)
-replace custname=subinword(custname,"TEL","TE",.)
-replace custname=subinword(custname,"GLOBALSTAR","GLBLSTR",.)
-replace custname=subinstr(custname,",","",.)
-replace custname=subinword(custname,"GOODYR E","GOODYR",.)
-replace custname=subinword(custname,"W","",.)
-replace custname=subinword(custname,"GRAINGER","GRAINGR",.)
-replace custname=subinword(custname,"CHEMCL","CH",.)
-replace custname=subinword(custname,"SP","",.)
-replace custname=trim(custname)
-sort custname year
-save resid1, replace
+*6th
+use "$data/resid1.dta", clear
+replace comp=subinstr(comp,"A G","AG",.)
+replace comp=subinstr(comp,"AEROSPACE","AEROSPAC",.)
+replace comp=subinstr(comp,"(","",.)
+replace comp=subinstr(comp,")","",.)
+replace comp=subinstr(comp,"L L","LL",.)
+replace comp=subinstr(comp,"STEARNS","STRNS",.)
+replace comp=subinstr(comp,"DICKINSON &","DICK",.)
+replace comp=subinstr(comp,"AIRCRAFT","AIRCR",.)
+replace comp=subinstr(comp,"AIRCRFT","AIRCR",.)
+replace comp=subinstr(comp,"CANADA","CDA",.)
+replace comp=subinstr(comp,"PROJECTED","",.)
+replace comp=subinstr(comp,"TELEM","TEL",.)
+replace comp=subinstr(comp,"BETHLEHEM","BETHLHM",.)
+replace comp=subinstr(comp,"STEEL","STL",.)
+replace comp=subinstr(comp,"ENTERPRISES","ENT",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid1.dta", replace
 
-use resid2, clear
-replace custname=subinstr(custname,"METRO","MET",.)
-replace custname=subinstr(custname,"TECHNOLOGIES","TECHNOL",.)
-replace custname=subinstr(custname,"DATA MM","DATAM",.)
-replace custname=subinstr(custname,"DATAMM","DATAM",.)
-replace custname=subinstr(custname,"INSTRUMENT","INSTR",.)
-replace custname=subinstr(custname,"INSTRMN","INSTR",.)
-replace custname=subinstr(custname,"MOTORS","MTR",.)
-replace custname=subinstr(custname,"INSTITUTE","INST",.)
-replace custname=subinword(custname,"GENUINE","GENUIN",.)
-replace custname=subinword(custname,"PARTS","PART",.)
-replace custname=subinword(custname,"TEL","TE",.)
-replace custname=subinword(custname,"GLOBALSTAR","GLBLSTR",.)
-replace custname=subinstr(custname,",","",.)
-replace custname=subinword(custname,"GOODYR E","GOODYR",.)
-replace custname=subinword(custname,"W","",.)
-replace custname=subinword(custname,"GRAINGER","GRAINGR",.)
-replace custname=subinword(custname,"CHEMCL","CH",.)
-replace custname=subinword(custname,"SP","",.)
-replace custname=trim(custname)
-sort custname year
-save resid2, replace
-
-merge3
-
-use resid1, clear
-replace custname=subinword(custname,"PACKARD","PCK",.)
-replace custname=subinword(custname,"HOTELS","HTL",.)
-replace custname=trim(custname)
-sort custname year
-save resid1, replace
-
-use resid2, clear
-replace custname=subinword(custname,"PACKARD","PCK",.)
-replace custname=subinword(custname,"HOTELS","HTL",.)
-replace custname=trim(custname)
-sort custname year
-save resid2, replace
+use "$data/resid2.dta", clear
+replace comp=subinstr(comp,"A G","AG",.)
+replace comp=subinstr(comp,"AEROSPACE","AEROSPAC",.)
+replace comp=subinstr(comp,"(","",.)
+replace comp=subinstr(comp,")","",.)
+replace comp=subinstr(comp,"L L","LL",.)
+replace comp=subinstr(comp,"STEARNS","STRNS",.)
+replace comp=subinstr(comp,"DICKINSON &","DICK",.)
+replace comp=subinstr(comp,"AIRCRAFT","AIRCR",.)
+replace comp=subinstr(comp,"AIRCRFT","AIRCR",.)
+replace comp=subinstr(comp,"CANADA","CDA",.)
+replace comp=subinstr(comp,"PROJECTED","",.)
+replace comp=subinstr(comp,"TELEM","TEL",.)
+replace comp=subinstr(comp,"BETHLEHEM","BETHLHM",.)
+replace comp=subinstr(comp,"STEEL","STL",.)
+replace comp=subinstr(comp,"ENTERPRISES","ENT",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid2.dta", replace
 
 merge3
+mergeRate	//.10360133
 
-use resid1, clear
-replace custname=subinword(custname,"TROY","TR",.)
-replace custname=subinword(custname,"MEYERS","MEYR",.)
-replace custname=subinword(custname,"H J","HJ",.)
-replace custname=subinword(custname,"HOTL","HTL",.)
-replace custname=subinword(custname,"HEALTHDYNE","HLTHDNE",.)
-replace custname=subinword(custname,"TECHNOL","TEC",.)
-replace custname=subinword(custname,"CELANESE","",.)
-replace custname=subinword(custname,"CEL","",.)
-replace custname=subinword(custname,"MIFFLIN","MF",.)
-replace custname=subinword(custname,"LTPWR","LP",.)
-replace custname=subinword(custname,"HOST","HST",.)
-replace custname=subinword(custname,"SUPPLY","SPLY",.)
-replace custname=subinword(custname,"MATERIALS HNDLG","",.)
-replace custname=subinword(custname,"SOLUTIONS","",.)
-replace custname=trim(custname)
-sort custname year
-save resid1, replace
+*7th
+use "$data/resid1.dta", clear
+replace comp=subinstr(comp,"BIG THREE","BIG THREE IND",.)
+replace comp=subinstr(comp,"LLC","",.)
+replace comp=subinstr(comp,"BORG WARNER","",.)
+replace comp=subinstr(comp,"SCIENTIFIC","SCI",.)
+replace comp=subinstr(comp,"ADS","BP",.)
+replace comp=subinstr(comp,"BRIGGS&STRATTON","BRIGG&STRN",.)
+replace comp=subinstr(comp,"MYERS SQUIBB","MYRS",.)
+replace comp=subinstr(comp,"CA CL","CA LA",.)
+replace comp=subinstr(comp,"GOLF","GF",.)
+replace comp=subinstr(comp,"SOUP","SP",.)
+replace comp=subinstr(comp,"CAMPBELL","CAMPBL",.)
+replace comp=subinstr(comp,"FINANCIAL","FINL",.)
+replace comp=subinstr(comp,"NATURAL GAS","NAT",.)
+replace comp=subinstr(comp,"CANADIAN","CDN",.)
+replace comp=subinstr(comp,"AIRCFT","AIRC",.)
+replace comp=subinstr(comp,"AIRCR","AIRC",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid1.dta", replace
 
-use resid2, clear
-replace custname=subinword(custname,"TROY","TR",.)
-replace custname=subinword(custname,"MEYERS","MEYR",.)
-replace custname=subinword(custname,"H J","HJ",.)
-replace custname=subinword(custname,"HOTL","HTL",.)
-replace custname=subinword(custname,"HEALTHDYNE","HLTHDNE",.)
-replace custname=subinword(custname,"TECHNOL","TEC",.)
-replace custname=subinword(custname,"CELANESE","",.)
-replace custname=subinword(custname,"CEL","",.)
-replace custname=subinword(custname,"MIFFLIN","MF",.)
-replace custname=subinword(custname,"LTPWR","LP",.)
-replace custname=subinword(custname,"HOST","HST",.)
-replace custname=subinword(custname,"SUPPLY","SPLY",.)
-replace custname=subinword(custname,"MATERIALS HNDLG","",.)
-replace custname=subinword(custname,"SOLUTIONS","",.)
-replace custname=trim(custname)
-sort custname year
-save resid2, replace
-
-use resid1, clear
-replace custname=subinword(custname,"CHASE","CHSE",.)
-replace custname=subinword(custname,"J P MORGAN","JPMORGAN",.)
-replace custname=subinword(custname,"CIRCUIT","CRCT",.)
-replace custname=subinword(custname,"NTROLS","CNTL",.)
-replace custname=subinword(custname,"JOHNSONJOHNSON","JOHNSNJHNS",.)
-replace custname=trim(custname)
-sort custname year
-save resid1, replace
-
-use resid2, clear
-replace custname=subinword(custname,"CHASE","CHSE",.)
-replace custname=subinword(custname,"J P MORGAN","JPMORGAN",.)
-replace custname=subinword(custname,"CIRCUIT","CRCT",.)
-replace custname=subinword(custname,"NTROLS","CNTL",.)
-replace custname=subinword(custname,"JOHNSONJOHNSON","JOHNSNJHNS",.)
-replace custname=trim(custname)
-sort custname year
-save resid2, replace
+use "$data/resid2.dta", clear
+replace comp=subinstr(comp,"LLC","",.)
+replace comp=subinstr(comp,"BORG WARNER","",.)
+replace comp=subinstr(comp,"SCIENTIFIC","SCI",.)
+replace comp=subinstr(comp,"BP   ADS","BP",.)
+replace comp=subinstr(comp,"BRIGGS&STRATTON","BRIGG&STRN",.)
+replace comp=subinstr(comp,"MYERS SQUIBB","MYRS",.)
+replace comp=subinstr(comp,"CA CL","CA LA",.)
+replace comp=subinstr(comp,"GOLF","GF",.)
+replace comp=subinstr(comp,"SOUP","SP",.)
+replace comp=subinstr(comp,"CAMPBELL","CAMPBL",.)
+replace comp=subinstr(comp,"FINANCIAL","FINL",.)
+replace comp=subinstr(comp,"NATURAL GAS","NAT",.)
+replace comp=subinstr(comp,"CANADIAN","CDN",.)
+replace comp=subinstr(comp,"AIRCFT","AIRC",.)
+replace comp=subinstr(comp,"AIRCR","AIRC",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid2.dta", replace
 
 merge3
+mergeRate	//.10459838
 
-use resid1, clear
-replace custname=subinword(custname,"MCDONNELL","MCDONNEL",.)
-replace custname=subinword(custname,"DOUGLAS","DG",.)
+*8th
+use "$data/resid1.dta", clear
+replace comp=subinstr(comp,"ROEBK","",.)
+replace comp=subinstr(comp,"ROEBUCK &","",.)
+replace comp=subinstr(comp,"AIR LINES","AIRL",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid1.dta", replace
 
-REMOVE WHITESPACES HERE
+use "$data/resid2.dta", clear
+replace comp=subinstr(comp,"ROEBK","",.)
+replace comp=subinstr(comp,"ROEBUCK &","",.)
+replace comp=subinstr(comp,"AIR LINES","AIRL",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid2.dta", replace
 
-use matched, clear
-drop if custname==""
-drop if custname=="CDA"
-drop if custname=="ISRAEL"
-drop if custname=="MMERCIAL"
-save matched, replace	
+merge3
+mergeRate	//.10460428
+
+
+*9th
+use "$data/resid1.dta", clear
+replace comp=subinstr(comp,"SYSTEMS","SYS",.)
+replace comp=subinstr(comp,"DU PONT EI DE NEMOURS","DUPONT EI",.)
+replace comp=subinstr(comp,"EI","",.)
+replace comp=subinstr(comp,"PRO FORMA","",.)
+replace comp=subinstr(comp,"CREDIT","CR",.)
+replace comp=subinstr(comp,"LIGHT","LT",.)
+replace comp=subinstr(comp,"CHEMICAL","CHEMICL",.)
+replace comp=subinstr(comp,"&","",.)
+replace comp=subinstr(comp,"DISCREET","DISCRT",.)
+replace comp=subinstr(comp,"LOGIC","LGC",.)
+replace comp=subinstr(comp,"TELEKOM","TELE",.)
+replace comp=subinstr(comp,"TLKOM","TELE",.)
+replace comp=subinstr(comp,"DEUTSCHE","DTSCH",.)
+
+replace comp=subinstr(comp,"PWRLIGHT","PL",.)
+replace comp=subinstr(comp,"SUPERMARKETS","SUPERMKTS",.)
+replace comp=subinstr(comp,"CAPITAL","CAP",.)
+replace comp=subinstr(comp,"GRAND ICE CREAM","",.)
+replace comp=subinstr(comp,"DREAMS","DRMS",.)
+replace comp=subinstr(comp,"EMPORIUM","EMPORM",.)
+replace comp=subinstr(comp,"HARDWAREGARDEN","HRDWR",.)
+replace comp=subinstr(comp,"KODAK","KDK",.)
+replace comp=subinstr(comp,"MAN","MN",.)
+replace comp=subinstr(comp,"STORES","",.)
+replace comp=subinstr(comp,"BROTHERS","BROS",.)
+replace comp=subinstr(comp,"AG","",.)
+replace comp=subinstr(comp,"ELECTRONIC","ELEC",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid1.dta", replace
+
+use "$data/resid2.dta", clear
+replace comp=subinstr(comp,"SYSTEMS","SYS",.)
+replace comp=subinstr(comp,"DU PONT EI DE NEMOURS","DUPONT EI",.)
+replace comp=subinstr(comp,"EI","",.)
+replace comp=subinstr(comp,"PRO FORMA","",.)
+replace comp=subinstr(comp,"CREDIT","CR",.)
+replace comp=subinstr(comp,"LIGHT","LT",.)
+replace comp=subinstr(comp,"CHEMICAL","CHEMICL",.)
+replace comp=subinstr(comp,"&","",.)
+replace comp=subinstr(comp,"DISCREET","DISCRT",.)
+replace comp=subinstr(comp,"LOGIC","LGC",.)
+replace comp=subinstr(comp,"TELEKOM","TELE",.)
+replace comp=subinstr(comp,"TLKOM","TELE",.)
+replace comp=subinstr(comp,"DEUTSCHE","DTSCH",.)
+replace comp=subinstr(comp,"GENERAL","GENL",.)
+replace comp=subinstr(comp,"GENL","GEN",.)
+replace comp=subinstr(comp,"PWRLIGHT","PL",.)
+replace comp=subinstr(comp,"SUPERMARKETS","SUPERMKTS",.)
+replace comp=subinstr(comp,"CAPITAL","CAP",.)
+replace comp=subinstr(comp,"GRAND ICE CREAM","",.)
+replace comp=subinstr(comp,"DREAMS","DRMS",.)
+replace comp=subinstr(comp,"EMPORIUM","EMPORM",.)
+replace comp=subinstr(comp,"HARDWAREGARDEN","HRDWR",.)
+replace comp=subinstr(comp,"KODAK","KDK",.)
+replace comp=subinstr(comp,"MAN","MN",.)
+replace comp=subinstr(comp,"STORES","",.)
+replace comp=subinstr(comp,"BROTHERS","BROS",.)
+replace comp=subinstr(comp,"AG","",.)
+replace comp=subinstr(comp,"ELECTRONIC","",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid2.dta", replace
+
+merge3
+mergeRate	//.10609787
+
+*10th
+use "$data/resid1.dta", clear
+replace comp=subinstr(comp,"GAS","GS",.)
+replace comp=subinstr(comp,"TOWN","TWN",.)
+replace comp=subinstr(comp,"L M","",.)
+replace comp=subinstr(comp,"LM","",.)
+replace comp=subinstr(comp,"TELEFON","TEL",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid1.dta", replace
+
+use "$data/resid2.dta", clear
+replace comp=subinstr(comp,"GAS","GS",.)
+replace comp=subinstr(comp,"TOWN","TWN",.)
+replace comp=subinstr(comp,"L M","",.)
+replace comp=subinstr(comp,"LM","",.)
+replace comp=subinstr(comp,"TELEFON","TEL",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid2.dta", replace
+
+merge3
+mergeRate	//.1062067
+
+*11th
+use "$data/resid1.dta", clear
+replace comp=subinstr(comp,"ERICSSON TEL","ERCSON TELE",.)
+replace comp=subinstr(comp,"WHEELER","WHLR",.)
+replace comp=subinstr(comp,"FISHER","FISHR",.)
+replace comp=subinstr(comp,"SCIEN","SCI",.)
+replace comp=subinstr(comp,"INTL","",.)
+replace comp=subinstr(comp,"FED EXPRESS","FEDEX",.)
+replace comp=subinstr(comp,"WOOD","WD",.)
+replace comp=subinstr(comp,"FLA ROCK","FLORIDA ROCK",.)
+replace comp=subinstr(comp,"STONE","STN",.)
+replace comp=subinstr(comp,"TIRERUBBER","TIR",.)
+replace comp=subinstr(comp,"TIR","",.)
+replace comp=subinstr(comp,"CENTER","CNTR",.)
+replace comp=subinstr(comp,"","YR",.)
+replace comp=subinstr(comp,"NSOLIDATED","",.)
+replace comp=subinstr(comp,"MIC","MC",.)
+replace comp=subinstr(comp,"ELECTRIC","ELEC",.)
+replace comp=subinstr(comp,"ELEC","EL",.)
+replace comp=subinstr(comp,"NSOL","",.)
+replace comp=subinstr(comp,"PACIFIC","PAC",.)
+replace comp=subinstr(comp,"W R","WR",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid1.dta", replace
+
+use "$data/resid2.dta", clear
+replace comp=subinstr(comp,"ERICSSON TEL","ERCSON TELE",.)
+replace comp=subinstr(comp,"WHEELER","WHLR",.)
+replace comp=subinstr(comp,"FISHER","FISHR",.)
+replace comp=subinstr(comp,"SCIEN","SCI",.)
+replace comp=subinstr(comp,"INTL","",.)
+replace comp=subinstr(comp,"FED EXPRESS","FEDEX",.)
+replace comp=subinstr(comp,"WOOD","WD",.)
+replace comp=subinstr(comp,"FLA ROCK","FLORIDA ROCK",.)
+replace comp=subinstr(comp,"STONE","STN",.)
+replace comp=subinstr(comp,"TIRERUBBER","TIR",.)
+replace comp=subinstr(comp,"TIR","",.)
+replace comp=subinstr(comp,"CENTER","CNTR",.)
+replace comp=subinstr(comp,"","YR",.)
+replace comp=subinstr(comp,"NSOLIDATED","",.)
+replace comp=subinstr(comp,"MIC","MC",.)
+replace comp=subinstr(comp,"ELECTRIC","ELEC",.)
+replace comp=subinstr(comp,"ELEC","EL",.)
+replace comp=subinstr(comp,"NSOL","",.)
+replace comp=subinstr(comp,"PACIFIC","PAC",.)
+replace comp=subinstr(comp,"W R","WR",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid2.dta", replace
+
+merge3
+mergeRate	//.10918382
+
+*12th
+use "$data/resid1.dta", clear
+replace comp=subinstr(comp,"METRO","MET",.)
+replace comp=subinstr(comp,"TECHNOLOGIES","TECHNOL",.)
+replace comp=subinstr(comp,"DATA MM","DATAM",.)
+replace comp=subinstr(comp,"DATAMM","DATAM",.)
+replace comp=subinstr(comp,"INSTRUMENT","INSTR",.)
+replace comp=subinstr(comp,"INSTRMN","INSTR",.)
+replace comp=subinstr(comp,"MOTORS","MTR",.)
+replace comp=subinstr(comp,"INSTITUTE","INST",.)
+replace comp=subinword(comp,"GENUINE","GENUIN",.)
+replace comp=subinword(comp,"PARTS","PART",.)
+replace comp=subinword(comp,"TEL","TE",.)
+replace comp=subinword(comp,"GLOBALSTAR","GLBLSTR",.)
+replace comp=subinstr(comp,",","",.)
+replace comp=subinword(comp,"GOODYR E","GOODYR",.)
+replace comp=subinword(comp,"W","",.)
+replace comp=subinword(comp,"GRAINGER","GRAINGR",.)
+replace comp=subinword(comp,"CHEMCL","CH",.)
+replace comp=subinword(comp,"SP","",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid1.dta", replace
+
+use "$data/resid2.dta", clear
+replace comp=subinstr(comp,"METRO","MET",.)
+replace comp=subinstr(comp,"TECHNOLOGIES","TECHNOL",.)
+replace comp=subinstr(comp,"DATA MM","DATAM",.)
+replace comp=subinstr(comp,"DATAMM","DATAM",.)
+replace comp=subinstr(comp,"INSTRUMENT","INSTR",.)
+replace comp=subinstr(comp,"INSTRMN","INSTR",.)
+replace comp=subinstr(comp,"MOTORS","MTR",.)
+replace comp=subinstr(comp,"INSTITUTE","INST",.)
+replace comp=subinword(comp,"GENUINE","GENUIN",.)
+replace comp=subinword(comp,"PARTS","PART",.)
+replace comp=subinword(comp,"TEL","TE",.)
+replace comp=subinword(comp,"GLOBALSTAR","GLBLSTR",.)
+replace comp=subinstr(comp,",","",.)
+replace comp=subinword(comp,"GOODYR E","GOODYR",.)
+replace comp=subinword(comp,"W","",.)
+replace comp=subinword(comp,"GRAINGER","GRAINGR",.)
+replace comp=subinword(comp,"CHEMCL","CH",.)
+replace comp=subinword(comp,"SP","",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid2.dta", replace
+
+merge3
+mergeRate	//.10952016
+
+*13th
+use "$data/resid1.dta", clear
+replace comp=subinword(comp,"PACKARD","PCK",.)
+replace comp=subinword(comp,"HOTELS","HTL",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid1.dta", replace
+
+use "$data/resid2.dta", clear
+replace comp=subinword(comp,"PACKARD","PCK",.)
+replace comp=subinword(comp,"HOTELS","HTL",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid2.dta", replace
+
+merge3
+mergeRate	//.10952016
+
+*14th
+use "$data/resid1.dta", clear
+replace comp=subinword(comp,"TROY","TR",.)
+replace comp=subinword(comp,"MEYERS","MEYR",.)
+replace comp=subinword(comp,"H J","HJ",.)
+replace comp=subinword(comp,"HOTL","HTL",.)
+replace comp=subinword(comp,"HEALTHDYNE","HLTHDNE",.)
+replace comp=subinword(comp,"TECHNOL","TEC",.)
+replace comp=subinword(comp,"CELANESE","",.)
+replace comp=subinword(comp,"CEL","",.)
+replace comp=subinword(comp,"MIFFLIN","MF",.)
+replace comp=subinword(comp,"LTPWR","LP",.)
+replace comp=subinword(comp,"HOST","HST",.)
+replace comp=subinword(comp,"SUPPLY","SPLY",.)
+replace comp=subinword(comp,"MATERIALS HNDLG","",.)
+replace comp=subinword(comp,"SOLUTIONS","",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid1.dta", replace
+
+use "$data/resid2.dta", clear
+replace comp=subinword(comp,"TROY","TR",.)
+replace comp=subinword(comp,"MEYERS","MEYR",.)
+replace comp=subinword(comp,"H J","HJ",.)
+replace comp=subinword(comp,"HOTL","HTL",.)
+replace comp=subinword(comp,"HEALTHDYNE","HLTHDNE",.)
+replace comp=subinword(comp,"TECHNOL","TEC",.)
+replace comp=subinword(comp,"CELANESE","",.)
+replace comp=subinword(comp,"CEL","",.)
+replace comp=subinword(comp,"MIFFLIN","MF",.)
+replace comp=subinword(comp,"LTPWR","LP",.)
+replace comp=subinword(comp,"HOST","HST",.)
+replace comp=subinword(comp,"SUPPLY","SPLY",.)
+replace comp=subinword(comp,"MATERIALS HNDLG","",.)
+replace comp=subinword(comp,"SOLUTIONS","",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid2.dta", replace
+
+merge3 
+mergeRate	//.10985419
+
+*15th
+use "$data/resid1.dta", clear
+replace comp=subinword(comp,"CHASE","CHSE",.)
+replace comp=subinword(comp,"J P MORGAN","JPMORGAN",.)
+replace comp=subinword(comp,"CIRCUIT","CRCT",.)
+replace comp=subinword(comp,"NTROLS","CNTL",.)
+replace comp=subinword(comp,"JOHNSONJOHNSON","JOHNSNJHNS",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid1.dta", replace
+
+use "$data/resid2.dta", clear
+replace comp=subinword(comp,"CHASE","CHSE",.)
+replace comp=subinword(comp,"J P MORGAN","JPMORGAN",.)
+replace comp=subinword(comp,"CIRCUIT","CRCT",.)
+replace comp=subinword(comp,"NTROLS","CNTL",.)
+replace comp=subinword(comp,"JOHNSONJOHNSON","JOHNSNJHNS",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid2.dta", replace
+
+merge3
+mergeRate	//.10986044
+
+*16th
+use "$data/resid1.dta", clear
+replace comp=subinstr(comp,"AM TEL &TEL","AT&T",.)
+replace comp=subinstr(comp,"-","",.)
+replace comp=subinword(comp,"CL","",.)
+replace comp=subinword(comp,"A","",.)
+replace comp=subinword(comp,"HLDG","",.)
+replace comp=subinword(comp,"WARD","WD",.)
+replace comp=subinword(comp,"MONTGOMERY","MONTGMY",.)
+replace comp=subinstr(comp,"PR","",.)
+replace comp=subinword(comp,"CORP","",.)
+replace comp=subinword(comp,"CO","",.)
+replace comp=subinword(comp,"CP","",.)
+replace comp=subinword(comp,"INC","",.)
+replace comp=subinword(comp,"DAIMLERCHRYSLER","DAIMLER",.)
+replace comp=subinword(comp,"AG","",.)
+replace comp=subinword(comp,"COMPUTER","CMP",.)
+replace comp=subinword(comp,"EASTMAN","EASTMN",.)
+replace comp=subinword(comp,"KODAK","KODK",.)
+replace comp=subinword(comp,"MACHINES","MA",.)
+replace comp=subinword(comp,"BUSINESS","BUS",.)
+replace comp=subinword(comp,"MACH","MA",.)
+replace comp=subinword(comp,"EQUIPMENT","EQ",.)
+replace comp=subinword(comp,"PROCTER","PRCTR",.)
+replace comp=subinword(comp,"GAMBLE","GM",.)
+replace comp=subinword(comp,"GENERAL","GEN",.)
+replace comp=subinword(comp,"MOTORS","MTR",.)
+replace comp=subinword(comp,"MOTOR","MTR",.)
+replace comp=subinword(comp,"FUNDING","",.)
+replace comp=subinword(comp,"(J C)","(JC)",.)
+replace comp=subinword(comp,"DOUGLAS","DG",.)
+replace comp=subinword(comp,"MCDONNELL","MCDONNEL",.)
+replace comp=subinword(comp,"STORES","",.)
+replace comp=subinword(comp,"EXXON MOBIL","EXXON",.)
+replace comp=subinword(comp,"SPRINT NEXTEL","SPRINT",.)
+replace comp=subinword(comp,"INSTRUMENTS","INSTR",.)
+replace comp=subinword(comp,"TEXAS","TX",.)
+replace comp=subinword(comp,"DU PONT (E I) DE NEMOURS","DUPONT (EI)",.)
+replace comp=subinword(comp,"MICRO","MICR",.)
+replace comp=subinword(comp,"TECHNOLOGIES","TECHS",.)
+replace comp=subinword(comp,"UNITED","UTD",.)
+replace comp=subinword(comp,"COMPUTER","CMP",.)
+replace comp=subinword(comp,"RICHFIELD","RIC",.)
+replace comp=subinword(comp,"INTERNATIONAL","INTL",.)
+replace comp=subinword(comp,"MACH","MA",.)
+replace comp=subinword(comp,"ANHEUSER-BUSCH","ANHEUSR-BSH",.)
+replace comp=subinword(comp,"LOCKHEED MARTIN","LOCKHEED",.)
+replace comp=subinword(comp,"LOCKHD MART","LOCKHEED",.)
+replace comp=subinword(comp,"LABORATORIES","LABS",.)
+replace comp=subinword(comp,"AMERICAN","",.)
+replace comp=subinword(comp,"TECHNOLOGYOLD","TEC",.)
+replace comp=subinword(comp,"TECHNOLOGY","TEC",.)
+replace comp=subinword(comp,"HOSPITAL","HOSP",.)
+replace comp=subinword(comp,"SUPPLY","SUP",.)
+replace comp=subinword(comp,"PHILIP","PHIL",.)
+replace comp=subinword(comp,"MORRIS","MOR",.)
+replace comp=subinword(comp,"NORTHROP GRUMMAN","NORTHROP",.)
+replace comp=subinword(comp,"LOWE'S COMPANIES","LOWES COS",.)
+replace comp=subinword(comp,"MARIETTA","MRTA",.)
+replace comp=subinword(comp,"MICROSYSTEMS","MICRO",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid1.dta", replace
+
+use "$data/resid2.dta", clear
+replace comp=subinstr(comp,"AM TEL &TEL","AT&T",.)
+replace comp=subinstr(comp,"-","",.)
+replace comp=subinword(comp,"CL","",.)
+replace comp=subinword(comp,"A","",.)
+replace comp=subinword(comp,"HLDG","",.)
+replace comp=subinword(comp,"WARD","WD",.)
+replace comp=subinword(comp,"MONTGOMERY","MONTGMY",.)
+replace comp=subinstr(comp,"PR","",.)
+replace comp=subinword(comp,"CORP","",.)
+replace comp=subinword(comp,"CO","",.)
+replace comp=subinword(comp,"CP","",.)
+replace comp=subinword(comp,"INC","",.)
+replace comp=subinword(comp,"DAIMLERCHRYSLER","DAIMLER",.)
+replace comp=subinword(comp,"AG","",.)
+replace comp=subinword(comp,"COMPUTER","CMP",.)
+replace comp=subinword(comp,"EASTMAN","EASTMN",.)
+replace comp=subinword(comp,"KODAK","KODK",.)
+replace comp=subinword(comp,"MACHINES","MA",.)
+replace comp=subinword(comp,"BUSINESS","BUS",.)
+replace comp=subinword(comp,"MACH","MA",.)
+replace comp=subinword(comp,"EQUIPMENT","EQ",.)
+replace comp=subinword(comp,"PROCTER","PRCTR",.)
+replace comp=subinword(comp,"GAMBLE","GM",.)
+replace comp=subinword(comp,"GENERAL","GEN",.)
+replace comp=subinword(comp,"MOTORS","MTR",.)
+replace comp=subinword(comp,"MOTOR","MTR",.)
+replace comp=subinword(comp,"FUNDING","",.)
+replace comp=subinword(comp,"(J C)","(JC)",.)
+replace comp=subinword(comp,"DOUGLAS","DG",.)
+replace comp=subinword(comp,"MCDONNELL","MCDONNEL",.)
+replace comp=subinword(comp,"STORES","",.)
+replace comp=subinword(comp,"EXXON MOBIL","EXXON",.)
+replace comp=subinword(comp,"SPRINT NEXTEL","SPRINT",.)
+replace comp=subinword(comp,"INSTRUMENTS","INSTR",.)
+replace comp=subinword(comp,"TEXAS","TX",.)
+replace comp=subinword(comp,"DU PONT (E I) DE NEMOURS","DUPONT (EI)",.)
+replace comp=subinword(comp,"MICRO","MICR",.)
+replace comp=subinword(comp,"TECHNOLOGIES","TECHS",.)
+replace comp=subinword(comp,"UNITED","UTD",.)
+replace comp=subinword(comp,"COMPUTER","CMP",.)
+replace comp=subinword(comp,"RICHFIELD","RIC",.)
+replace comp=subinword(comp,"INTERNATIONAL","INTL",.)
+replace comp=subinword(comp,"MACH","MA",.)
+replace comp=subinword(comp,"ANHEUSER-BUSCH","ANHEUSR-BSH",.)
+replace comp=subinword(comp,"LOCKHEED MARTIN","LOCKHEED",.)
+replace comp=subinword(comp,"LOCKHD MART","LOCKHEED",.)
+replace comp=subinword(comp,"LABORATORIES","LABS",.)
+replace comp=subinword(comp,"AMERICAN","",.)
+replace comp=subinword(comp,"TECHNOLOGYOLD","TEC",.)
+replace comp=subinword(comp,"TECHNOLOGY","TEC",.)
+replace comp=subinword(comp,"HOSPITAL","HOSP",.)
+replace comp=subinword(comp,"SUPPLY","SUP",.)
+replace comp=subinword(comp,"PHILIP","PHIL",.)
+replace comp=subinword(comp,"MORRIS","MOR",.)
+replace comp=subinword(comp,"NORTHROP GRUMMAN","NORTHROP",.)
+replace comp=subinword(comp,"LOWE'S COMPANIES","LOWES COS",.)
+replace comp=subinword(comp,"MARIETTA","MRTA",.)
+replace comp=subinword(comp,"MICROSYSTEMS","MICRO",.)
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid2.dta", replace
+
+merge3
+mergeRate	//.1110953
+
+*17th
+use "$data/resid1.dta", clear
+replace comp=subinword(comp,"MCDONNELL","MCDONNEL",.)
+replace comp=subinword(comp,"DOUGLAS","DG",.)
+replace comp = subinstr(comp, " ", "", .)									//BLUNT way of improving match, remove white space
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid1.dta", replace
+
+use "$data/resid2.dta", clear
+replace comp=subinword(comp,"MCDONNELL","MCDONNEL",.)
+replace comp=subinword(comp,"DOUGLAS","DG",.)
+replace comp = subinstr(comp, " ", "", .)									//BLUNT way of improving match, remove white space
+replace comp=trim(comp)
+sort comp 
+gen count=0
+collapse count, by(comp)
+drop count
+save "$data/resid2.dta", replace
+
+merge3
+mergeRate	//.11509919
 
 log close

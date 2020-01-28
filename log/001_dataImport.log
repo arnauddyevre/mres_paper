@@ -378,3 +378,622 @@ file C:/Users/dyevre/Documents/mres_paper/data/001_network/001_companyList_6119.
 . 
 end of do-file
 
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. 
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Paths
+. global wd "C:/Users/dyevre/Documents/mres_paper"
+
+. global orig "$wd/orig"
+
+. global data "$wd/data/001_network"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "002"                                      
+
+. 
+. *log
+. cap log close
+-----------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/dyevre/Documents/mres_paper/log/001_dataImport.log
+  log type:  text
+ opened on:  28 Jan 2020, 19:03:36
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. import delimited "$orig/compustat_quarterly_61_19.csv", clear
+(26 vars, 1,592,184 obs)
+
+. keep gvkey conm
+
+. gen count = 1
+
+. 
+. *Cleaning company names
+. rename conm toClean
+
+. cd $code
+C:\Users\dyevre\Documents\mres_paper\code
+
+. do mres_xxx_cleanCompNames
+
+. 
+. /*******************************************************************************
+>         
+>         DESCRIPTION:    Cleaning company names -> Giving somewhat homogeneous nam
+> es
+>                                         across datasets
+>         
+>         INFILES:        - any string variable with the name toClean
+>         
+>         OUTFILES:       - cleaned company name
+>         
+>         LOG:            Created 03/12/2019
+>         
+> *******************************************************************************/
+. 
+. *White spaces, capital letters and punctuations
+. replace toClean = trim(toClean)
+(0 real changes made)
+
+. foreach word in "CORP" "INC" "LTD" ".COM" "PLC" " TRUST" " CO"{
+  2.         replace toClean = subinstr(toClean, " `word'", "", .)
+  3.         }
+(351,325 real changes made)
+(720,687 real changes made)
+(49,786 real changes made)
+(15 real changes made)
+(15,308 real changes made)
+(0 real changes made)
+(0 real changes made)
+
+. 
+. *Punctuation
+. strip toClean, of("'`!£$%^&*()-_+=][}{#;~@:/.,?><\|") gen(toClean2)
+
+. drop toClean
+
+. rename toClean2 toClean
+
+. 
+. *White space
+. *replace toClean = subinstr(toClean, " ", "", .)
+. 
+. *Upper case
+. replace toClean=upper(toClean)
+(0 real changes made)
+
+. 
+. *From Atalay, Hortacsu, Roberts, and Syverson's code (2011)
+. 
+. 
+. 
+. 
+. 
+end of do-file
+
+. rename toClean conm
+
+.         
+. collapse (sum) count, by(conm /*gvkey*/)                                         
+>                                                //32,956 companies*gvkey
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. drop if conm == ""
+(0 observations deleted)
+
+. drop count
+
+. rename conm comp
+
+. save "$data/${doNum}_network/${doNum}_companyList_6119.dta", replace
+file C:/Users/dyevre/Documents/mres_paper/data/001_network/001_companyList_6119.dta
+>  saved
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\Documents\mres_paper\code\mres_001_dataImport.do"
+
+. 
+. /*******************************************************************************
+>         
+>         DESCRIPTION:
+>         
+>         INFILES:        - compustat_segment_customer_76_19.csv
+>         
+>         OUTFILES:       - Descriptive stats
+>         
+>         LOG: Created 02/12/2019
+>         
+> *******************************************************************************/
+. 
+. 
+. /*******************************************************************************
+>         SETUP
+> *******************************************************************************/
+. 
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Useful modules
+. *ssc install charlist
+. *ssc install matchit
+. *ssc install strip
+. 
+. *Paths
+. global wd "C:/Users/dyevre/Documents/mres_paper"
+
+. global orig "C:/Users/dyevre/Downloads/mres_paper_orig"                          
+>                        //using this folder for heavy files, otherwise I cannot co
+> mmit to GitHub
+
+. global data "$wd/data"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "001"                                      
+
+. 
+. *log
+. cap log close
+-----------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/dyevre/Documents/mres_paper/log/001_dataImport.log
+  log type:  text
+ opened on:  28 Jan 2020, 19:08:14
+
+. 
+. /*******************************************************************************
+>         DATA CLEANING
+> *******************************************************************************/
+. 
+. *Customer data
+. import delimited "$orig/compustat_segment_customer_76_19.csv", clear
+(16 vars, 549,451 obs)
+
+. tostring srcdate, gen(dataStr)
+dataStr generated as str8
+
+. gen year = substr(dataStr, 1, 4)
+
+. destring year, replace
+year: all characters numeric; replaced as int
+
+. drop srcdate dataStr
+
+. tab ctype, sort
+
+      ctype |      Freq.     Percent        Cum.
+------------+-----------------------------------
+    COMPANY |    315,926       57.50       57.50
+     GEOREG |    107,725       19.61       77.10
+     MARKET |     83,282       15.16       92.26
+     GOVDOM |     36,083        6.57       98.83
+     GOVFRN |      4,665        0.85       99.68
+   GOVSTATE |      1,228        0.22       99.90
+     GOVLOC |        542        0.10      100.00
+------------+-----------------------------------
+      Total |    549,451      100.00
+
+. 
+. *mkdir "$outputs/${doNum}_descriptives"
+. 
+. *types of link
+. graph hbar (count), over(ctype, sort(1) descending)             ///
+>         title("Types of links") ylabel(, grid)
+
+. graph export "$outputs/${doNum}_descriptives/${doNum}_histTypeOfLinks.pdf", as(pd
+> f) replace
+(file C:/Users/dyevre/Documents/mres_paper/outputs/001_descriptives/001_histTypeOfL
+> inks.pdf written in PDF format)
+
+. 
+. *Number of links over time and number of companies over time
+. drop if ctype!="COMPANY"
+(233,525 observations deleted)
+
+. gen links = 1
+
+. gen freq = 1
+
+. collapse freq (sum) links, by(year conm)
+
+. collapse links (sum) freq, by(year)
+
+. twoway (scatter links year, connect(direct) msymbol(O) mfcolor(white) yaxis(1) ys
+> cale(range(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(dk
+> green))) ///
+>         (scatter freq year, connect(direct) msymbol(O) mfcolor(white) yaxis(2) ys
+> cale(range(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(dko
+> range))), ///
+>         legend(off) xtitle("")
+
+. graph export "$outputs/${doNum}_descriptives/${doNum}_links&Companies.pdf", as(pd
+> f) replace
+(file C:/Users/dyevre/Documents/mres_paper/outputs/001_descriptives/001_links&Compa
+> nies.pdf written in PDF format)
+
+. 
+. /*******************************************************************************
+>         IMPORTING SEGMENT DATA
+> *******************************************************************************/
+. 
+. import delimited "$orig/compustat_segment_customer_76_19.csv", clear
+(16 vars, 549,451 obs)
+
+. tostring srcdate, gen(dataStr)
+dataStr generated as str8
+
+. gen year = substr(dataStr, 1, 4)
+
+. destring year, replace
+year: all characters numeric; replaced as int
+
+. drop srcdate dataStr
+
+. 
+. preserve
+
+.         keep if ctype == "COMPANY"
+(233,525 observations deleted)
+
+.         keep conm gvkey
+
+.         gen count = 1
+
+.         
+.         *Cleaning company names
+.         rename conm toClean
+
+.         cd $code
+C:\Users\dyevre\Documents\mres_paper\code
+
+.         do mres_xxx_cleanCompNames
+
+. 
+. /*******************************************************************************
+>         
+>         DESCRIPTION:    Cleaning company names -> Giving somewhat homogeneous nam
+> es
+>                                         across datasets
+>         
+>         INFILES:        - any string variable with the name toClean
+>         
+>         OUTFILES:       - cleaned company name
+>         
+>         LOG:            Created 03/12/2019
+>         
+> *******************************************************************************/
+. 
+. *White spaces, capital letters and punctuations
+. replace toClean = trim(toClean)
+(0 real changes made)
+
+. foreach word in "CORP" "INC" "LTD" ".COM" "PLC" " TRUST" " CO"{
+  2.         replace toClean = subinstr(toClean, " `word'", "", .)
+  3.         }
+(68,205 real changes made)
+(166,553 real changes made)
+(13,846 real changes made)
+(7 real changes made)
+(3,217 real changes made)
+(0 real changes made)
+(0 real changes made)
+
+. 
+. *Punctuation
+. strip toClean, of("'`!£$%^&*()-_+=][}{#;~@:/.,?><\|") gen(toClean2)
+
+. drop toClean
+
+. rename toClean2 toClean
+
+. 
+. *White space
+. *replace toClean = subinstr(toClean, " ", "", .)
+. 
+. *Upper case
+. replace toClean=upper(toClean)
+(0 real changes made)
+
+. 
+. *From Atalay, Hortacsu, Roberts, and Syverson's code (2011)
+. 
+. 
+. 
+. 
+. 
+end of do-file
+
+.         rename toClean conm
+
+.         
+.         collapse (sum) count, by(conm gvkey)
+
+.         drop if conm == ""
+(13 observations deleted)
+
+.         rename conm comp
+
+.         *mkdir "$data/${doNum}_network"
+.         drop count
+
+.         save "$data/${doNum}_network/${doNum}_supplierList.dta", replace
+file C:/Users/dyevre/Documents/mres_paper/data/001_network/001_supplierList.dta sav
+> ed
+
+. restore
+
+. 
+. preserve
+
+.         keep if ctype == "COMPANY"
+(233,525 observations deleted)
+
+.         keep cnms
+
+.         gen count = 1
+
+.         
+.         *Cleaning company names
+.         rename cnms toClean
+
+.         cd $code
+C:\Users\dyevre\Documents\mres_paper\code
+
+.         do mres_xxx_cleanCompNames
+
+. 
+. /*******************************************************************************
+>         
+>         DESCRIPTION:    Cleaning company names -> Giving somewhat homogeneous nam
+> es
+>                                         across datasets
+>         
+>         INFILES:        - any string variable with the name toClean
+>         
+>         OUTFILES:       - cleaned company name
+>         
+>         LOG:            Created 03/12/2019
+>         
+> *******************************************************************************/
+. 
+. *White spaces, capital letters and punctuations
+. replace toClean = trim(toClean)
+(0 real changes made)
+
+. foreach word in "CORP" "INC" "LTD" ".COM" "PLC" " TRUST" " CO"{
+  2.         replace toClean = subinstr(toClean, " `word'", "", .)
+  3.         }
+(10,306 real changes made)
+(9,021 real changes made)
+(1,274 real changes made)
+(0 real changes made)
+(1,384 real changes made)
+(0 real changes made)
+(1 real change made)
+
+. 
+. *Punctuation
+. strip toClean, of("'`!£$%^&*()-_+=][}{#;~@:/.,?><\|") gen(toClean2)
+
+. drop toClean
+
+. rename toClean2 toClean
+
+. 
+. *White space
+. *replace toClean = subinstr(toClean, " ", "", .)
+. 
+. *Upper case
+. replace toClean=upper(toClean)
+(170,172 real changes made)
+
+. 
+. *From Atalay, Hortacsu, Roberts, and Syverson's code (2011)
+. 
+. 
+. 
+. 
+. 
+end of do-file
+
+.         rename toClean cnms
+
+.         
+.         collapse (sum) count, by(cnms)
+
+.         drop if cnms == ""
+(1 observation deleted)
+
+.         drop count
+
+.         rename cnms comp
+
+.         save "$data/${doNum}_network/${doNum}_customerList.dta", replace
+file C:/Users/dyevre/Documents/mres_paper/data/001_network/001_customerList.dta sav
+> ed
+
+. restore
+
+. 
+. /*******************************************************************************
+>         IMPORTING STANDARD COMPUSTAT DATA
+> *******************************************************************************/
+. 
+. *See "Standard - UChicago (quarterly)" data query
+. import delimited "$orig/compustat_quarterly_61_19.csv", clear
+(26 vars, 1,592,184 obs)
+
+. keep gvkey conm
+
+. gen count = 1
+
+. 
+. *Cleaning company names
+. rename conm toClean
+
+. cd $code
+C:\Users\dyevre\Documents\mres_paper\code
+
+. do mres_xxx_cleanCompNames
+
+. 
+. /*******************************************************************************
+>         
+>         DESCRIPTION:    Cleaning company names -> Giving somewhat homogeneous nam
+> es
+>                                         across datasets
+>         
+>         INFILES:        - any string variable with the name toClean
+>         
+>         OUTFILES:       - cleaned company name
+>         
+>         LOG:            Created 03/12/2019
+>         
+> *******************************************************************************/
+. 
+. *White spaces, capital letters and punctuations
+. replace toClean = trim(toClean)
+(0 real changes made)
+
+. foreach word in "CORP" "INC" "LTD" ".COM" "PLC" " TRUST" " CO"{
+  2.         replace toClean = subinstr(toClean, " `word'", "", .)
+  3.         }
+(351,325 real changes made)
+(720,687 real changes made)
+(49,786 real changes made)
+(15 real changes made)
+(15,308 real changes made)
+(0 real changes made)
+(0 real changes made)
+
+. 
+. *Punctuation
+. strip toClean, of("'`!£$%^&*()-_+=][}{#;~@:/.,?><\|") gen(toClean2)
+
+. drop toClean
+
+. rename toClean2 toClean
+
+. 
+. *White space
+. *replace toClean = subinstr(toClean, " ", "", .)
+. 
+. *Upper case
+. replace toClean=upper(toClean)
+(0 real changes made)
+
+. 
+. *From Atalay, Hortacsu, Roberts, and Syverson's code (2011)
+. 
+. 
+. 
+. 
+. 
+end of do-file
+
+. rename toClean conm
+
+.         
+. collapse (sum) count, by(conm /*gvkey*/)                                         
+>                                                //32,956 companies*gvkey, 32,854 f
+> irms only
+
+. drop if conm == ""
+(0 observations deleted)
+
+. drop count
+
+. rename conm comp
+
+. save "$data/${doNum}_network/${doNum}_companyList_6119.dta", replace
+file C:/Users/dyevre/Documents/mres_paper/data/001_network/001_companyList_6119.dta
+>  saved
+
+. 
+. 
+. 
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Paths
+. global wd "C:/Users/dyevre/Documents/mres_paper"
+
+. global orig "$wd/orig"
+
+. global data "$wd/data/001_network"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "002"                                      
+
+. 
+. *log
+. cap log close
