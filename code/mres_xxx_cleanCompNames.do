@@ -24,6 +24,9 @@ drop toClean
 rename toClean2 toClean
 
 *White space
-strip toClean, of(" ") gen(toClean2)
-drop toClean
-rename toClean2 toClean
+replace toClean = subinstr(toClean, " ", "", .)
+
+*Upper case
+replace toClean=upper(toClean)
+
+*From Atalay, Hortacsu, Roberts, and Syverson's code (2011)

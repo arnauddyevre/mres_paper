@@ -29,19 +29,24 @@ ssc install strip
 
 *Paths
 global wd "C:/Users/dyevre/Documents/mres_paper"
-global orig "$wd/orig"
+global orig "C:/Users/dyevre/Downloads/mres_paper_orig"							//using this folder for heavy files, otherwise I cannot commit to GitHub
 global data "$wd/data"
 global outputs "$wd/outputs"
 global doc "$wd/doc"
 global code "$wd/code"
 
-global doNum "001"					// do-file number, used to save outputs 
+*do-file number, used to save outputs 
+global doNum "001"					
 
+*log
+cap log close
+log using "$log/${doNum}_dataImport", text append
 
 /*******************************************************************************
 	DATA CLEANING
 *******************************************************************************/
 
+*Customer data
 import delimited "$orig/compustat_segment_customer_76_19.csv", clear
 tostring srcdate, gen(dataStr)
 gen year = substr(dataStr, 1, 4)
@@ -68,7 +73,7 @@ twoway (scatter links year, connect(direct) msymbol(O) mfcolor(white) yaxis(1) y
 graph export "$outputs/${doNum}_descriptives/${doNum}_links&Companies.pdf", as(pdf) replace
 
 /*******************************************************************************
-	CREATING NETWORK DATASET
+	IMPORTING SEGMENT DATA
 *******************************************************************************/
 
 import delimited "$orig/compustat_segment_customer_76_19.csv", clear
@@ -79,7 +84,7 @@ drop srcdate dataStr
 
 preserve
 	keep if ctype == "COMPANY"
-	keep conm
+	keep conm gvkey
 	gen count = 1
 	
 	*Cleaning company names
@@ -88,7 +93,7 @@ preserve
 	do mres_xxx_cleanCompNames
 	rename toClean conm
 	
-	collapse (sum) count, by(conm)
+	collapse (sum) count, by(conm gvkey)
 	drop if conm == ""
 	rename conm comp
 	*mkdir "$data/${doNum}_network"
@@ -114,21 +119,26 @@ preserve
 	save "$data/${doNum}_network/${doNum}_customerList.dta", replace
 restore
 
-
-use "$data/${doNum}_network/${doNum}_customerList.dta", clear
-merge 1:1 comp using "$data/${doNum}_network/${doNum}_supplierList.dta"
-
-
-gen count = 1
-collapse count, by(ctype)
-graph bar count, over(ctype)
-
-tabstat 
-drop if 
-
-
 /*******************************************************************************
-	SUMMARY STATS: No network
+	IMPORTING STANDARD COMPUSTAT DATA
 *******************************************************************************/
+
+*See "Standard - UChicago (quarterly)" data query
+import delimited "$orig/compustat_quarterly_61_19.csv", clear
+keep gvkey conm
+gen count = 1
+
+*Cleaning company names
+rename conm toClean
+cd $code
+do mres_xxx_cleanCompNames
+rename toClean conm
+	
+collapse (sum) count, by(conm gvkey)											//32,956 companies*gvkey
+drop if conm == ""
+drop count
+rename conm comp
+save "$data/${doNum}_network/${doNum}_companyList_6119.dta", replace
+
 
 

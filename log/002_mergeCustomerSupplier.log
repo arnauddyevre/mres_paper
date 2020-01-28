@@ -1,0 +1,91 @@
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/dyevre/Documents/mres_paper/log/002_mergeCustomerSupplier.log
+  log type:  text
+ opened on:  28 Jan 2020, 10:42:48
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Useful modules
+. ssc install charlist
+checking charlist consistency and verifying not already installed...
+all files already exist and are up to date.
+
+. ssc install matchit
+checking matchit consistency and verifying not already installed...
+all files already exist and are up to date.
+
+. ssc install strip
+checking strip consistency and verifying not already installed...
+all files already exist and are up to date.
+
+. 
+. *Paths
+. global wd "C:/Users/dyevre/Documents/mres_paper"
+
+. global orig "$wd/orig"
+
+. global data "$wd/data"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "001"                                      
+
+. 
+. *log
+. cap log close
+-----------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/dyevre/Documents/mres_paper/log/002_mergeCustomerSupplier.log
+  log type:  text
+ opened on:  28 Jan 2020, 12:24:11
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. use "$data/001_network/001_supplierList.dta", clear
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD2854_000000.tmp"
+
+. merge 1:1 gvkey comp using "$data/001_network/001_companyList_6119.dta"
+(note: variable comp was str28, now str30 to accommodate using data's values)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        17,753
+        from master                       287  (_merge==1)
+        from using                     17,466  (_merge==2)
+
+    matched                            15,490  (_merge==3)
+    -----------------------------------------
+
+. 
+end of do-file
+
+. sort comp
+
