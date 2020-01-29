@@ -997,3 +997,102 @@ end of do-file
 . 
 . *log
 . cap log close
+-----------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/dyevre/Documents/mres_paper/log/001_dataImport.log
+  log type:  text
+ opened on:  29 Jan 2020, 18:02:56
+
+. 
+. /*******************************************************************************
+>         DATA CLEANING
+> *******************************************************************************/
+. 
+. *Customer data
+. import delimited "$orig/compustat_segment_customer_76_19.csv", clear
+(16 vars, 549,451 obs)
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD28b0_000000.tmp"
+
+. tostring srcdate, gen(dataStr)
+dataStr generated as str8
+
+. gen year = substr(dataStr, 1, 4)
+
+. 
+end of do-file
+
+. keep if year>=1988
+type mismatch
+r(109);
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD28b0_000000.tmp"
+
+. destring year, replace
+year: all characters numeric; replaced as int
+
+. 
+end of do-file
+
+. keep if year>=1988
+(51,569 observations deleted)
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD28b0_000000.tmp"
+
+. 
+. /*******************************************************************************
+>         
+>         DESCRIPTION: Do file merging the cleaned company names from Compustat and
+>  
+>                                 the cleaned company names from Segment customer d
+> ata
+>         
+>         INFILES:        - 001_supplierList.dta
+>                                 - 001_customerList.dta 
+>         
+>         OUTFILES:       - merge company name list
+>         
+>         LOG: Created 28/01/2020
+>         
+> *******************************************************************************/
+. 
+. /*******************************************************************************
+>         SETUP
+> *******************************************************************************/
+. 
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Paths
+. global wd "C:/Users/dyevre/Documents/mres_paper"
+
+. global orig "$wd/orig"
+
+. global data "$wd/data/001_network"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "002"                                      
+
+. 
+. *log
+. cap log close

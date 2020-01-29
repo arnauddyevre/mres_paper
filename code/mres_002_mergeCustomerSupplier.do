@@ -72,7 +72,8 @@ di `merged'/(`master'+`merged')													//98.18% merge
 
 *Using the cleaning algorithm from AHRS
 use "$data/001_customerList.dta", clear
-merge 1:1 comp using "$data/001_companyList_6119.dta"		
+merge 1:1 comp using "$data/001_companyList_6119.dta"
+gen origName = comp		
 save "$data/tempmerge.dta", replace
 
 *AHRS manual cleaning (re-used with permission given by Enghin Atalay, 03/12/2019)
@@ -85,14 +86,14 @@ save "$data/matched.dta", replace
 
 use "$data/tempmerge", clear
 keep if _merge==1 																//customer name only, no match in Compustat company list
-keep comp
+keep comp origName
 count
 global resid1_count = `r(N)'
 save "$data/resid1", replace
 
 use "$data/tempmerge", clear
 keep if _merge==2 																//official company names in Compustat only, these companies have not found a match in the segmnent data as reported
-keep comp
+keep comp origName
 count
 global resid2_count = `r(N)'
 save "$data/resid2", replace
@@ -122,8 +123,8 @@ program merge3
 
 		use "$data/result.dta", clear 
 		keep if _merge==1
-		keep comp
-		sort comp
+		keep comp origName
+		sort comp origName
 		merge 1:1 comp using "$data/resid1"
 		keep if _merge==3
 		drop _merge
@@ -132,8 +133,8 @@ program merge3
 
 		use "$data/result.dta", clear 
 		keep if _merge==2
-		keep comp
-		sort comp
+		keep comp origName
+		sort comp origName
 		merge 1:1 comp using "$data/resid2.dta" 
 		keep if _merge==3
 		drop _merge
@@ -189,7 +190,7 @@ replace comp=subinword(comp,"TECHNOLOGIES","TECHS",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid1.dta", replace
 
@@ -216,7 +217,7 @@ replace comp=subinword(comp,"TECHNOLOGIES","TECHS",.)
 replace comp=trim(comp)
 sort comp
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid2.dta", replace
 
@@ -239,7 +240,7 @@ replace comp=subinstr(comp,"UNITED","UTD",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid1.dta", replace
 
@@ -258,7 +259,7 @@ replace comp=subinstr(comp,"UNITED","UTD",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid2.dta", replace
 
@@ -283,7 +284,7 @@ replace comp=subinstr(comp,"'","",.)
 replace comp=subinstr(comp," & ","",.)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid1.dta", replace
 
@@ -304,7 +305,7 @@ replace comp=subinstr(comp,"'","",.)
 replace comp=subinstr(comp," & ","",.)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid2.dta", replace
 
@@ -319,7 +320,7 @@ replace comp=subinstr(comp,"ELECTRONICS","ELECT",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid1.dta", replace
 
@@ -330,7 +331,7 @@ replace comp=subinword(comp,"SA","",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid2.dta", replace
 
@@ -353,7 +354,7 @@ replace comp=subinstr(comp,"WRIGHT","WRGHT",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid1.dta", replace
 
@@ -372,7 +373,7 @@ replace comp=subinstr(comp,"WRIGHT","WRGHT",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid2.dta", replace
 
@@ -399,7 +400,7 @@ replace comp=subinstr(comp,"ENTERPRISES","ENT",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid1.dta", replace
 
@@ -422,7 +423,7 @@ replace comp=subinstr(comp,"ENTERPRISES","ENT",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid2.dta", replace
 
@@ -450,7 +451,7 @@ replace comp=subinstr(comp,"AIRCR","AIRC",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid1.dta", replace
 
@@ -473,7 +474,7 @@ replace comp=subinstr(comp,"AIRCR","AIRC",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid2.dta", replace
 
@@ -488,7 +489,7 @@ replace comp=subinstr(comp,"AIR LINES","AIRL",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid1.dta", replace
 
@@ -499,7 +500,7 @@ replace comp=subinstr(comp,"AIR LINES","AIRL",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid2.dta", replace
 
@@ -539,7 +540,7 @@ replace comp=subinstr(comp,"ELECTRONIC","ELEC",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid1.dta", replace
 
@@ -575,7 +576,7 @@ replace comp=subinstr(comp,"ELECTRONIC","",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid2.dta", replace
 
@@ -592,7 +593,7 @@ replace comp=subinstr(comp,"TELEFON","TEL",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid1.dta", replace
 
@@ -605,7 +606,7 @@ replace comp=subinstr(comp,"TELEFON","TEL",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid2.dta", replace
 
@@ -637,7 +638,7 @@ replace comp=subinstr(comp,"W R","WR",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid1.dta", replace
 
@@ -665,7 +666,7 @@ replace comp=subinstr(comp,"W R","WR",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid2.dta", replace
 
@@ -695,7 +696,7 @@ replace comp=subinword(comp,"SP","",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid1.dta", replace
 
@@ -721,7 +722,7 @@ replace comp=subinword(comp,"SP","",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid2.dta", replace
 
@@ -735,7 +736,7 @@ replace comp=subinword(comp,"HOTELS","HTL",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid1.dta", replace
 
@@ -745,7 +746,7 @@ replace comp=subinword(comp,"HOTELS","HTL",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid2.dta", replace
 
@@ -771,7 +772,7 @@ replace comp=subinword(comp,"SOLUTIONS","",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid1.dta", replace
 
@@ -793,7 +794,7 @@ replace comp=subinword(comp,"SOLUTIONS","",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid2.dta", replace
 
@@ -810,7 +811,7 @@ replace comp=subinword(comp,"JOHNSONJOHNSON","JOHNSNJHNS",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid1.dta", replace
 
@@ -823,7 +824,7 @@ replace comp=subinword(comp,"JOHNSONJOHNSON","JOHNSNJHNS",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid2.dta", replace
 
@@ -893,7 +894,7 @@ replace comp=subinword(comp,"MICROSYSTEMS","MICRO",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid1.dta", replace
 
@@ -959,7 +960,7 @@ replace comp=subinword(comp,"MICROSYSTEMS","MICRO",.)
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid2.dta", replace
 
@@ -974,7 +975,7 @@ replace comp = subinstr(comp, " ", "", .)									//BLUNT way of improving match
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid1.dta", replace
 
@@ -985,9 +986,90 @@ replace comp = subinstr(comp, " ", "", .)									//BLUNT way of improving match
 replace comp=trim(comp)
 sort comp 
 gen count=0
-collapse count, by(comp)
+collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid2.dta", replace
+
+/*******************************************************************************
+	REMOVING USELESS CUSTOMER FIELDS
+*******************************************************************************/
+
+use "$data/resid1", clear
+gen tag=(strpos(origName, " CUSTOMER")!=0 | strpos(origName, " COSTOMER" | strpos(origName, " CUSTOMRES")!=0 ///
+	| strpos(origName, " CUSTOMER")!=0 )
+
+replace tag=1 if strpos(origName, " DISTRIBUTOR")!=0
+
+replace comp = "20THCENTURYFOX" if strpos(origName, "20TH CENT")!=0
+
+/*******************************************************************************
+	SOUNDEX
+*******************************************************************************/
+stop
+
+*Matching the remaining firms by soundex
+	*As done in Cohen & Frazzini (2008)
+	*And Atalay, Hortacsu, Roberts & Syverson (2011)
+
+ssc install freqindex
+ssc install matchit
+	
+use "$data/resid1", clear
+gen id1 = _n
+save "$data/resid1_fuzzyStr", replace
+
+use "$data/resid2", clear
+gen id2 = _n
+save "$data/resid2_fuzzyStr", replace
+
+use "$data/resid1_fuzzyStr", clear
+*drop if _n>100
+matchit id1 comp using "$data/resid2_fuzzyStr.dta", idusing(id2) txtusing(comp) override
+	
+use "$data/resid1", clear
+gen scomp=soundex(comp)
+rename comp comp1
+save "$data/resid1_soundex", replace
+
+use "$data/resid2", clear
+gen scomp=soundex(comp)
+rename comp comp2
+save "$data/resid2_soundex", replace
+
+use "$data/resid1_soundex", clear
+merge m:m scomp using "$data/resid2_soundex"
+
+if _N==0{
+	exit
+	}
+save "$data/result.dta", replace
+
+keep if _merge==3
+drop _merge
+append using "$data/matched.dta"
+save "$data/matched.dta", replace
+
+use "$data/result.dta", clear 
+keep if _merge==1
+keep comp origName
+sort comp origName
+merge 1:1 comp using "$data/resid1"
+keep if _merge==3
+drop _merge
+sort comp
+save "$data/resid1", replace emptyok
+
+use "$data/result.dta", clear 
+keep if _merge==2
+keep comp origName
+sort comp origName
+merge 1:1 comp using "$data/resid2.dta" 
+keep if _merge==3
+drop _merge
+sort comp
+save "$data/resid2.dta" , replace emptyok
+
+erase "$data/result.dta"
 
 merge3
 mergeRate	//.11509919
