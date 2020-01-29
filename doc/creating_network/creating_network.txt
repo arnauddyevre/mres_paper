@@ -10,5 +10,7 @@ From "README_CODE" in "create_link_data_set"
 	3) links.do: This file appends the results of do files 1) and 2). 
 
 - need to link customer to larger Compustat list of firms (to get gvkey and financial data)
+- Note that after 1988, customer names are standardised
+	- 
 - follow methodology in https://faculty.chicagobooth.edu/thomas.winberry/teaching/phd_lectures/homework1.pdf to download Compustat data
 	- saved under the name "Standard - UChicago (quarterly)"
