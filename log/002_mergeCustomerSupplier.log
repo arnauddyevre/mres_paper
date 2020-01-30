@@ -17709,3 +17709,15 @@ Indexing USING file.
 Done!
 Computing results
         Percent completed ...   (search space saved by index so far)
+        20%               ...   (54%)
+        40%               ...   (55%)
+        60%               ...   (55%)
+        80%               ...   (55%)
+        Done!
+Total search space saved by index: 55%
+
+. 
+end of do-file
+
+. sort similscore
+
