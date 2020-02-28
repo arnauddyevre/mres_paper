@@ -24,6 +24,10 @@ Read:
 di Giovanni Levchenko & Mejean (2014) Firms destinations & agg fluctuations [FRENCH DATA]
 - Gabaix, Xavier, Jean-Michel Lasry, Pierre-Louis Lions, and Benjamin Moll (2016) The Dynamics of Inequality
 
+Ideas:
+	- Uses the envelope theorem to get rid of one of the two optimisation problems (link choice and cost minimisation)
+	- Show a summary of welfare losses under different markup estimation strategies
+
 Robustness check:
 	- Presented as in https://twitter.com/hhsievertsen/status/1188780383736909825
 
