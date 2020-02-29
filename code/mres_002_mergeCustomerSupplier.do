@@ -456,6 +456,7 @@ drop count
 save "$data/resid1.dta", replace
 
 use "$data/resid2.dta", clear
+replace comp=subinstr(comp,"BIG THREE","BIG THREE IND",.)
 replace comp=subinstr(comp,"LLC","",.)
 replace comp=subinstr(comp,"BORG WARNER","",.)
 replace comp=subinstr(comp,"SCIENTIFIC","SCI",.)
@@ -512,7 +513,7 @@ mergeRate	//.10460428
 use "$data/resid1.dta", clear
 replace comp=subinstr(comp,"SYSTEMS","SYS",.)
 replace comp=subinstr(comp,"DU PONT EI DE NEMOURS","DUPONT EI",.)
-replace comp=subinstr(comp,"EI","",.)
+*replace comp=subinstr(comp,"EI","",.)
 replace comp=subinstr(comp,"PRO FORMA","",.)
 replace comp=subinstr(comp,"CREDIT","CR",.)
 replace comp=subinstr(comp,"LIGHT","LT",.)
@@ -547,7 +548,7 @@ save "$data/resid1.dta", replace
 use "$data/resid2.dta", clear
 replace comp=subinstr(comp,"SYSTEMS","SYS",.)
 replace comp=subinstr(comp,"DU PONT EI DE NEMOURS","DUPONT EI",.)
-replace comp=subinstr(comp,"EI","",.)
+*replace comp=subinstr(comp,"EI","",.)
 replace comp=subinstr(comp,"PRO FORMA","",.)
 replace comp=subinstr(comp,"CREDIT","CR",.)
 replace comp=subinstr(comp,"LIGHT","LT",.)
@@ -761,7 +762,7 @@ replace comp=subinword(comp,"H J","HJ",.)
 replace comp=subinword(comp,"HOTL","HTL",.)
 replace comp=subinword(comp,"HEALTHDYNE","HLTHDNE",.)
 replace comp=subinword(comp,"TECHNOL","TEC",.)
-replace comp=subinword(comp,"CELANESE","",.)
+*replace comp=subinword(comp,"CELANESE","",.)
 replace comp=subinword(comp,"CEL","",.)
 replace comp=subinword(comp,"MIFFLIN","MF",.)
 replace comp=subinword(comp,"LTPWR","LP",.)
@@ -783,7 +784,7 @@ replace comp=subinword(comp,"H J","HJ",.)
 replace comp=subinword(comp,"HOTL","HTL",.)
 replace comp=subinword(comp,"HEALTHDYNE","HLTHDNE",.)
 replace comp=subinword(comp,"TECHNOL","TEC",.)
-replace comp=subinword(comp,"CELANESE","",.)
+*replace comp=subinword(comp,"CELANESE","",.)
 replace comp=subinword(comp,"CEL","",.)
 replace comp=subinword(comp,"MIFFLIN","MF",.)
 replace comp=subinword(comp,"LTPWR","LP",.)
@@ -992,6 +993,10 @@ save "$data/resid2.dta", replace
 
 merge3
 mergeRate	// .11509919
+
+stop
+
+**FURTHER CLEANING: TO BE IMPROVED
 
 /*******************************************************************************
 	REMOVING USELESS CUSTOMER FIELDS

@@ -1096,3 +1096,56 @@ end of do-file
 . 
 . *log
 . cap log close
+--------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/dyevre/Documents/mres_paper/log/001_dataImport.log
+  log type:  text
+ opened on:  29 Feb 2020, 17:33:04
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. import delimited "$orig/compustat_segment_customer_76_19.csv", clear
+(16 vars, 549,451 obs)
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. 
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Paths
+. global wd "C:/Users/dyevre/Documents/mres_paper"
+
+. global orig "$wd/orig"
+
+. global data "$wd/data/001_network"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "003"                                      
+
+. 
+. *log
+. cap log close

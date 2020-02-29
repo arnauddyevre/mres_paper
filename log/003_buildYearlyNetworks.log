@@ -1,0 +1,2014 @@
+--------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/dyevre/Documents/mres_paper/log/003_buildYearlyNetworks.log
+  log type:  text
+ opened on:  29 Feb 2020, 17:35:19
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. import delimited "$orig/compustat_quarterly_61_19.csv", clear
+file C:/Users/dyevre/Documents/mres_paper/orig/compustat_quarterly_61_19.csv not found
+r(601);
+
+end of do-file
+
+r(601);
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. import delimited "$orig/compustat_quarterly_61_19.csv", clear
+file C:/Users/dyevre/Documents/mres_paper/orig/compustat_quarterly_61_19.csv not found
+r(601);
+
+end of do-file
+
+r(601);
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Paths
+. global wd "C:/Users/dyevre/Documents/mres_paper"
+
+. global orig "C:/Users/dyevre/Downloads/mres_paper_orig"                                                 // I
+> 'm using a different orig folder so as not to commit large datasets to GitHub
+
+. global data "$wd/data/001_network"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "003"                                      
+
+. 
+. *log
+. cap log close
+--------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/dyevre/Documents/mres_paper/log/003_buildYearlyNetworks.log
+  log type:  text
+ opened on:  29 Feb 2020, 17:40:27
+
+. 
+. /*******************************************************************************
+>         GETTING THE WHOLE COMPUSTAT COMPANY DATA WITH GVKEYs
+> *******************************************************************************/
+. 
+. import delimited "$orig/compustat_quarterly_61_19.csv", clear
+(26 vars, 1,592,184 obs)
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. collapse fqtr, by(gvkey conm) fast
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. drop fqtr
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. duplicates tag gvkey, gen(tag)
+
+Duplicates in terms of gvkey
+
+. 
+end of do-file
+
+. tab tag
+
+        tag |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     32,956      100.00      100.00
+------------+-----------------------------------
+      Total |     32,956      100.00
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. drop tag
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. gen comp = conm
+
+. 
+. *1st round
+. replace comp=subinstr(comp,"CORP","",.)
+(7,167 real changes made)
+
+. replace comp=subinstr(comp,"COMPANIES","",.)
+(46 real changes made)
+
+. replace comp=subinstr(comp,"COMPANY","",.)
+(11 real changes made)
+
+. replace comp=subinstr(comp,"CONSOLIDATED","",.)
+(57 real changes made)
+
+. replace comp=subinword(comp,"CO","",.)
+(1,595 real changes made)
+
+. replace comp=subinstr(comp,"INC","",.)
+(15,107 real changes made)
+
+. replace comp=subinstr(comp,"LABORATORIES","LAB",.)
+(63 real changes made)
+
+. replace comp=subinstr(comp,"/"," ",.)
+(601 real changes made)
+
+. replace comp=subinstr(comp,"-"," ",.)
+(3,496 real changes made)
+
+. replace comp=subinstr(comp,"LP","",.)
+(528 real changes made)
+
+. replace comp=subinstr(comp,"LTD","",.)
+(1,145 real changes made)
+
+. replace comp=subinword(comp,"STORES","",.)
+(94 real changes made)
+
+. replace comp=subinword(comp,"MOTOR","MTR",.)
+(26 real changes made)
+
+. replace comp=subinstr(comp,"GENERAL","GENL",.)
+(139 real changes made)
+
+. replace comp=subinstr(comp,"GENL","GEN",.)
+(140 real changes made)
+
+. replace comp=subinword(comp,"MOBIL","",.)
+(4 real changes made)
+
+. replace comp=subinword(comp,"MICRO","MICR",.)
+(30 real changes made)
+
+. replace comp=subinword(comp,"UNITED","UTD",.)
+(167 real changes made)
+
+. replace comp=subinword(comp,"TECHNOLOGIES","TECHS",.)
+(557 real changes made)
+
+. replace comp=trim(comp)
+(21,729 real changes made)
+
+. 
+. *2nd
+. replace comp=subinstr(comp,"A T & T","AT&T",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"GROUP","",.)
+(1,220 real changes made)
+
+. replace comp=subinstr(comp,"HEALTHCARE","HTHCR",.)
+(139 real changes made)
+
+. replace comp=subinstr(comp,"SPON ADR","",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"ABF FREIGHT SYSTEM","ABF FREIGHT",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"ABF FREIGHT","ABF",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"PLC","",.)
+(285 real changes made)
+
+. replace comp=subinstr(comp,"HOLDINGS","",.)
+(871 real changes made)
+
+. replace comp=subinstr(comp,"ADR","",.)
+(293 real changes made)
+
+. replace comp=subinstr(comp,"INDUSTRIES","IND",.)
+(679 real changes made)
+
+. replace comp=subinstr(comp,"UNITED","UTD",.)
+(4 real changes made)
+
+. replace comp=trim(comp)
+(2,153 real changes made)
+
+. 
+. *3rd
+. replace comp=subinstr(comp,"TELECOMMUNICATIONS","TELEM",.)
+(18 real changes made)
+
+. replace comp=subinstr(comp,"CL A","",.)
+(530 real changes made)
+
+. replace comp=subinstr(comp,"MMUNICATIONS","MMUN",.)
+(313 real changes made)
+
+. replace comp=subinstr(comp,"ADVANCED MICRO DEVICES","AMD",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"ADV MICRO DV","AMD",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"CP","",.)
+(446 real changes made)
+
+. replace comp=subinstr(comp,"CMPTRS","MPUTERS",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"AHA BETA","AHA BETA TECHNOLOGY",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"PRDS&CH","PRODUCTS & CHEMICALS",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"AIRTOUCH CM","AIRTOUCH COMMUNICATIONS",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"INTERNATIONAL","INTL",.)
+(528 real changes made)
+
+. replace comp=subinstr(comp,"POWER","PWR",.)
+(242 real changes made)
+
+. replace comp=subinstr(comp,"'","",.)
+(152 real changes made)
+
+. replace comp=subinstr(comp," & ","",.)
+(866 real changes made)
+
+. 
+. *4th
+. replace comp=subinword(comp,"SA","",.)
+(185 real changes made)
+
+. replace comp=subinstr(comp,"PRODUCTS","PROD",.)
+(175 real changes made)
+
+. replace comp=subinstr(comp,"ELECTRONICS","ELECT",.)
+(89 real changes made)
+
+. replace comp=trim(comp)
+(924 real changes made)
+
+. 
+. *5th
+. replace comp=subinstr(comp,"AMERICA","AMER",.)
+(707 real changes made)
+
+. replace comp=subinstr(comp,".","",.)
+(363 real changes made)
+
+. replace comp=subinstr(comp,"HYDRO ELECTRIC","HYD",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"OLD","",.)
+(1,141 real changes made)
+
+. replace comp=subinstr(comp,"TRUST","TR",.)
+(356 real changes made)
+
+. replace comp=subinstr(comp,"BARCLAYS BANK","BARCLAYS",.)
+(1 real change made)
+
+. replace comp=subinstr(comp," & ","&",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"NOBLE","NOBL",.)
+(12 real changes made)
+
+. replace comp=subinstr(comp,"BANK","BK",.)
+(369 real changes made)
+
+. replace comp=subinstr(comp,"NEW","",.)
+(251 real changes made)
+
+. replace comp=subinstr(comp,"WRIGHT","WRGHT",.)
+(14 real changes made)
+
+. replace comp=trim(comp)
+(717 real changes made)
+
+. 
+. *6th
+. replace comp=subinstr(comp,"A G","AG",.)
+(95 real changes made)
+
+. replace comp=subinstr(comp,"AEROSPACE","AEROSPAC",.)
+(18 real changes made)
+
+. replace comp=subinstr(comp,"(","",.)
+(231 real changes made)
+
+. replace comp=subinstr(comp,")","",.)
+(231 real changes made)
+
+. replace comp=subinstr(comp,"L L","LL",.)
+(92 real changes made)
+
+. replace comp=subinstr(comp,"STEARNS","STRNS",.)
+(4 real changes made)
+
+. replace comp=subinstr(comp,"DICKINSON &","DICK",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"AIRCRAFT","AIRCR",.)
+(14 real changes made)
+
+. replace comp=subinstr(comp,"AIRCRFT","AIRCR",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"CANADA","CDA",.)
+(27 real changes made)
+
+. replace comp=subinstr(comp,"PROJECTED","",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"TELEM","TEL",.)
+(33 real changes made)
+
+. replace comp=subinstr(comp,"BETHLEHEM","BETHLHM",.)
+(3 real changes made)
+
+. replace comp=subinstr(comp,"STEEL","STL",.)
+(77 real changes made)
+
+. replace comp=subinstr(comp,"ENTERPRISES","ENT",.)
+(119 real changes made)
+
+. replace comp=trim(comp)
+(3 real changes made)
+
+. 
+. *7th
+. replace comp=subinstr(comp,"BIG THREE","BIG THREE IND",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"LLC","",.)
+(145 real changes made)
+
+. replace comp=subinstr(comp,"BORG WARNER","",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"SCIENTIFIC","SCI",.)
+(52 real changes made)
+
+. replace comp=subinstr(comp,"ADS","BP",.)
+(46 real changes made)
+
+. replace comp=subinstr(comp,"BRIGGS&STRATTON","BRIGG&STRN",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"MYERS SQUIBB","MYRS",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"CA CL","CA LA",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"GOLF","GF",.)
+(25 real changes made)
+
+. replace comp=subinstr(comp,"SOUP","SP",.)
+(3 real changes made)
+
+. replace comp=subinstr(comp,"CAMPBELL","CAMPBL",.)
+(6 real changes made)
+
+. replace comp=subinstr(comp,"FINANCIAL","FINL",.)
+(731 real changes made)
+
+. replace comp=subinstr(comp,"NATURAL GAS","NAT",.)
+(26 real changes made)
+
+. replace comp=subinstr(comp,"CANADIAN","CDN",.)
+(15 real changes made)
+
+. replace comp=subinstr(comp,"AIRCFT","AIRC",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"AIRCR","AIRC",.)
+(15 real changes made)
+
+. replace comp=trim(comp)
+(101 real changes made)
+
+. 
+. *8th
+. replace comp=subinstr(comp,"ROEBK","",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"ROEBUCK &","",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"AIR LINES","AIRL",.)
+(5 real changes made)
+
+. replace comp=trim(comp)
+(1 real change made)
+
+. 
+. *9th
+. replace comp=subinstr(comp,"SYSTEMS","SYS",.)
+(647 real changes made)
+
+. replace comp=subinstr(comp,"DU PONT EI DE NEMOURS","DUPONT EI",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"EI","",.)
+(342 real changes made)
+
+. replace comp=subinstr(comp,"PRO FORMA","",.)
+(6 real changes made)
+
+. replace comp=subinstr(comp,"CREDIT","CR",.)
+(72 real changes made)
+
+. replace comp=subinstr(comp,"LIGHT","LT",.)
+(68 real changes made)
+
+. replace comp=subinstr(comp,"CHEMICAL","CHEMICL",.)
+(75 real changes made)
+
+. replace comp=subinstr(comp,"&","",.)
+(419 real changes made)
+
+. replace comp=subinstr(comp,"DISCREET","DISCRT",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"LOGIC","LGC",.)
+(71 real changes made)
+
+. replace comp=subinstr(comp,"TELEKOM","TELE",.)
+(5 real changes made)
+
+. replace comp=subinstr(comp,"TLKOM","TELE",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"DEUTSCHE","DTSCH",.)
+(21 real changes made)
+
+. replace comp=subinstr(comp,"PWRLIGHT","PL",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"SUPERMARKETS","SUPERMKTS",.)
+(11 real changes made)
+
+. replace comp=subinstr(comp,"CAPITAL","CAP",.)
+(347 real changes made)
+
+. replace comp=subinstr(comp,"GRAND ICE CREAM","",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"DREAMS","DRMS",.)
+(2 real changes made)
+
+. replace comp=subinstr(comp,"EMPORIUM","EMPORM",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"HARDWAREGARDEN","HRDWR",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"KODAK","KDK",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"MAN","MN",.)
+(431 real changes made)
+
+. replace comp=subinstr(comp,"STORES","",.)
+(4 real changes made)
+
+. replace comp=subinstr(comp,"BROTHERS","BROS",.)
+(24 real changes made)
+
+. replace comp=subinstr(comp,"AG","",.)
+(1,085 real changes made)
+
+. replace comp=subinstr(comp,"ELECTRONIC","ELEC",.)
+(31 real changes made)
+
+. replace comp=trim(comp)
+(137 real changes made)
+
+. 
+. *10th
+. replace comp=subinstr(comp,"GAS","GS",.)
+(224 real changes made)
+
+. replace comp=subinstr(comp,"TOWN","TWN",.)
+(42 real changes made)
+
+. replace comp=subinstr(comp,"L M","",.)
+(246 real changes made)
+
+. replace comp=subinstr(comp,"LM","",.)
+(198 real changes made)
+
+. replace comp=subinstr(comp,"TELEFON","TEL",.)
+(9 real changes made)
+
+. replace comp=trim(comp)
+(1 real change made)
+
+. 
+. *11th
+. replace comp=subinstr(comp,"ERICSSON TEL","ERCSON TELE",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"WHEELER","WHLR",.)
+(3 real changes made)
+
+. replace comp=subinstr(comp,"FISHER","FISHR",.)
+(11 real changes made)
+
+. replace comp=subinstr(comp,"SCIEN","SCI",.)
+(212 real changes made)
+
+. replace comp=subinstr(comp,"INTL","",.)
+(1,193 real changes made)
+
+. replace comp=subinstr(comp,"FED EXPRESS","FEDEX",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"WOOD","WD",.)
+(98 real changes made)
+
+. replace comp=subinstr(comp,"FLA ROCK","FLORIDA ROCK",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"STONE","STN",.)
+(116 real changes made)
+
+. replace comp=subinstr(comp,"TIRERUBBER","TIR",.)
+(4 real changes made)
+
+. replace comp=subinstr(comp,"TIR","",.)
+(18 real changes made)
+
+. replace comp=subinstr(comp,"CENTER","CNTR",.)
+(77 real changes made)
+
+. replace comp=subinstr(comp,"","YR",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"NSOLIDATED","",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"MIC","MC",.)
+(429 real changes made)
+
+. replace comp=subinstr(comp,"ELECTRIC","ELEC",.)
+(91 real changes made)
+
+. replace comp=subinstr(comp,"ELEC","EL",.)
+(419 real changes made)
+
+. replace comp=subinstr(comp,"NSOL","",.)
+(14 real changes made)
+
+. replace comp=subinstr(comp,"PACIFIC","PAC",.)
+(148 real changes made)
+
+. replace comp=subinstr(comp,"W R","WR",.)
+(16 real changes made)
+
+. replace comp=trim(comp)
+(973 real changes made)
+
+. 
+. *12th
+. replace comp=subinstr(comp,"METRO","MET",.)
+(55 real changes made)
+
+. replace comp=subinstr(comp,"TECHNOLOGIES","TECHNOL",.)
+(9 real changes made)
+
+. replace comp=subinstr(comp,"DATA MM","DATAM",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"DATAMM","DATAM",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"INSTRUMENT","INSTR",.)
+(33 real changes made)
+
+. replace comp=subinstr(comp,"INSTRMN","INSTR",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"MOTORS","MTR",.)
+(17 real changes made)
+
+. replace comp=subinstr(comp,"INSTITUTE","INST",.)
+(8 real changes made)
+
+. replace comp=subinword(comp,"GENUINE","GENUIN",.)
+(1 real change made)
+
+. replace comp=subinword(comp,"PARTS","PART",.)
+(10 real changes made)
+
+. replace comp=subinword(comp,"TEL","TE",.)
+(28 real changes made)
+
+. replace comp=subinword(comp,"GLOBALSTAR","GLBLSTR",.)
+(2 real changes made)
+
+. replace comp=subinstr(comp,",","",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"GOODYR E","GOODYR",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"W","",.)
+(17 real changes made)
+
+. replace comp=subinword(comp,"GRAINGER","GRAINGR",.)
+(1 real change made)
+
+. replace comp=subinword(comp,"CHEMCL","CH",.)
+(43 real changes made)
+
+. replace comp=subinword(comp,"SP","",.)
+(232 real changes made)
+
+. replace comp=trim(comp)
+(21 real changes made)
+
+. 
+. *13th
+. replace comp=subinword(comp,"PACKARD","PCK",.)
+(3 real changes made)
+
+. replace comp=subinword(comp,"HOTELS","HTL",.)
+(22 real changes made)
+
+. replace comp=trim(comp)
+(0 real changes made)
+
+. 
+. *14th
+. replace comp=subinword(comp,"TROY","TR",.)
+(4 real changes made)
+
+. replace comp=subinword(comp,"MEYERS","MEYR",.)
+(2 real changes made)
+
+. replace comp=subinword(comp,"H J","HJ",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"HOTL","HTL",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"HEALTHDYNE","HLTHDNE",.)
+(2 real changes made)
+
+. replace comp=subinword(comp,"TECHNOL","TEC",.)
+(9 real changes made)
+
+. replace comp=subinword(comp,"CELANESE","",.)
+(4 real changes made)
+
+. replace comp=subinword(comp,"CEL","",.)
+(3 real changes made)
+
+. replace comp=subinword(comp,"MIFFLIN","MF",.)
+(2 real changes made)
+
+. replace comp=subinword(comp,"LTPWR","LP",.)
+(3 real changes made)
+
+. replace comp=subinword(comp,"HOST","HST",.)
+(8 real changes made)
+
+. replace comp=subinword(comp,"SUPPLY","SPLY",.)
+(30 real changes made)
+
+. replace comp=subinword(comp,"MATERIALS HNDLG","",.)
+(1 real change made)
+
+. replace comp=subinword(comp,"SOLUTIONS","",.)
+(157 real changes made)
+
+. replace comp=trim(comp)
+(149 real changes made)
+
+. 
+. *15th
+. replace comp=subinword(comp,"CHASE","CHSE",.)
+(10 real changes made)
+
+. replace comp=subinword(comp,"J P MORGAN","JPMORGAN",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"CIRCUIT","CRCT",.)
+(8 real changes made)
+
+. replace comp=subinword(comp,"NTROLS","CNTL",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"JOHNSONJOHNSON","JOHNSNJHNS",.)
+(1 real change made)
+
+. replace comp=trim(comp)
+(0 real changes made)
+
+. 
+. *16th
+. replace comp=subinstr(comp,"AM TEL &TEL","AT&T",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"-","",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"CL","",.)
+(65 real changes made)
+
+. replace comp=subinword(comp,"A","",.)
+(127 real changes made)
+
+. replace comp=subinword(comp,"HLDG","",.)
+(66 real changes made)
+
+. replace comp=subinword(comp,"WARD","WD",.)
+(4 real changes made)
+
+. replace comp=subinword(comp,"MONTGOMERY","MONTGMY",.)
+(4 real changes made)
+
+. replace comp=subinstr(comp,"PR","",.)
+(1,548 real changes made)
+
+. replace comp=subinword(comp,"CORP","",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"CO","",.)
+(81 real changes made)
+
+. replace comp=subinword(comp,"CP","",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"INC","",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"DAIMLERCHRYSLER","DAIMLER",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"AG","",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"COMPUTER","CMP",.)
+(113 real changes made)
+
+. replace comp=subinword(comp,"EASTMAN","EASTMN",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"KODAK","KODK",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"MACHINES","MA",.)
+(4 real changes made)
+
+. replace comp=subinword(comp,"BUSINESS","BUS",.)
+(47 real changes made)
+
+. replace comp=subinword(comp,"MACH","MA",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"EQUIPMENT","EQ",.)
+(25 real changes made)
+
+. replace comp=subinword(comp,"PROCTER","PRCTR",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"GAMBLE","GM",.)
+(2 real changes made)
+
+. replace comp=subinword(comp,"GENERAL","GEN",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"MOTORS","MTR",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"MOTOR","MTR",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"FUNDING","",.)
+(20 real changes made)
+
+. replace comp=subinword(comp,"(J C)","(JC)",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"DOUGLAS","DG",.)
+(5 real changes made)
+
+. replace comp=subinword(comp,"MCDONNELL","MCDONNEL",.)
+(2 real changes made)
+
+. replace comp=subinword(comp,"STORES","",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"EXXON MOBIL","EXXON",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"SPRINT NEXTEL","SPRINT",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"INSTRUMENTS","INSTR",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"TEXAS","TX",.)
+(45 real changes made)
+
+. replace comp=subinword(comp,"DU PONT (E I) DE NEMOURS","DUPONT (EI)",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"MICRO","MICR",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"TECHNOLOGIES","TECHS",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"UNITED","UTD",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"COMPUTER","CMP",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"RICHFIELD","RIC",.)
+(1 real change made)
+
+. replace comp=subinword(comp,"INTERNATIONAL","INTL",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"MACH","MA",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"ANHEUSER-BUSCH","ANHEUSR-BSH",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"LOCKHEED MARTIN","LOCKHEED",.)
+(1 real change made)
+
+. replace comp=subinword(comp,"LOCKHD MART","LOCKHEED",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"LABORATORIES","LABS",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"AMERICAN","",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"TECHNOLOGYOLD","TEC",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"TECHNOLOGY","TEC",.)
+(303 real changes made)
+
+. replace comp=subinword(comp,"HOSPITAL","HOSP",.)
+(7 real changes made)
+
+. replace comp=subinword(comp,"SUPPLY","SUP",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"PHILIP","PHIL",.)
+(5 real changes made)
+
+. replace comp=subinword(comp,"MORRIS","MOR",.)
+(3 real changes made)
+
+. replace comp=subinword(comp,"NORTHROP GRUMMAN","NORTHROP",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"LOWE'S COMPANIES","LOWES COS",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"MARIETTA","MRTA",.)
+(5 real changes made)
+
+. replace comp=subinword(comp,"MICROSYSTEMS","MICRO",.)
+(0 real changes made)
+
+. replace comp=trim(comp)
+(187 real changes made)
+
+. 
+. *17th
+. replace comp=subinword(comp,"MCDONNELL","MCDONNEL",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"DOUGLAS","DG",.)
+(0 real changes made)
+
+. replace comp = subinstr(comp, " ", "", .)                                                                   
+>     //BLUNT way of improving match, remove white space
+(24,782 real changes made)
+
+. replace comp=trim(comp)
+(0 real changes made)
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. duplicates tag comp, gen(tag)
+
+Duplicates in terms of comp
+
+. 
+end of do-file
+
+. tab tag
+
+        tag |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     31,486       95.54       95.54
+          1 |      1,272        3.86       99.40
+          2 |        138        0.42       99.82
+          3 |         48        0.15       99.96
+          4 |          5        0.02       99.98
+          6 |          7        0.02      100.00
+------------+-----------------------------------
+      Total |     32,956      100.00
+
+. sort tag
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. br if tag!=0
+
+. sort comp tag
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. reshape wide conm gvkey, i(comp) j(tag)
+(note: j = 0 1 2 3 4 6)
+values of variable tag not unique within comp
+    Your data are currently long.  You are performing a reshape wide.  You specified i(comp) and j(tag).
+    There are observations within i(comp) with the same value of j(tag).  In the long data, variables i()
+    and j() together must uniquely identify the observations.
+
+         long                                wide
+        +---------------+                   +------------------+
+        | i   j   a   b |                   | i   a1 a2  b1 b2 |
+        |---------------| <--- reshape ---> |------------------|
+        | 1   1   1   2 |                   | 1   1   3   2  4 |
+        | 1   2   3   4 |                   | 2   5   7   6  8 |
+        | 2   1   5   6 |                   +------------------+
+        | 2   2   7   8 |
+        +---------------+
+    Type reshape error for a list of the problem variables.
+r(9);
+
+end of do-file
+
+r(9);
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. 
+. /*******************************************************************************
+>         
+>         DESCRIPTION: Do file merging the cleaned company names from Compustat and 
+>                                 the cleaned company names from Segment customer data
+>         
+>         INFILES:        - 001_supplierList.dta
+>                                 - 001_customerList.dta 
+>         
+>         OUTFILES:       - merge company name list
+>         
+>         LOG: Created 28/01/2020
+>         
+> *******************************************************************************/
+. 
+. /*******************************************************************************
+>         SETUP
+> *******************************************************************************/
+. 
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Paths
+. global wd "C:/Users/dyevre/Documents/mres_paper"
+
+. global orig "$wd/orig"
+
+. global data "$wd/data/001_network"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "002"                                      
+
+. 
+. *log
+. cap log close
+--------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/dyevre/Documents/mres_paper/log/003_buildYearlyNetworks.log
+  log type:  text
+ opened on:  29 Feb 2020, 18:12:16
+
+. 
+. /*******************************************************************************
+>         GETTING THE WHOLE COMPUSTAT COMPANY DATA WITH GVKEYs
+> *******************************************************************************/
+. 
+. import delimited "$orig/compustat_quarterly_61_19.csv", clear
+(26 vars, 1,592,184 obs)
+
+. collapse fqtr, by(gvkey conm) fast
+
+. drop fqtr
+
+. duplicates tag gvkey, gen(tag)                                                                              
+>                     // No duplicates, good
+
+Duplicates in terms of gvkey
+
+. tab tag, mi
+
+        tag |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     32,956      100.00      100.00
+------------+-----------------------------------
+      Total |     32,956      100.00
+
+. drop tag
+
+. 
+. 
+. *Applying the cleaning algorithm used in 002
+. gen comp = conm
+
+. 
+. *1st round
+. replace comp=subinstr(comp,"CORP","",.)
+(7,167 real changes made)
+
+. replace comp=subinstr(comp,"COMPANIES","",.)
+(46 real changes made)
+
+. replace comp=subinstr(comp,"COMPANY","",.)
+(11 real changes made)
+
+. replace comp=subinstr(comp,"CONSOLIDATED","",.)
+(57 real changes made)
+
+. replace comp=subinword(comp,"CO","",.)
+(1,595 real changes made)
+
+. replace comp=subinstr(comp,"INC","",.)
+(15,107 real changes made)
+
+. replace comp=subinstr(comp,"LABORATORIES","LAB",.)
+(63 real changes made)
+
+. replace comp=subinstr(comp,"/"," ",.)
+(601 real changes made)
+
+. replace comp=subinstr(comp,"-"," ",.)
+(3,496 real changes made)
+
+. replace comp=subinstr(comp,"LP","",.)
+(528 real changes made)
+
+. replace comp=subinstr(comp,"LTD","",.)
+(1,145 real changes made)
+
+. replace comp=subinword(comp,"STORES","",.)
+(94 real changes made)
+
+. replace comp=subinword(comp,"MOTOR","MTR",.)
+(26 real changes made)
+
+. replace comp=subinstr(comp,"GENERAL","GENL",.)
+(139 real changes made)
+
+. replace comp=subinstr(comp,"GENL","GEN",.)
+(140 real changes made)
+
+. replace comp=subinword(comp,"MOBIL","",.)
+(4 real changes made)
+
+. replace comp=subinword(comp,"MICRO","MICR",.)
+(30 real changes made)
+
+. replace comp=subinword(comp,"UNITED","UTD",.)
+(167 real changes made)
+
+. replace comp=subinword(comp,"TECHNOLOGIES","TECHS",.)
+(557 real changes made)
+
+. replace comp=trim(comp)
+(21,729 real changes made)
+
+. 
+. *2nd
+. replace comp=subinstr(comp,"A T & T","AT&T",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"GROUP","",.)
+(1,220 real changes made)
+
+. replace comp=subinstr(comp,"HEALTHCARE","HTHCR",.)
+(139 real changes made)
+
+. replace comp=subinstr(comp,"SPON ADR","",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"ABF FREIGHT SYSTEM","ABF FREIGHT",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"ABF FREIGHT","ABF",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"PLC","",.)
+(285 real changes made)
+
+. replace comp=subinstr(comp,"HOLDINGS","",.)
+(871 real changes made)
+
+. replace comp=subinstr(comp,"ADR","",.)
+(293 real changes made)
+
+. replace comp=subinstr(comp,"INDUSTRIES","IND",.)
+(679 real changes made)
+
+. replace comp=subinstr(comp,"UNITED","UTD",.)
+(4 real changes made)
+
+. replace comp=trim(comp)
+(2,153 real changes made)
+
+. 
+. *3rd
+. replace comp=subinstr(comp,"TELECOMMUNICATIONS","TELEM",.)
+(18 real changes made)
+
+. replace comp=subinstr(comp,"CL A","",.)
+(530 real changes made)
+
+. replace comp=subinstr(comp,"MMUNICATIONS","MMUN",.)
+(313 real changes made)
+
+. replace comp=subinstr(comp,"ADVANCED MICRO DEVICES","AMD",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"ADV MICRO DV","AMD",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"CP","",.)
+(446 real changes made)
+
+. replace comp=subinstr(comp,"CMPTRS","MPUTERS",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"AHA BETA","AHA BETA TECHNOLOGY",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"PRDS&CH","PRODUCTS & CHEMICALS",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"AIRTOUCH CM","AIRTOUCH COMMUNICATIONS",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"INTERNATIONAL","INTL",.)
+(528 real changes made)
+
+. replace comp=subinstr(comp,"POWER","PWR",.)
+(242 real changes made)
+
+. replace comp=subinstr(comp,"'","",.)
+(152 real changes made)
+
+. replace comp=subinstr(comp," & ","",.)
+(866 real changes made)
+
+. 
+. *4th
+. replace comp=subinword(comp,"SA","",.)
+(185 real changes made)
+
+. replace comp=subinstr(comp,"PRODUCTS","PROD",.)
+(175 real changes made)
+
+. replace comp=subinstr(comp,"ELECTRONICS","ELECT",.)
+(89 real changes made)
+
+. replace comp=trim(comp)
+(924 real changes made)
+
+. 
+. *5th
+. replace comp=subinstr(comp,"AMERICA","AMER",.)
+(707 real changes made)
+
+. replace comp=subinstr(comp,".","",.)
+(363 real changes made)
+
+. replace comp=subinstr(comp,"HYDRO ELECTRIC","HYD",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"OLD","",.)
+(1,141 real changes made)
+
+. replace comp=subinstr(comp,"TRUST","TR",.)
+(356 real changes made)
+
+. replace comp=subinstr(comp,"BARCLAYS BANK","BARCLAYS",.)
+(1 real change made)
+
+. replace comp=subinstr(comp," & ","&",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"NOBLE","NOBL",.)
+(12 real changes made)
+
+. replace comp=subinstr(comp,"BANK","BK",.)
+(369 real changes made)
+
+. replace comp=subinstr(comp,"NEW","",.)
+(251 real changes made)
+
+. replace comp=subinstr(comp,"WRIGHT","WRGHT",.)
+(14 real changes made)
+
+. replace comp=trim(comp)
+(717 real changes made)
+
+. 
+. *6th
+. replace comp=subinstr(comp,"A G","AG",.)
+(95 real changes made)
+
+. replace comp=subinstr(comp,"AEROSPACE","AEROSPAC",.)
+(18 real changes made)
+
+. replace comp=subinstr(comp,"(","",.)
+(231 real changes made)
+
+. replace comp=subinstr(comp,")","",.)
+(231 real changes made)
+
+. replace comp=subinstr(comp,"L L","LL",.)
+(92 real changes made)
+
+. replace comp=subinstr(comp,"STEARNS","STRNS",.)
+(4 real changes made)
+
+. replace comp=subinstr(comp,"DICKINSON &","DICK",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"AIRCRAFT","AIRCR",.)
+(14 real changes made)
+
+. replace comp=subinstr(comp,"AIRCRFT","AIRCR",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"CANADA","CDA",.)
+(27 real changes made)
+
+. replace comp=subinstr(comp,"PROJECTED","",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"TELEM","TEL",.)
+(33 real changes made)
+
+. replace comp=subinstr(comp,"BETHLEHEM","BETHLHM",.)
+(3 real changes made)
+
+. replace comp=subinstr(comp,"STEEL","STL",.)
+(77 real changes made)
+
+. replace comp=subinstr(comp,"ENTERPRISES","ENT",.)
+(119 real changes made)
+
+. replace comp=trim(comp)
+(3 real changes made)
+
+. 
+. *7th
+. replace comp=subinstr(comp,"BIG THREE","BIG THREE IND",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"LLC","",.)
+(145 real changes made)
+
+. replace comp=subinstr(comp,"BORG WARNER","",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"SCIENTIFIC","SCI",.)
+(52 real changes made)
+
+. replace comp=subinstr(comp,"ADS","BP",.)
+(46 real changes made)
+
+. replace comp=subinstr(comp,"BRIGGS&STRATTON","BRIGG&STRN",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"MYERS SQUIBB","MYRS",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"CA CL","CA LA",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"GOLF","GF",.)
+(25 real changes made)
+
+. replace comp=subinstr(comp,"SOUP","SP",.)
+(3 real changes made)
+
+. replace comp=subinstr(comp,"CAMPBELL","CAMPBL",.)
+(6 real changes made)
+
+. replace comp=subinstr(comp,"FINANCIAL","FINL",.)
+(731 real changes made)
+
+. replace comp=subinstr(comp,"NATURAL GAS","NAT",.)
+(26 real changes made)
+
+. replace comp=subinstr(comp,"CANADIAN","CDN",.)
+(15 real changes made)
+
+. replace comp=subinstr(comp,"AIRCFT","AIRC",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"AIRCR","AIRC",.)
+(15 real changes made)
+
+. replace comp=trim(comp)
+(101 real changes made)
+
+. 
+. *8th
+. replace comp=subinstr(comp,"ROEBK","",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"ROEBUCK &","",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"AIR LINES","AIRL",.)
+(5 real changes made)
+
+. replace comp=trim(comp)
+(1 real change made)
+
+. 
+. *9th
+. replace comp=subinstr(comp,"SYSTEMS","SYS",.)
+(647 real changes made)
+
+. replace comp=subinstr(comp,"DU PONT EI DE NEMOURS","DUPONT EI",.)
+(0 real changes made)
+
+. *replace comp=subinstr(comp,"EI","",.)
+. replace comp=subinstr(comp,"PRO FORMA","",.)
+(6 real changes made)
+
+. replace comp=subinstr(comp,"CREDIT","CR",.)
+(72 real changes made)
+
+. replace comp=subinstr(comp,"LIGHT","LT",.)
+(68 real changes made)
+
+. replace comp=subinstr(comp,"CHEMICAL","CHEMICL",.)
+(75 real changes made)
+
+. replace comp=subinstr(comp,"&","",.)
+(419 real changes made)
+
+. replace comp=subinstr(comp,"DISCREET","DISCRT",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"LOGIC","LGC",.)
+(71 real changes made)
+
+. replace comp=subinstr(comp,"TELEKOM","TELE",.)
+(5 real changes made)
+
+. replace comp=subinstr(comp,"TLKOM","TELE",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"DEUTSCHE","DTSCH",.)
+(21 real changes made)
+
+. replace comp=subinstr(comp,"PWRLIGHT","PL",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"SUPERMARKETS","SUPERMKTS",.)
+(11 real changes made)
+
+. replace comp=subinstr(comp,"CAPITAL","CAP",.)
+(347 real changes made)
+
+. replace comp=subinstr(comp,"GRAND ICE CREAM","",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"DREAMS","DRMS",.)
+(2 real changes made)
+
+. replace comp=subinstr(comp,"EMPORIUM","EMPORM",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"HARDWAREGARDEN","HRDWR",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"KODAK","KDK",.)
+(1 real change made)
+
+. replace comp=subinstr(comp,"MAN","MN",.)
+(431 real changes made)
+
+. replace comp=subinstr(comp,"STORES","",.)
+(4 real changes made)
+
+. replace comp=subinstr(comp,"BROTHERS","BROS",.)
+(24 real changes made)
+
+. replace comp=subinstr(comp,"AG","",.)
+(1,085 real changes made)
+
+. replace comp=subinstr(comp,"ELECTRONIC","ELEC",.)
+(31 real changes made)
+
+. replace comp=trim(comp)
+(137 real changes made)
+
+. 
+. *10th
+. replace comp=subinstr(comp,"GAS","GS",.)
+(224 real changes made)
+
+. replace comp=subinstr(comp,"TOWN","TWN",.)
+(42 real changes made)
+
+. replace comp=subinstr(comp,"L M","",.)
+(246 real changes made)
+
+. replace comp=subinstr(comp,"LM","",.)
+(198 real changes made)
+
+. replace comp=subinstr(comp,"TELEFON","TEL",.)
+(9 real changes made)
+
+. replace comp=trim(comp)
+(1 real change made)
+
+. 
+. *11th
+. replace comp=subinstr(comp,"ERICSSON TEL","ERCSON TELE",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"WHEELER","WHLR",.)
+(3 real changes made)
+
+. replace comp=subinstr(comp,"FISHER","FISHR",.)
+(11 real changes made)
+
+. replace comp=subinstr(comp,"SCIEN","SCI",.)
+(212 real changes made)
+
+. replace comp=subinstr(comp,"INTL","",.)
+(1,193 real changes made)
+
+. replace comp=subinstr(comp,"FED EXPRESS","FEDEX",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"WOOD","WD",.)
+(98 real changes made)
+
+. replace comp=subinstr(comp,"FLA ROCK","FLORIDA ROCK",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"STONE","STN",.)
+(116 real changes made)
+
+. replace comp=subinstr(comp,"TIRERUBBER","TIR",.)
+(4 real changes made)
+
+. replace comp=subinstr(comp,"TIR","",.)
+(18 real changes made)
+
+. replace comp=subinstr(comp,"CENTER","CNTR",.)
+(77 real changes made)
+
+. replace comp=subinstr(comp,"","YR",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"NSOLIDATED","",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"MIC","MC",.)
+(429 real changes made)
+
+. replace comp=subinstr(comp,"ELECTRIC","ELEC",.)
+(91 real changes made)
+
+. replace comp=subinstr(comp,"ELEC","EL",.)
+(419 real changes made)
+
+. replace comp=subinstr(comp,"NSOL","",.)
+(14 real changes made)
+
+. replace comp=subinstr(comp,"PACIFIC","PAC",.)
+(148 real changes made)
+
+. replace comp=subinstr(comp,"W R","WR",.)
+(15 real changes made)
+
+. replace comp=trim(comp)
+(973 real changes made)
+
+. 
+. *12th
+. replace comp=subinstr(comp,"METRO","MET",.)
+(55 real changes made)
+
+. replace comp=subinstr(comp,"TECHNOLOGIES","TECHNOL",.)
+(9 real changes made)
+
+. replace comp=subinstr(comp,"DATA MM","DATAM",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"DATAMM","DATAM",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"INSTRUMENT","INSTR",.)
+(33 real changes made)
+
+. replace comp=subinstr(comp,"INSTRMN","INSTR",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"MOTORS","MTR",.)
+(17 real changes made)
+
+. replace comp=subinstr(comp,"INSTITUTE","INST",.)
+(8 real changes made)
+
+. replace comp=subinword(comp,"GENUINE","GENUIN",.)
+(1 real change made)
+
+. replace comp=subinword(comp,"PARTS","PART",.)
+(10 real changes made)
+
+. replace comp=subinword(comp,"TEL","TE",.)
+(28 real changes made)
+
+. replace comp=subinword(comp,"GLOBALSTAR","GLBLSTR",.)
+(2 real changes made)
+
+. replace comp=subinstr(comp,",","",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"GOODYR E","GOODYR",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"W","",.)
+(17 real changes made)
+
+. replace comp=subinword(comp,"GRAINGER","GRAINGR",.)
+(1 real change made)
+
+. replace comp=subinword(comp,"CHEMCL","CH",.)
+(43 real changes made)
+
+. replace comp=subinword(comp,"SP","",.)
+(232 real changes made)
+
+. replace comp=trim(comp)
+(21 real changes made)
+
+. 
+. *13th
+. replace comp=subinword(comp,"PACKARD","PCK",.)
+(3 real changes made)
+
+. replace comp=subinword(comp,"HOTELS","HTL",.)
+(22 real changes made)
+
+. replace comp=trim(comp)
+(0 real changes made)
+
+. 
+. *14th
+. replace comp=subinword(comp,"TROY","TR",.)
+(4 real changes made)
+
+. replace comp=subinword(comp,"MEYERS","MEYR",.)
+(2 real changes made)
+
+. replace comp=subinword(comp,"H J","HJ",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"HOTL","HTL",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"HEALTHDYNE","HLTHDNE",.)
+(2 real changes made)
+
+. replace comp=subinword(comp,"TECHNOL","TEC",.)
+(9 real changes made)
+
+. *replace comp=subinword(comp,"CELANESE","",.)
+. replace comp=subinword(comp,"CEL","",.)
+(3 real changes made)
+
+. replace comp=subinword(comp,"MIFFLIN","MF",.)
+(2 real changes made)
+
+. replace comp=subinword(comp,"LTPWR","LP",.)
+(3 real changes made)
+
+. replace comp=subinword(comp,"HOST","HST",.)
+(8 real changes made)
+
+. replace comp=subinword(comp,"SUPPLY","SPLY",.)
+(30 real changes made)
+
+. replace comp=subinword(comp,"MATERIALS HNDLG","",.)
+(1 real change made)
+
+. replace comp=subinword(comp,"SOLUTIONS","",.)
+(157 real changes made)
+
+. replace comp=trim(comp)
+(148 real changes made)
+
+. 
+. *15th
+. replace comp=subinword(comp,"CHASE","CHSE",.)
+(10 real changes made)
+
+. replace comp=subinword(comp,"J P MORGAN","JPMORGAN",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"CIRCUIT","CRCT",.)
+(8 real changes made)
+
+. replace comp=subinword(comp,"NTROLS","CNTL",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"JOHNSONJOHNSON","JOHNSNJHNS",.)
+(1 real change made)
+
+. replace comp=trim(comp)
+(0 real changes made)
+
+. 
+. *16th
+. replace comp=subinstr(comp,"AM TEL &TEL","AT&T",.)
+(0 real changes made)
+
+. replace comp=subinstr(comp,"-","",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"CL","",.)
+(65 real changes made)
+
+. replace comp=subinword(comp,"A","",.)
+(126 real changes made)
+
+. replace comp=subinword(comp,"HLDG","",.)
+(66 real changes made)
+
+. replace comp=subinword(comp,"WARD","WD",.)
+(4 real changes made)
+
+. replace comp=subinword(comp,"MONTGOMERY","MONTGMY",.)
+(4 real changes made)
+
+. replace comp=subinstr(comp,"PR","",.)
+(1,548 real changes made)
+
+. replace comp=subinword(comp,"CORP","",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"CO","",.)
+(80 real changes made)
+
+. replace comp=subinword(comp,"CP","",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"INC","",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"DAIMLERCHRYSLER","DAIMLER",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"AG","",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"COMPUTER","CMP",.)
+(113 real changes made)
+
+. replace comp=subinword(comp,"EASTMAN","EASTMN",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"KODAK","KODK",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"MACHINES","MA",.)
+(4 real changes made)
+
+. replace comp=subinword(comp,"BUSINESS","BUS",.)
+(47 real changes made)
+
+. replace comp=subinword(comp,"MACH","MA",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"EQUIPMENT","EQ",.)
+(25 real changes made)
+
+. replace comp=subinword(comp,"PROCTER","PRCTR",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"GAMBLE","GM",.)
+(2 real changes made)
+
+. replace comp=subinword(comp,"GENERAL","GEN",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"MOTORS","MTR",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"MOTOR","MTR",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"FUNDING","",.)
+(20 real changes made)
+
+. replace comp=subinword(comp,"(J C)","(JC)",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"DOUGLAS","DG",.)
+(5 real changes made)
+
+. replace comp=subinword(comp,"MCDONNELL","MCDONNEL",.)
+(2 real changes made)
+
+. replace comp=subinword(comp,"STORES","",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"EXXON MOBIL","EXXON",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"SPRINT NEXTEL","SPRINT",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"INSTRUMENTS","INSTR",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"TEXAS","TX",.)
+(45 real changes made)
+
+. replace comp=subinword(comp,"DU PONT (E I) DE NEMOURS","DUPONT (EI)",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"MICRO","MICR",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"TECHNOLOGIES","TECHS",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"UNITED","UTD",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"COMPUTER","CMP",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"RICHFIELD","RIC",.)
+(1 real change made)
+
+. replace comp=subinword(comp,"INTERNATIONAL","INTL",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"MACH","MA",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"ANHEUSER-BUSCH","ANHEUSR-BSH",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"LOCKHEED MARTIN","LOCKHEED",.)
+(1 real change made)
+
+. replace comp=subinword(comp,"LOCKHD MART","LOCKHEED",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"LABORATORIES","LABS",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"AMERICAN","",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"TECHNOLOGYOLD","TEC",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"TECHNOLOGY","TEC",.)
+(303 real changes made)
+
+. replace comp=subinword(comp,"HOSPITAL","HOSP",.)
+(7 real changes made)
+
+. replace comp=subinword(comp,"SUPPLY","SUP",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"PHILIP","PHIL",.)
+(5 real changes made)
+
+. replace comp=subinword(comp,"MORRIS","MOR",.)
+(3 real changes made)
+
+. replace comp=subinword(comp,"NORTHROP GRUMMAN","NORTHROP",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"LOWE'S COMPANIES","LOWES COS",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"MARIETTA","MRTA",.)
+(5 real changes made)
+
+. replace comp=subinword(comp,"MICROSYSTEMS","MICRO",.)
+(0 real changes made)
+
+. replace comp=trim(comp)
+(186 real changes made)
+
+. 
+. *17th
+. replace comp=subinword(comp,"MCDONNELL","MCDONNEL",.)
+(0 real changes made)
+
+. replace comp=subinword(comp,"DOUGLAS","DG",.)
+(0 real changes made)
+
+. replace comp = subinstr(comp, " ", "", .)                                                                   
+>     //BLUNT way of improving match, remove white space
+(24,784 real changes made)
+
+. replace comp=trim(comp)
+(0 real changes made)
+
+. 
+. duplicates tag comp, gen(tag)
+
+Duplicates in terms of comp
+
+. br if tag!=0
+
+. sort comp tag
+
+. stop
+command stop is unrecognized
+r(199);
+
+end of do-file
+
+r(199);
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. drop if comp==""
+(3 observations deleted)
+
+. 
+end of do-file
+
+. tab tag, mi
+
+        tag |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     31,501       95.59       95.59
+          1 |      1,272        3.86       99.45
+          2 |        135        0.41       99.86
+          3 |         40        0.12       99.98
+          4 |          5        0.02      100.00
+------------+-----------------------------------
+      Total |     32,953      100.00
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. bys comp: gen _n
+_n invalid varname
+r(198);
+
+end of do-file
+
+r(198);
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. bys comp: gen n = _n
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. drop tag
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. reshape wide conm gvkey, i(comp) j(n)
+(note: j = 1 2 3 4 5)
+
+Data                               long   ->   wide
+-----------------------------------------------------------------------------
+Number of obs.                    32953   ->   32193
+Number of variables                   4   ->      11
+j variable (5 values)                 n   ->   (dropped)
+xij variables:
+                                   conm   ->   conm1 conm2 ... conm5
+                                  gvkey   ->   gvkey1 gvkey2 ... gvkey5
+-----------------------------------------------------------------------------
+
+. 
+end of do-file
+
+. br
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. sort comp
+
+. gen n = _n
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. save "$data/${doNum}_netCompList.dta", replace
+(note: file C:/Users/dyevre/Documents/mres_paper/data/001_network/003_netCompList.dta not found)
+file C:/Users/dyevre/Documents/mres_paper/data/001_network/003_netCompList.dta saved
+
+. 
+end of do-file
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. import delimited "$orig/compustat_segment_customer_76_19.csv", clear
+(16 vars, 549,451 obs)
+
+. 
+end of do-file
+
+. sort srcdate
+
+. do "C:\Users\dyevre\AppData\Local\Temp\STD09000000.tmp"
+
+. gen year = floor(srcdate/10000)
+
+. 
+end of do-file
+
+. exit, clear
