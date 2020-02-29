@@ -990,6 +990,9 @@ collapse count (firstnm) origName, by(comp)
 drop count
 save "$data/resid2.dta", replace
 
+merge3
+mergeRate	// .11509919
+
 /*******************************************************************************
 	REMOVING USELESS CUSTOMER FIELDS
 *******************************************************************************/
