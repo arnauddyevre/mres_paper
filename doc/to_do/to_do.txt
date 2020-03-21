@@ -1,4 +1,5 @@
 Read:
+- Read Elliott, Golub & Leduc (2020) Supply networks and fragility
 - Papers by Lim, and the one by Kikkawa
 - Special issue of JEP on increasing markups
 	- Berry Gaynor Morton (2019) Do Increasing Markups Matter
@@ -41,6 +42,7 @@ Problem:
 	- No modelling of endogenous choice of suppliers a la Acemoglu and Azar
 	- Only secondary aspect of their paper. Surely can be improved
 	- Rely on input-output matrices at the sector level
+- Big increase in the number of firms being registered in Compustat in 1981
 
 Refine:
 - Overall research idea

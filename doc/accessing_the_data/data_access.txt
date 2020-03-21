@@ -1,6 +1,6 @@
 **Data access: Compustat**
 
-Compustat Segments - Customer
+1. Compustat Segments - Customer
     Note: Query saved under "compustat_segment_customer_76_19"
     
 https://wrds-web.wharton.upenn.edu/wrds/ds/compd/seghistcust/index.cfm?navId=87
@@ -31,6 +31,9 @@ https://wrds-web.wharton.upenn.edu/wrds/ds/compd/seghistcust/index.cfm?navId=87
             Opseg                    Operating Segment - generally combines either country, state, region along with business segments, a method of reporting that was set forth by SFAS 131 (issued by FASB in July 1997)
             Geoseg                   Geographic Segment - corresponds to the FASB 14 geographic presentation or presenting the data by country that was set forth by SFAS 14(issued by FASB in December 1976)
             Stseg                    State Segment - reports the information by US geographic information, a hybrid method of reporting that was derived to comply with SFAS 131
+    - sic: industry classification of the seller (SLIGHTLY MORE COMPLET THAN NAICS)
+        -> Use this for the colours of the network
+    - naics: industry classification of the rece
 
 
 Note: we have on average 13,000 links per year.
@@ -38,4 +41,22 @@ Note: we have on average 13,000 links per year.
 Compustat Daily Updates - Segments (Non-Historical) - Customer
 https://wrds-web.wharton.upenn.edu/wrds/ds/compd/segcust/index.cfm?navId=83
 
-Downloading all historical segment data (1976-2019):
+Downloading all historical segment data (1976-2019)
+
+
+2. Compustat Annual Updates - Fundamentals Annual
+
+    - atq       : Assets – Total/Liabilities and Stockholders’ Equity – Total
+    - cogsq     : cost of goods sold
+    - ppegtq    : Property, Plant, and Equipment – Total (Gross)
+    - ppentq    : Property, Plant, and Equipment – Total (Net)
+    - saleq     : Operating Revenues – Total (Income Statement)
+    - aqcy      : Acquisitions (Statement of Cash Flows)
+    - cogsy     : Cost of goods sold (Operation Expense-Total plus Maintenance Expense-Total plus Taxes Other Than Income Taxes – Total)
+    - saley     : sales
+    - exchg     : stock exchange code used to identify firms (?) or sectors (?)
+    - costat    : active/inactive status (A for active)
+    - fic       : ?
+    - conml     : company name
+    - sic       : industry code
+    - cusip     : company identifier
