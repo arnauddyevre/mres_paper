@@ -23,8 +23,8 @@ set scheme s1color
 set matsize 10000
 
 *Paths
-global wd "C:/Users/dyevre/Documents/mres_paper"
-global orig "C:/Users/dyevre/Downloads/mres_paper_orig"							// I'm using a different orig folder so as not to commit large datasets to GitHub
+global wd "/Users/ios/Documents/GitHub/mres_paper"
+global orig "/Users/ios/Documents/mres_paper_orig"							// I'm using a different orig folder so as not to commit large datasets to GitHub
 global data "$wd/data/001_network"
 global outputs "$wd/outputs"
 global doc "$wd/doc"
