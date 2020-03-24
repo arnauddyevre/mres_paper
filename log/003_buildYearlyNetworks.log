@@ -22711,3 +22711,353 @@ file /Users/ios/Documents/GitHub/mres_paper/data/001_network/003_fullNet2019.csv
 . 
 end of do-file
 
+-----------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_p
+> aper/log/003_buildYearlyNetworks.log
+  log type:  text
+ opened on:  24 Mar 2020, 17:34:39
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. use "$data/${doNum}_fullNet.dta", clear
+
+. keep if _merge_customer == 3
+(332,009 observations deleted)
+
+. 
+. *generating 3 year windows
+. gen year3 = floor((year-2)/3)*3+3            
+>                                              
+>                                              
+>  // so that 1976, 1977 and 1978 are grouped i
+> n year3 = 1977
+
+. 
+. collapse (firstnm) conm_customer conm_supplie
+> r (sum) sale* , by(year3 sic_supplier sic_cus
+> tomer gvkey_supplier gvkey_customer comp_cust
+> omer comp_supplier)
+
+. gen share = salecs_supplier/sales_supplier
+(1,425 missing values generated)
+
+. replace share = 1 if share>=1
+(1,550 real changes made)
+
+. replace share = . if share<0
+(2 real changes made, 2 to missing)
+
+. replace share = 0.1 if share == 0
+(7,802 real changes made)
+
+. hist share, freq
+(bin=45, start=6.666e-06, width=.02222207)
+
+. levelsof year3
+1977 1980 1983 1986 1989 1992 1995 1998 2001 20
+> 04 2007 2010 2013 2016 2019
+
+. 
+end of do-file
+
+. outfile using "/Users/ios/Documents/GitHub/mr
+> es_paper/data/001_network/test.raw", replace 
+> wide
+(note: file /Users/ios/Documents/GitHub/mres_pa
+> per/data/001_network/test.raw not found)
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. outfile using "/Users/ios/Documents/GitHub/mr
+> es_paper/data/001_network/test.txt", replace 
+> wide
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. use "$data/${doNum}_fullNet.dta", clear
+
+. keep if _merge_customer == 3
+(332,009 observations deleted)
+
+. 
+. *generating 3 year windows
+. gen year3 = floor((year-2)/3)*3+3            
+>                                              
+>                                              
+>  // so that 1976, 1977 and 1978 are grouped i
+> n year3 = 1977
+
+. 
+. collapse (firstnm) conm_customer conm_supplie
+> r (sum) sale* , by(year3 sic_supplier sic_cus
+> tomer gvkey_supplier gvkey_customer comp_cust
+> omer comp_supplier)
+
+. gen share = salecs_supplier/sales_supplier
+(1,425 missing values generated)
+
+. replace share = 1 if share>=1
+(1,550 real changes made)
+
+. replace share = . if share<0
+(2 real changes made, 2 to missing)
+
+. replace share = 0.1 if share == 0
+(7,802 real changes made)
+
+. hist share, freq
+(bin=45, start=6.666e-06, width=.02222207)
+
+. levelsof year3
+1977 1980 1983 1986 1989 1992 1995 1998 2001 20
+> 04 2007 2010 2013 2016 2019
+
+. 
+. foreach y in `r(levels)'{
+  2.         preserve
+  3.         keep if year3 == `y'
+  4.         compress
+  5.         rename gvkey_supplier Source
+  6.         rename gvkey_customer Target
+  7.         save "$data/${doNum}_fullNet`y'.dt
+> a", replace
+  8.         export delimited "$data/${doNum}_f
+> ullNet`y'.csv", replace
+  9.         
+.         *For Python
+.         keep Source Target share
+ 10.         order Source Target share
+ 11.         outfile using "$data/${doNum}_full
+> Net`y'.txt", replace wide
+ 12.         restore
+ 13.         }
+(35,665 observations deleted)
+  variable gvkey_supplier was long now int
+  variable gvkey_customer was long now int
+  variable year3 was float now int
+  variable comp_supplier was str27 now str24
+  variable comp_customer was str46 now str12
+  variable conm_customer was str50 now str13
+  variable conm_supplier was str29 now str28
+  (47,547 bytes saved)
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet1977.dta saved
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet1977.csv saved
+(note: file /Users/ios/Documents/GitHub/mres_pa
+> per/data/001_network/003_fullNet1977.txt not 
+> found)
+(35,242 observations deleted)
+  variable gvkey_supplier was long now int
+  variable gvkey_customer was long now int
+  variable year3 was float now int
+  variable comp_supplier was str27 now str26
+  variable comp_customer was str46 now str12
+  variable conm_customer was str50 now str13
+  variable conm_supplier was str29 now str28
+  (79,790 bytes saved)
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet1980.dta saved
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet1980.csv saved
+(note: file /Users/ios/Documents/GitHub/mres_pa
+> per/data/001_network/003_fullNet1980.txt not 
+> found)
+(34,999 observations deleted)
+  variable gvkey_customer was long now int
+  variable year3 was float now int
+  variable comp_supplier was str27 now str26
+  variable comp_customer was str46 now str13
+  variable conm_customer was str50 now str13
+  variable conm_supplier was str29 now str28
+  (95,228 bytes saved)
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet1983.dta saved
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet1983.csv saved
+(note: file /Users/ios/Documents/GitHub/mres_pa
+> per/data/001_network/003_fullNet1983.txt not 
+> found)
+(34,424 observations deleted)
+  variable gvkey_supplier was long now int
+  variable year3 was float now int
+  variable comp_supplier was str27 now str26
+  variable comp_customer was str46 now str12
+  variable conm_customer was str50 now str13
+  variable conm_supplier was str29 now str28
+  (140,756 bytes saved)
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet1986.dta saved
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet1986.csv saved
+(note: file /Users/ios/Documents/GitHub/mres_pa
+> per/data/001_network/003_fullNet1986.txt not 
+> found)
+(34,525 observations deleted)
+  variable year3 was float now int
+  variable comp_supplier was str27 now str26
+  variable comp_customer was str46 now str12
+  variable conm_customer was str50 now str13
+  variable conm_supplier was str29 now str28
+  (129,525 bytes saved)
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet1989.dta saved
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet1989.csv saved
+(note: file /Users/ios/Documents/GitHub/mres_pa
+> per/data/001_network/003_fullNet1989.txt not 
+> found)
+(34,196 observations deleted)
+  variable year3 was float now int
+  variable comp_supplier was str27 now str26
+  variable comp_customer was str46 now str12
+  variable conm_customer was str50 now str13
+  variable conm_supplier was str29 now str28
+  (154,200 bytes saved)
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet1992.dta saved
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet1992.csv saved
+(note: file /Users/ios/Documents/GitHub/mres_pa
+> per/data/001_network/003_fullNet1992.txt not 
+> found)
+(33,570 observations deleted)
+  variable year3 was float now int
+  variable comp_supplier was str27 now str26
+  variable comp_customer was str46 now str21
+  variable conm_customer was str50 now str26
+  variable conm_supplier was str29 now str28
+  (142,146 bytes saved)
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet1995.dta saved
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet1995.csv saved
+(note: file /Users/ios/Documents/GitHub/mres_pa
+> per/data/001_network/003_fullNet1995.txt not 
+> found)
+(33,142 observations deleted)
+  variable year3 was float now int
+  variable comp_supplier was str27 now str26
+  variable comp_customer was str46 now str25
+  variable conm_customer was str50 now str28
+  variable conm_supplier was str29 now str28
+  (146,170 bytes saved)
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet1998.dta saved
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet1998.csv saved
+(note: file /Users/ios/Documents/GitHub/mres_pa
+> per/data/001_network/003_fullNet1998.txt not 
+> found)
+(32,717 observations deleted)
+  variable year3 was float now int
+  variable comp_supplier was str27 now str26
+  variable comp_customer was str46 now str25
+  variable conm_customer was str50 now str34
+  variable conm_supplier was str29 now str28
+  (144,935 bytes saved)
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet2001.dta saved
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet2001.csv saved
+(note: file /Users/ios/Documents/GitHub/mres_pa
+> per/data/001_network/003_fullNet2001.txt not 
+> found)
+(32,767 observations deleted)
+  variable year3 was float now int
+  variable comp_supplier was str27 now str26
+  variable comp_customer was str46 now str25
+  variable conm_customer was str50 now str36
+  variable conm_supplier was str29 now str28
+  (135,915 bytes saved)
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet2004.dta saved
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet2004.csv saved
+(note: file /Users/ios/Documents/GitHub/mres_pa
+> per/data/001_network/003_fullNet2004.txt not 
+> found)
+(33,024 observations deleted)
+  variable year3 was float now int
+  variable comp_supplier was str27 now str26
+  variable comp_customer was str46 now str26
+  variable conm_customer was str50 now str36
+  variable conm_supplier was str29 now str28
+  (122,664 bytes saved)
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet2007.dta saved
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet2007.csv saved
+(note: file /Users/ios/Documents/GitHub/mres_pa
+> per/data/001_network/003_fullNet2007.txt not 
+> found)
+(33,048 observations deleted)
+  variable year3 was float now int
+  variable comp_supplier was str27 now str26
+  variable comp_customer was str46 now str25
+  variable conm_customer was str50 now str39
+  variable conm_supplier was str29 now str28
+  (115,344 bytes saved)
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet2010.dta saved
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet2010.csv saved
+(note: file /Users/ios/Documents/GitHub/mres_pa
+> per/data/001_network/003_fullNet2010.txt not 
+> found)
+(32,807 observations deleted)
+  variable year3 was float now int
+  variable comp_supplier was str27 now str26
+  variable comp_customer was str46 now str25
+  variable conm_customer was str50 now str39
+  variable conm_supplier was str29 now str28
+  (124,020 bytes saved)
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet2013.dta saved
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet2013.csv saved
+(note: file /Users/ios/Documents/GitHub/mres_pa
+> per/data/001_network/003_fullNet2013.txt not 
+> found)
+(33,024 observations deleted)
+  variable year3 was float now int
+  variable comp_supplier was str27 now str26
+  variable comp_customer was str46 now str25
+  variable conm_customer was str50 now str39
+  variable conm_supplier was str29 now str28
+  (116,208 bytes saved)
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet2016.dta saved
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet2016.csv saved
+(note: file /Users/ios/Documents/GitHub/mres_pa
+> per/data/001_network/003_fullNet2016.txt not 
+> found)
+(34,378 observations deleted)
+  variable year3 was float now int
+  variable comp_supplier was str27 now str26
+  variable comp_customer was str46 now str25
+  variable conm_customer was str50 now str39
+  variable conm_supplier was str29 now str28
+  (67,464 bytes saved)
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet2019.dta saved
+file /Users/ios/Documents/GitHub/mres_paper/dat
+> a/001_network/003_fullNet2019.csv saved
+(note: file /Users/ios/Documents/GitHub/mres_pa
+> per/data/001_network/003_fullNet2019.txt not 
+> found)
+
+. 
+end of do-file
+

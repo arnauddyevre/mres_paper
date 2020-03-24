@@ -142,6 +142,7 @@ replace share = . if share<0
 replace share = 0.1 if share == 0
 hist share, freq
 levelsof year3
+
 foreach y in `r(levels)'{
 	preserve
 	keep if year3 == `y'
@@ -150,6 +151,11 @@ foreach y in `r(levels)'{
 	rename gvkey_customer Target
 	save "$data/${doNum}_fullNet`y'.dta", replace
 	export delimited "$data/${doNum}_fullNet`y'.csv", replace
+	
+	*For Python
+	keep Source Target share
+	order Source Target share
+	outfile using "$data/${doNum}_fullNet`y'.txt", replace wide
 	restore
 	}
 
