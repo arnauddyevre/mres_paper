@@ -51,10 +51,12 @@ log using "$log/${doNum}_summaryStats", text append
 import excel "$doc/summary_stats/summary_stats_3ynetwork.xlsx", sheet("Sheet1") firstrow clear
 twoway (scatter Averageweighteddegree Year, msymbol(O) mfcolor(white) connect(direct) lpattern(dash) ///
 	ytitle("") subtitle("Average weighted degree: {stSymbol:S}{sub:i}{bf:1}[neighbour=1]{it:w}{sub:i}/n{stSymbol:S}{sub:i}{it:w}{sub:i}", pos(11)))
+graph export "$outputs/${doNum}_degreeTS.pdf", as(pdf)
 
 twoway (scatter Clusteringcoefficientdirected Year, msymbol(O) mfcolor(white) connect(direct) lpattern(dash) ytitle("Clustering")) ///
 	(scatter Averagepathlengthdirected Year, msymbol(O) mfcolor(white) connect(direct) lpattern(dash) yaxis(2) ytitle("Path length", axis(2)) ) ///
 	, legend( ring(0) pos(5) col(1))
+graph export "$outputs/${doNum}_clusterPathTS.pdf", as(pdf)
 
 
 twoway (scatter Networkdiameterdirected Year, msymbol(O) mfcolor(white) connect(direct) lpattern(dash))
