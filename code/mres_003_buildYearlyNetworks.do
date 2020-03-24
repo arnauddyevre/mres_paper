@@ -83,11 +83,16 @@ duplicates tag conm fyear, gen(tag)
 tab tag																			// 0 duplicates, good
 rename fyearq year
 do "$code/mres_xxx_cleanCompNames"
-gcollapse (sum) saleq (firstnm) gvkey, by(year comp sic)						//very few firms are being collapsed together after the cleaning, which is a good sign
+collapse (sum) saleq (firstnm) gvkey (firstnm) conm, by(year comp sic)	fast	//very few firms are being collapsed together after the cleaning, which is a good sign
 sort year comp
 hist year, discrete
 rename saleq sales
 compress
+
+duplicates tag comp year, gen(tag)
+drop if tag!=0																	// 99.13% of unique firm*year records
+drop tag
+
 save "$data/${doNum}_allComp.dta", replace 
 levelsof year
 foreach y in `r(levels)' {
@@ -109,9 +114,47 @@ foreach v of varlist gvkey salecs conm sic naics comp sales _merge{
 	}
 rename cnms conm
 do "$code/mres_xxx_cleanCompNames"
-merge m:1 comp using "$data/${doNum}_netCompList.dta"
+merge m:1 comp year using "$data/${doNum}_allcomp.dta"
+tab ctype _merge, mi row 
+*merge m:1 comp using "$data/${doNum}_netCompList.dta"
+	// 25% of all company being supplied to find a match (76,649)
+	// This is the highest match rate I get across customer type (followed by "market")
+	// "Market" is a srange one, decent match rate but I'm unsure about their quality
+keep if ctype == "MARKET" | ctype == "COMPANY"
+	// All MARKETs NEED TO BE KEPT! These are the companies with final consumers, we want to keep 
+foreach v of varlist conm ctype comp sic sales gvkey n _merge{
+	rename `v' `v'_customer
+	}
+compress
+save "$data/${doNum}_fullNet.dta", replace
 
-*collapse by 5-year window (to smooth out the volatility in customers)
+*Keeping matched customer
+use "$data/${doNum}_fullNet.dta", clear
+keep if _merge_customer == 3
+
+*generating 3 year windows
+gen year3 = floor((year-2)/3)*3+3													// so that 1976, 1977 and 1978 are grouped in year3 = 1977
+
+collapse (firstnm) conm_customer conm_supplier (sum) sale* , by(year3 sic_supplier sic_customer gvkey_supplier gvkey_customer comp_customer comp_supplier)
+gen share = salecs_supplier/sales_supplier
+replace share = 1 if share>=1
+replace share = . if share<0
+replace share = 0.1 if share == 0
+hist share, freq
+levelsof year3
+foreach y in `r(levels)'{
+	preserve
+	keep if year3 == `y'
+	compress
+	rename gvkey_supplier Source
+	rename gvkey_customer Target
+	save "$data/${doNum}_fullNet`y'.dta", replace
+	export delimited "$data/${doNum}_fullNet`y'.csv", replace
+	restore
+	}
+
+
+*collapse by 2-year window (to smooth out the volatility in customers)
 
 
 drop if _merge

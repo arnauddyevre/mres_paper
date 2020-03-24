@@ -1,0 +1,543 @@
+----------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_paper/log/004_summaryStats.log
+  log type:  text
+ opened on:  24 Mar 2020, 12:11:30
+
+. 
+end of do-file
+
+. 
+. import excel "/Users/ios/Documents/GitHub/mres_paper/doc/summary_stats/sum
+> mary_stats_3ynetwork.xlsx", sheet("Sheet1") firstrow
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD05025.000000"
+
+. import excel "$docdoc/summary_stats/summary_stats_3ynetwork.xlsx", sheet("
+> Sheet1") firstrow clear
+file /summary_stats/summary_stats_3ynetwork.xlsx not found
+r(601);
+
+end of do-file
+
+r(601);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD05025.000000"
+
+. import excel "$doc/summary_stats/summary_stats_3ynetwork.xlsx", sheet("She
+> et1") firstrow clear
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD05025.0
+> 00000"
+
+. twoway (scatter Averageweighteddegree Year)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD05025.000000"
+
+. set scheme modern, perm
+(set scheme preference recorded)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year, msymbol(O) mfcolor(white) connec
+> t(direct) lpattern(dash))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year, m
+> symbol(O) mfcolor(white) connect(direct) lpat
+> tern(dash)) ///
+>         (scatter Clusteringcoefficientundirec
+> t Year, msymbol(O) mfcolor(white) connect(dir
+> ect) lpattern(dash))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Clusteringcoefficientundirect
+>  Year, msymbol(O) mfcolor(white) connect(dire
+> ct) lpattern(dash))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averagepathlengthdirected Yea
+> r, msymbol(O) mfcolor(white) connect(direct) 
+> lpattern(dash))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Clusteringcoefficientundirect
+>  Year, msymbol(O) mfcolor(white) connect(dire
+> ct) lpattern(dash))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year, m
+> symbol(O) mfcolor(white) connect(direct) lpat
+> tern(dash)) 
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Clusteringcoefficientdirected
+>  Year, msymbol(O) mfcolor(white) connect(dire
+> ct) lpattern(dash))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Networkdiameterdirected Year,
+>  msymbol(O) mfcolor(white) connect(direct) lp
+> attern(dash))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Networkdiameterundirected Yea
+> r, msymbol(O) mfcolor(white) connect(direct) 
+> lpattern(dash))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year, m
+> symbol(O) mfcolor(white) connect(direct) lpat
+> tern(dash)) 
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year, m
+> symbol(O) mfcolor(white) connect(direct) lpat
+> tern(dash)) ///
+>         ytitle("") subtitle("Average weighted
+>  degree", pos(11))
+) required
+r(100);
+
+end of do-file
+
+r(100);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year, m
+> symbol(O) mfcolor(white) connect(direct) lpat
+> tern(dash) ///
+>         ytitle("") subtitle("Average weighted
+>  degree", pos(11))
+parentheses do not balance
+r(198);
+
+end of do-file
+
+r(198);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year, m
+> symbol(O) mfcolor(white) connect(direct) lpat
+> tern(dash) ///
+>         ytitle("") subtitle("Average weighted
+>  degree", pos(11)) )
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year, m
+> symbol(O) mfcolor(white) connect(direct) lpat
+> tern(dash) ///
+>         ytitle("") subtitle("Average weighted
+>  degree {stSymbol:ABCDEFG abcdefg}", pos(11))
+> )
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year, m
+> symbol(O) mfcolor(white) connect(direct) lpat
+> tern(dash) ///
+>         ytitle("") subtitle("Average weighted
+>  degree {stSymbol:S}", pos(11)))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year, m
+> symbol(O) mfcolor(white) connect(direct) lpat
+> tern(dash) ///
+>         ytitle("") subtitle("Average weighted
+>  degree {stSymbol:S}{bf:1}[neighbour=1]{it:w}
+> {sub:i}", pos(11)))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year, m
+> symbol(O) mfcolor(white) connect(direct) lpat
+> tern(dash) ///
+>         ytitle("") subtitle("Average weighted
+>  degree: {stSymbol:S}{sub:i}{bf:1}[neighbour=
+> 1]{it:w}{sub:i}/{stSymbol:S}{sub:i}{it:w}{sub
+> :i}", pos(11)))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averagedegree Year, msymbol(O
+> ) mfcolor(white) connect(direct) lpattern(das
+> h))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year, m
+> symbol(O) mfcolor(white) connect(direct) lpat
+> tern(dot) ///
+>         ytitle("") subtitle("Average weighted
+>  degree: {stSymbol:S}{sub:i}{bf:1}[neighbour=
+> 1]{it:w}{sub:i}/{stSymbol:S}{sub:i}{it:w}{sub
+> :i}", pos(11)))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year, m
+> symbol(O) mfcolor(white) connect(direct) lpat
+> tern(dot) ///
+>         ytitle("") subtitle("Average weighted
+>  degree: {stSymbol:S}{sub:i}{bf:1}[neighbour=
+> 1]{it:w}{sub:i}/{stSymbol:S}{sub:i}{it:w}{sub
+> :i}", pos(11)))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year, m
+> symbol(O) mfcolor(white) connect(direct) lpat
+> tern(dash) ///
+>         ytitle("") subtitle("Average weighted
+>  degree: {stSymbol:S}{sub:i}{bf:1}[neighbour=
+> 1]{it:w}{sub:i}/{stSymbol:S}{sub:i}{it:w}{sub
+> :i}", pos(11)))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Clusteringcoefficientdirected
+>  Year, msymbol(O) mfcolor(white) connect(dire
+> ct) lpattern(dash) ytitle("Clustering coeffic
+> ient" "directed")) ///
+>         (scatter Averagepathlengthdirected Ye
+> ar, msymbol(O) mfcolor(white) connect(direct)
+>  lpattern(dash))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Clusteringcoefficientdirected
+>  Year, msymbol(O) mfcolor(white) connect(dire
+> ct) lpattern(dash) ytitle("Clustering coeffic
+> ient" "(directed)")) ///
+>         (scatter Averagepathlengthdirected Ye
+> ar, msymbol(O) mfcolor(white) connect(direct)
+>  lpattern(dash) yaxis(2) ytitle("Average path
+>  length" "(directed)") )
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Clusteringcoefficientdirected
+>  Year, msymbol(O) mfcolor(white) connect(dire
+> ct) lpattern(dash) ytitle("Clustering coeffic
+> ient" "(directed)")) ///
+>         (scatter Averagepathlengthdirected Ye
+> ar, msymbol(O) mfcolor(white) connect(direct)
+>  lpattern(dash) yaxis(2) ytitle("Average path
+>  length" "(directed)", axis(2)) )
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Clusteringcoefficientdirected
+>  Year, msymbol(O) mfcolor(white) connect(dire
+> ct) lpattern(dash) ytitle("Clustering coeffic
+> ient" "(directed)")) ///
+>         (scatter Averagepathlengthdirected Ye
+> ar, msymbol(O) mfcolor(white) connect(direct)
+>  lpattern(dash) yaxis(2) ytitle("Average path
+>  length" "(directed)", axis(2)) ) ///
+>         , legend(off)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Clusteringcoefficientdirected
+>  Year, msymbol(O) mfcolor(white) connect(dire
+> ct) lpattern(dash) ytitle("Clustering coeffic
+> ient" "(directed)")) ///
+>         (scatter Averagepathlengthdirected Ye
+> ar, msymbol(O) mfcolor(white) connect(direct)
+>  lpattern(dash) yaxis(2) ytitle("Average path
+>  length" "(directed)", axis(2)) ) ///
+>         , legend( ,ring(1) pos(5))
+invalid 'ring' 
+r(198);
+
+end of do-file
+
+r(198);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Clusteringcoefficientdirected
+>  Year, msymbol(O) mfcolor(white) connect(dire
+> ct) lpattern(dash) ytitle("Clustering coeffic
+> ient" "(directed)")) ///
+>         (scatter Averagepathlengthdirected Ye
+> ar, msymbol(O) mfcolor(white) connect(direct)
+>  lpattern(dash) yaxis(2) ytitle("Average path
+>  length" "(directed)", axis(2)) ) ///
+>         , legend( ring(0) pos(5) col(1))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Clusteringcoefficientdirected
+>  Year, msymbol(O) mfcolor(white) connect(dire
+> ct) lpattern(dash) ytitle("Clustering")) ///
+>         (scatter Averagepathlengthdirected Ye
+> ar, msymbol(O) mfcolor(white) connect(direct)
+>  lpattern(dash) yaxis(2) ytitle("Path length"
+> , axis(2)) ) ///
+>         , legend( ring(0) pos(5) col(1))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year, m
+> symbol(O) mfcolor(white) connect(direct) lpat
+> tern(dash) ///
+>         ytitle("") subtitle("Average weighted
+>  degree: n{sup:-1}{stSymbol:S}{sub:i}{bf:1}[n
+> eighbour=1]{it:w}{sub:i}/{stSymbol:S}{sub:i}{
+> it:w}{sub:i}", pos(11)))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year, m
+> symbol(O) mfcolor(white) connect(direct) lpat
+> tern(dash) ///
+>         ytitle("") subtitle("Average weighted
+>  degree: {stSymbol:S}{sub:i}{bf:1}[neighbour=
+> 1]{it:w}{sub:i}/n{stSymbol:S}{sub:i}{it:w}{su
+> b:i}", pos(11)))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Clusteringcoefficientdirected
+>  Year, msymbol(O) mfcolor(white) connect(dire
+> ct) lpattern(dash) ytitle("Clustering")) ///
+>         (scatter Averagepathlengthdirected Ye
+> ar, msymbol(O) mfcolor(white) connect(direct)
+>  lpattern(dash) yaxis(2) ytitle("Path length"
+> , axis(2)) ) ///
+>         , legend( ring(0) pos(5) col(1))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Networkdiameterdirected Year,
+>  msymbol(O) mfcolor(white) connect(direct) lp
+> attern(dash))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year, m
+> symbol(O) mfcolor(white) connect(direct) lpat
+> tern(dash) ///
+>         ytitle("") subtitle("Average weighted
+>  degree: {stSymbol:S}{sub:i}{bf:1}[neighbour=
+> 1]{it:w}{sub:i}/n{stSymbol:S}{sub:i}{it:w}{su
+> b:i}", pos(11)))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Averageweighteddegree Year, m
+> symbol(O) mfcolor(white) connect(direct) lpat
+> tern(dash) ///
+>         ytitle("") subtitle("Average weighted
+>  degree: {stSymbol:S}{sub:i}{bf:1}[neighbour=
+> 1]{it:w}{sub:i}/n{stSymbol:S}{sub:i}{it:w}{su
+> b:i}", pos(11)))
+
+. graph export "$outputs/${doNum}_degreeTS.pdf"
+> , as(pdf)
+(file /Users/ios/Documents/GitHub/mres_paper/ou
+> tputs/004_degreeTS.pdf written in PDF format)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Clusteringcoefficientdirected
+>  Year, msymbol(O) mfcolor(white) connect(dire
+> ct) lpattern(dash) ytitle("Clustering")) ///
+>         (scatter Averagepathlengthdirected Ye
+> ar, msymbol(O) mfcolor(white) connect(direct)
+>  lpattern(dash) yaxis(2) ytitle("Path length"
+> , axis(2)) ) ///
+>         , legend( ring(0) pos(5) col(1))
+
+. graph export "$outputs/${doNum}_clusterPathTS
+> .pdf", as(pdf)
+(file /Users/ios/Documents/GitHub/mres_paper/ou
+> tputs/004_clusterPathTS.pdf written in PDF fo
+> rmat)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0
+> 000gn/T//SD05025.000000"
+
+. twoway (scatter Clusteringcoefficientdirected
+>  Year, msymbol(O) mfcolor(white) connect(dire
+> ct) lpattern(dash) ytitle("Clustering")) ///
+>         (scatter Averagepathlengthdirected Ye
+> ar, msymbol(O) mfcolor(white) connect(direct)
+>  lpattern(dash) yaxis(2) ytitle("Path length"
+> , axis(2)) ) ///
+>         , legend( ring(0) pos(5) col(1))
+
+. graph export "$outputs/${doNum}_clusterPathTS
+> .pdf", as(pdf)
+file
+    /Users/ios/Documents/GitHub/mres_paper/ou
+    > tputs/004_clusterPathTS.pdf already
+    exists
+r(602);
+
+end of do-file
+
+r(602);
+
