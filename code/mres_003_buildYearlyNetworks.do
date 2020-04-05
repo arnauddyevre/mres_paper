@@ -147,36 +147,33 @@ foreach y in `r(levels)'{
 	preserve
 	keep if year3 == `y'
 	compress
+	
+	*Creating edge list
 	rename gvkey_supplier Source
 	rename gvkey_customer Target
+	gen Type = "Directed"
+	rename share Weight
 	save "$data/${doNum}_fullNet`y'.dta", replace
 	export delimited "$data/${doNum}_fullNet`y'.csv", replace
-	
+		
 	*For Python
-	keep Source Target share
-	order Source Target share
+	keep Source Target Weight
+	order Source Target Weight
 	outfile using "$data/${doNum}_fullNet`y'.txt", replace wide
+	export delimited "$data/${doNum}_fullNet`y'_short.csv", replace
+	
+	*Creating node list
+	use "$data/${doNum}_allcomp.dta", clear
+	compress
+	do "$code/mres_xxx_coarseningSIC"
+	gen year3 = floor((year-2)/3)*3+3
+	keep if year3 == `y'
+	replace sales = . if year3!=`y'
+	collapse (firstnm) conm comp sic coarseSIC (mean) sales, by(gvkey) fast
+	rename gvkey Id
+	rename conm Label
+	export delimited "$data/${doNum}_nodeList`y'.csv", replace
+	
 	restore
 	}
-
-
-*collapse by 2-year window (to smooth out the volatility in customers)
-
-
-drop if _merge
-
-*saving datasets by year, after having cleaned company names, and added balance sheet data
-forval y=1976/2019{
-	preserve
-	keep if year==`y'
-	save "$data/${doNum}_cust`y'.dta", replace
-	restore
-	}
-	
-	
-keep if year==1980
-
-
- 
-do 
 

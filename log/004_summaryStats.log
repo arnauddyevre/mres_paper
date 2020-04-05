@@ -606,3 +606,1364 @@ r(601);
 . 
 . *log
 . cap log close
+------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_paper/log/004_summaryStats.log
+  log type:  text
+ opened on:  25 Mar 2020, 12:25:20
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. use "$data/${doNum}_fullNet2016.dta", clear
+file
+    /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_fullNet2016.
+    > dta not found
+r(601);
+
+end of do-file
+
+r(601);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. use "$data/003_fullNet2016.dta", clear
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. collapse (firstnm) conm_customer (sum) Weight (mean) sales_customer, by(Targ
+> et)
+
+. 
+end of do-file
+
+. sort Weight
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. gen n = _n
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. scatter Weight n
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. gen ln_n = ln(n)
+
+. scatter Weight ln_n
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. gen ln_w = ln(Weight)
+
+. scatter ln_w n
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. use "$data/003_fullNet2016.dta", clear
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. use "$data/003_fullNet2016.dta", clear
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. drop Weight if Weight<=0.1
+invalid syntax
+r(198);
+
+end of do-file
+
+r(198);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. drop if Weight<=0.1
+(974 observations deleted)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. collapse (firstnm) conm_customer (sum) Weight (mean) sales_customer, by(Targ
+> et)
+
+. gen n = _n
+
+. scatter Weight n
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. use "$data/003_fullNet2016.dta", clear
+
+. 
+. drop if Weight<=0.1
+(974 observations deleted)
+
+. 
+. collapse (firstnm) conm_customer (sum) Weight (mean) sales_customer, by(Targ
+> et)
+
+. sort Weight
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. gen n = _n
+
+. scatter Weight n
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. gen ln_n = ln(n)
+
+. gen ln_w = ln(Weight)
+
+. scatter ln_w n
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. use "$data/003_fullNet2016.dta", clear
+
+. 
+. drop if Weight<=0.11
+(2,180 observations deleted)
+
+. 
+. collapse (firstnm) conm_customer (sum) Weight (mean) sales_customer, by(Targ
+> et)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. sort Weight
+
+. gen n = _n
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. scatter Weight n
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. gen ln_n = ln(n)
+
+. gen ln_w = ln(Weight)
+
+. scatter ln_w n
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. gen CDF = n/_N
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. gen log_1mCDF = log(1 - CDF)
+(1 missing value generated)
+
+. gen ln_1mCDF = ln(1 - CDF)
+(1 missing value generated)
+
+. gen log_w = log(Weight)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. scatter log_1mCDF log_w
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. scatter ln_1mCDF ln_w
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. hist Weight
+(bin=19, start=.11000719, width=.86449031)
+
+. 
+end of do-file
+
+. h hist
+
+. h kdensity
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. kdensity Weight, bwidth(0.5) gen(x, d)
+option d not allowed
+r(198);
+
+end of do-file
+
+r(198);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. kdensity Weight, bwidth(0.5) gen(x d)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. scatter x d
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. scatter d x
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Useful packages
+. /*net install scheme-modern, from("https://raw.githubusercontent.com/mdroste
+> /stata-scheme-modern/master/")
+> ssc install gtools
+> gtools, upgrade*/
+. 
+. set scheme modern, perm
+(set scheme preference recorded)
+
+. 
+. *Paths
+. global wd "/Users/ios/Documents/GitHub/mres_paper"
+
+. global orig "/Users/ios/Documents/mres_paper_orig"                          
+>                             // I'm using a different orig folder so as not t
+> o commit large datasets to GitHub
+
+. global data "$wd/data/001_network"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "004"                                      
+
+. 
+. *log
+. cap log close
+------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_paper/log/004_summaryStats.log
+  log type:  text
+ opened on:  25 Mar 2020, 13:09:06
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. forval y=1980(3)2016{
+  2.         use "$data/003_fullNet`y'.dta", clear
+  3.         drop if Weight<=0.11
+  4.         collapse (firstnm) conm_customer (sum) Weight (mean) sales_custom
+> er, by(Target)
+  5. 
+.         *generating histogram of weighted degree
+.         kdensity Weight, bwidth(0.5) gen(x_`y' d_`y')
+  6.         scatter d_`y' x_`y'
+  7.         keep d_`y' x_`y'
+  8.         gen year = `y'
+  9.         save "$data/${doNum}_hist`y'.dta", replace
+ 10.         }
+(256 observations deleted)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist19
+> 80.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1980.dta 
+> saved
+(582 observations deleted)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist19
+> 83.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1983.dta 
+> saved
+(869 observations deleted)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist19
+> 86.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1986.dta 
+> saved
+(798 observations deleted)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist19
+> 89.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1989.dta 
+> saved
+(916 observations deleted)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist19
+> 92.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1992.dta 
+> saved
+(1,070 observations deleted)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist19
+> 95.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1995.dta 
+> saved
+(1,207 observations deleted)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist19
+> 98.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1998.dta 
+> saved
+(1,544 observations deleted)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist20
+> 01.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist2001.dta 
+> saved
+(1,759 observations deleted)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist20
+> 04.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist2004.dta 
+> saved
+(1,714 observations deleted)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist20
+> 07.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist2007.dta 
+> saved
+(1,914 observations deleted)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist20
+> 10.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist2010.dta 
+> saved
+(2,260 observations deleted)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist20
+> 13.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist2013.dta 
+> saved
+(2,180 observations deleted)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist20
+> 16.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist2016.dta 
+> saved
+
+. 
+end of do-file
+
+. di 2016-1983
+33
+
+. di 1983+33/2
+1999.5
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. use "$data/${doNum}_hist2016.dta", clear
+
+. append using "$data/${doNum}_hist1983.dta"
+
+. append using "$data/${doNum}_hist2001.dta"
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter d_2016 x_2016) ///
+>         (scatter d_2001 x_2001) ///
+>         (scatter d_1983 x_1983)
+
+. 
+end of do-file
+
+. h legend
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter d_2016 x_2016, msymbol(oh)) ///
+>         (scatter d_2001 x_2001, msymbol(oh)) ///
+>         (scatter d_1983 x_1983, msymbol(oh)), legend(lab(1 "2016") lab(2 "20
+> 01") lab(3 "1983"))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter d_2016 x_2016, msymbol(Oh)) ///
+>         (scatter d_2001 x_2001, msymbol(Oh)) ///
+>         (scatter d_1983 x_1983, msymbol(Oh)), legend(lab(1 "2016") lab(2 "20
+> 01") lab(3 "1983"))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. forval y=1980(3)2016{
+  2.         use "$data/003_fullNet`y'.dta", clear
+  3.         drop if Weight<=0.11
+  4.         collapse (firstnm) conm_customer (sum) Weight (mean) sales_custom
+> er, by(Target)
+  5. 
+.         *generating histogram of weighted degree
+.         kdensity Weight, bwidth(0.5) gen(x d)
+  6.         scatter d x
+  7.         keep d x
+  8.         gen year = `y'
+  9.         
+.         *Generating data to show the Pareto tail
+.         sort Weight
+ 10.         gen n = _n
+ 11.         gen ln_n = ln(n)
+ 12.         gen ln_w = ln(Weight)
+ 13.         gen CDF = n/_N
+ 14.         gen log_1mCDF = log(1 - CDF)
+ 15.         gen ln_1mCDF = ln(1 - CDF)
+ 16.         gen log_w = log(Weight)
+ 17. 
+.         save "$data/${doNum}_hist`y'.dta", replace
+ 18.         }
+(256 observations deleted)
+variable Weight not found
+r(111);
+
+end of do-file
+
+r(111);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. forval y=1980(3)2016{
+  2.         use "$data/003_fullNet`y'.dta", clear
+  3.         drop if Weight<=0.11
+  4.         collapse (firstnm) conm_customer (sum) Weight (mean) sales_custom
+> er, by(Target)
+  5. 
+.         *generating histogram of weighted degree
+.         kdensity Weight, bwidth(0.5) gen(x d)
+  6.         scatter d x
+  7.         gen year = `y'
+  8.         
+.         *Generating data to show the Pareto tail
+.         sort Weight
+  9.         gen n = _n
+ 10.         gen ln_n = ln(n)
+ 11.         gen ln_w = ln(Weight)
+ 12.         gen CDF = n/_N
+ 13.         gen log_1mCDF = log(1 - CDF)
+ 14.         gen ln_1mCDF = ln(1 - CDF)
+ 15.         gen log_w = log(Weight)
+ 16. 
+.         save "$data/${doNum}_hist`y'.dta", replace
+ 17.         }
+(256 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1980.dta 
+> saved
+(582 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1983.dta 
+> saved
+(869 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1986.dta 
+> saved
+(798 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1989.dta 
+> saved
+(916 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1992.dta 
+> saved
+(1,070 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1995.dta 
+> saved
+(1,207 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+(1 missing value generated)
+(1 missing value generated)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1998.dta 
+> saved
+(1,544 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist2001.dta 
+> saved
+(1,759 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+(1 missing value generated)
+(1 missing value generated)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist2004.dta 
+> saved
+(1,714 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist2007.dta 
+> saved
+(1,914 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist2010.dta 
+> saved
+(2,260 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist2013.dta 
+> saved
+(2,180 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist2016.dta 
+> saved
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. use "$data/${doNum}_hist2016.dta", clear
+
+. append using "$data/${doNum}_hist1983.dta"
+
+. append using "$data/${doNum}_hist2001.dta"
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter d x if year == 2016, msymbol(Oh)) ///
+>         (scatter d x if year == 2001, msymbol(Oh)) ///
+>         (scatter d x if year == 1983, msymbol(Oh)), legend(lab(1 "2016") lab
+> (2 "2001") lab(3 "1983"))
+
+. 
+end of do-file
+
+. use "$data/003_fullNet2001.dta", clear
+
+. 
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+.         drop if Weight<=0.11
+(1,544 observations deleted)
+
+.         collapse (firstnm) conm_customer (sum) Weight (mean) sales_customer,
+>  by(Target)
+
+. 
+end of do-file
+
+. sort Weight
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. use "$data/${doNum}_hist2016.dta", clear
+
+. append using "$data/${doNum}_hist1983.dta"
+
+. append using "$data/${doNum}_hist2001.dta"
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), legend(lab(1
+>  "2016") lab(2 "2001") lab(3 "1983"))       
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), legend(pos(5
+> ) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983"))        
+
+.         
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it: weighted degree}))", pos(11) )        
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("Weighted degree")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter ln_1mCDF ln_w if year == 2016, msymbol(Oh)) ///
+>         (scatter ln_1mCDF ln_w if year == 2001, msymbol(Oh)) ///
+>         (scatter ln_1mCDF ln_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("Weighted degree")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("Weighted degree")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter ln_1mCDF ln_w if year == 2016, msymbol(Oh)) ///
+>         (scatter ln_1mCDF ln_w if year == 2001, msymbol(Oh)) ///
+>         (scatter ln_1mCDF ln_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("Weighted degree")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("Weighted degree")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("Weighted degree") xline(0.8)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("Weighted degree") xline(0.75)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. reg log_1mCDF log_w if year == 2016
+
+      Source |       SS           df       MS      Number of obs   =       385
+-------------+----------------------------------   F(1, 383)       =   5353.48
+       Model |  337.909158         1  337.909158   Prob > F        =    0.0000
+    Residual |   24.174762       383  .063119483   R-squared       =    0.9332
+-------------+----------------------------------   Adj R-squared   =    0.9331
+       Total |   362.08392       384  .942926875   Root MSE        =    .25124
+
+------------------------------------------------------------------------------
+   log_1mCDF |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       log_w |  -.9135914   .0124863   -73.17   0.000    -.9381417   -.8890412
+       _cons |  -1.803851   .0169387  -106.49   0.000    -1.837155   -1.770546
+------------------------------------------------------------------------------
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. global zeta_2016 = _b[log_w]
+
+. 
+end of do-file
+
+. di $zeta_2016
+-.91359145
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. reg log_1mCDF log_w if year == 2001
+
+      Source |       SS           df       MS      Number of obs   =       617
+-------------+----------------------------------   F(1, 615)       =  13714.23
+       Model |   565.42537         1   565.42537   Prob > F        =    0.0000
+    Residual |  25.3558902       615   .04122909   R-squared       =    0.9571
+-------------+----------------------------------   Adj R-squared   =    0.9570
+       Total |  590.781261       616  .959060488   Root MSE        =    .20305
+
+------------------------------------------------------------------------------
+   log_1mCDF |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       log_w |  -.8966493   .0076566  -117.11   0.000    -.9116856    -.881613
+       _cons |  -1.788002   .0106153  -168.44   0.000    -1.808848   -1.767155
+------------------------------------------------------------------------------
+
+. global zeta_2001 = _b[log_w]
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("Weighted degree") xline(0.75)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. reg log_1mCDF log_w if year == 2016
+
+      Source |       SS           df       MS      Number of obs   =       385
+-------------+----------------------------------   F(1, 383)       =   5353.48
+       Model |  337.909158         1  337.909158   Prob > F        =    0.0000
+    Residual |   24.174762       383  .063119483   R-squared       =    0.9332
+-------------+----------------------------------   Adj R-squared   =    0.9331
+       Total |   362.08392       384  .942926875   Root MSE        =    .25124
+
+------------------------------------------------------------------------------
+   log_1mCDF |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       log_w |  -.9135914   .0124863   -73.17   0.000    -.9381417   -.8890412
+       _cons |  -1.803851   .0169387  -106.49   0.000    -1.837155   -1.770546
+------------------------------------------------------------------------------
+
+. global zeta_2016 = _b[log_w]
+
+. reg log_1mCDF log_w if year == 2001
+
+      Source |       SS           df       MS      Number of obs   =       617
+-------------+----------------------------------   F(1, 615)       =  13714.23
+       Model |   565.42537         1   565.42537   Prob > F        =    0.0000
+    Residual |  25.3558902       615   .04122909   R-squared       =    0.9571
+-------------+----------------------------------   Adj R-squared   =    0.9570
+       Total |  590.781261       616  .959060488   Root MSE        =    .20305
+
+------------------------------------------------------------------------------
+   log_1mCDF |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       log_w |  -.8966493   .0076566  -117.11   0.000    -.9116856    -.881613
+       _cons |  -1.788002   .0106153  -168.44   0.000    -1.808848   -1.767155
+------------------------------------------------------------------------------
+
+. global zeta_2001 = _b[log_w]
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. reg log_1mCDF log_w if year == 1983
+
+      Source |       SS           df       MS      Number of obs   =       198
+-------------+----------------------------------   F(1, 196)       =   5693.32
+       Model |  173.385382         1  173.385382   Prob > F        =    0.0000
+    Residual |   5.9690184       196  .030454176   R-squared       =    0.9667
+-------------+----------------------------------   Adj R-squared   =    0.9665
+       Total |    179.3544       197  .910428427   Root MSE        =    .17451
+
+------------------------------------------------------------------------------
+   log_1mCDF |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       log_w |  -.8742388   .0115864   -75.45   0.000    -.8970888   -.8513888
+       _cons |  -1.805144   .0164732  -109.58   0.000    -1.837631   -1.772656
+------------------------------------------------------------------------------
+
+. global zeta_1983 = _b[log_w]
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. reg log_1mCDF log_w if year == 2016 & log_w > 0.75
+
+      Source |       SS           df       MS      Number of obs   =        29
+-------------+----------------------------------   F(1, 27)        =    428.58
+       Model |   18.920512         1   18.920512   Prob > F        =    0.0000
+    Residual |  1.19196886        27  .044146995   R-squared       =    0.9407
+-------------+----------------------------------   Adj R-squared   =    0.9385
+       Total |  20.1124809        28  .718302888   Root MSE        =    .21011
+
+------------------------------------------------------------------------------
+   log_1mCDF |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       log_w |  -2.136242   .1031893   -20.70   0.000    -2.347969   -1.924515
+       _cons |  -.5940683   .1456295    -4.08   0.000    -.8928755   -.2952612
+------------------------------------------------------------------------------
+
+. global zeta_2016 = _b[log_w]
+
+. reg log_1mCDF log_w if year == 2001 & log_w > 0.75
+
+      Source |       SS           df       MS      Number of obs   =        53
+-------------+----------------------------------   F(1, 51)        =   2218.52
+       Model |  40.5352353         1  40.5352353   Prob > F        =    0.0000
+    Residual |    .9318341        51  .018271257   R-squared       =    0.9775
+-------------+----------------------------------   Adj R-squared   =    0.9771
+       Total |  41.4670694        52  .797443643   Root MSE        =    .13517
+
+------------------------------------------------------------------------------
+   log_1mCDF |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       log_w |  -1.638013   .0347764   -47.10   0.000    -1.707829   -1.568196
+       _cons |  -1.022615    .053808   -19.00   0.000    -1.130639   -.9145909
+------------------------------------------------------------------------------
+
+. global zeta_2001 = _b[log_w]
+
+. reg log_1mCDF log_w if year == 1983 & log_w > 0.75
+
+      Source |       SS           df       MS      Number of obs   =        12
+-------------+----------------------------------   F(1, 10)        =     96.51
+       Model |  5.69415301         1  5.69415301   Prob > F        =    0.0000
+    Residual |  .590012789        10  .059001279   R-squared       =    0.9061
+-------------+----------------------------------   Adj R-squared   =    0.8967
+       Total |   6.2841658        11    .5712878   Root MSE        =     .2429
+
+------------------------------------------------------------------------------
+   log_1mCDF |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       log_w |  -1.125494   .1145669    -9.82   0.000    -1.380765   -.8702229
+       _cons |  -1.715148   .2069266    -8.29   0.000    -2.176209   -1.254087
+------------------------------------------------------------------------------
+
+. global zeta_1983 = _b[log_w]
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. reg log_1mCDF log_w if year == 2016 & log_w > 0.75
+
+      Source |       SS           df       MS      Number of obs   =        29
+-------------+----------------------------------   F(1, 27)        =    428.58
+       Model |   18.920512         1   18.920512   Prob > F        =    0.0000
+    Residual |  1.19196886        27  .044146995   R-squared       =    0.9407
+-------------+----------------------------------   Adj R-squared   =    0.9385
+       Total |  20.1124809        28  .718302888   Root MSE        =    .21011
+
+------------------------------------------------------------------------------
+   log_1mCDF |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       log_w |  -2.136242   .1031893   -20.70   0.000    -2.347969   -1.924515
+       _cons |  -.5940683   .1456295    -4.08   0.000    -.8928755   -.2952612
+------------------------------------------------------------------------------
+
+. global zeta_2016 = round(_b[log_w], 0.00)
+
+. reg log_1mCDF log_w if year == 2001 & log_w > 0.75
+
+      Source |       SS           df       MS      Number of obs   =        53
+-------------+----------------------------------   F(1, 51)        =   2218.52
+       Model |  40.5352353         1  40.5352353   Prob > F        =    0.0000
+    Residual |    .9318341        51  .018271257   R-squared       =    0.9775
+-------------+----------------------------------   Adj R-squared   =    0.9771
+       Total |  41.4670694        52  .797443643   Root MSE        =    .13517
+
+------------------------------------------------------------------------------
+   log_1mCDF |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       log_w |  -1.638013   .0347764   -47.10   0.000    -1.707829   -1.568196
+       _cons |  -1.022615    .053808   -19.00   0.000    -1.130639   -.9145909
+------------------------------------------------------------------------------
+
+. global zeta_2001 = round(_b[log_w], 0.00)
+
+. reg log_1mCDF log_w if year == 1983 & log_w > 0.75
+
+      Source |       SS           df       MS      Number of obs   =        12
+-------------+----------------------------------   F(1, 10)        =     96.51
+       Model |  5.69415301         1  5.69415301   Prob > F        =    0.0000
+    Residual |  .590012789        10  .059001279   R-squared       =    0.9061
+-------------+----------------------------------   Adj R-squared   =    0.8967
+       Total |   6.2841658        11    .5712878   Root MSE        =     .2429
+
+------------------------------------------------------------------------------
+   log_1mCDF |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       log_w |  -1.125494   .1145669    -9.82   0.000    -1.380765   -.8702229
+       _cons |  -1.715148   .2069266    -8.29   0.000    -2.176209   -1.254087
+------------------------------------------------------------------------------
+
+. global zeta_1983 = round(_b[log_w], 0.00)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. reg log_1mCDF log_w if year == 2016 & log_w > 0.75
+
+      Source |       SS           df       MS      Number of obs   =        29
+-------------+----------------------------------   F(1, 27)        =    428.58
+       Model |   18.920512         1   18.920512   Prob > F        =    0.0000
+    Residual |  1.19196886        27  .044146995   R-squared       =    0.9407
+-------------+----------------------------------   Adj R-squared   =    0.9385
+       Total |  20.1124809        28  .718302888   Root MSE        =    .21011
+
+------------------------------------------------------------------------------
+   log_1mCDF |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       log_w |  -2.136242   .1031893   -20.70   0.000    -2.347969   -1.924515
+       _cons |  -.5940683   .1456295    -4.08   0.000    -.8928755   -.2952612
+------------------------------------------------------------------------------
+
+. global zeta_2016 = round(_b[log_w], 0.01)
+
+. reg log_1mCDF log_w if year == 2001 & log_w > 0.75
+
+      Source |       SS           df       MS      Number of obs   =        53
+-------------+----------------------------------   F(1, 51)        =   2218.52
+       Model |  40.5352353         1  40.5352353   Prob > F        =    0.0000
+    Residual |    .9318341        51  .018271257   R-squared       =    0.9775
+-------------+----------------------------------   Adj R-squared   =    0.9771
+       Total |  41.4670694        52  .797443643   Root MSE        =    .13517
+
+------------------------------------------------------------------------------
+   log_1mCDF |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       log_w |  -1.638013   .0347764   -47.10   0.000    -1.707829   -1.568196
+       _cons |  -1.022615    .053808   -19.00   0.000    -1.130639   -.9145909
+------------------------------------------------------------------------------
+
+. global zeta_2001 = round(_b[log_w], 0.01)
+
+. reg log_1mCDF log_w if year == 1983 & log_w > 0.75
+
+      Source |       SS           df       MS      Number of obs   =        12
+-------------+----------------------------------   F(1, 10)        =     96.51
+       Model |  5.69415301         1  5.69415301   Prob > F        =    0.0000
+    Residual |  .590012789        10  .059001279   R-squared       =    0.9061
+-------------+----------------------------------   Adj R-squared   =    0.8967
+       Total |   6.2841658        11    .5712878   Root MSE        =     .2429
+
+------------------------------------------------------------------------------
+   log_1mCDF |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       log_w |  -1.125494   .1145669    -9.82   0.000    -1.380765   -.8702229
+       _cons |  -1.715148   .2069266    -8.29   0.000    -2.176209   -1.254087
+------------------------------------------------------------------------------
+
+. global zeta_1983 = round(_b[log_w], 0.01)
+
+. 
+end of do-file
+
+. di $zeta_1983
+-1.13
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("Weighted degree") xline(0.75) ///
+>         text(-1 2 "Pr(X>x) = kx{sub: - } {stSymbol:S}", place(e)) 
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("Weighted degree") xline(0.75) ///
+>         text(-1 2 "Pr(X>x) = kx{sub: - } {stSymbol:z}", place(e)) 
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("Weighted degree") xline(0.75) ///
+>         text(-1 2 "Pr(X>x) = kx{sub:-{stSymbol:z}} ", place(e)) 
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("Weighted degree") xline(0.75) ///
+>         text(-1 2 "Pr(X>x) = kx{sup:-{stSymbol:z}} ", place(e)) 
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("Weighted degree") xline(0.75) ///
+>         text(-1 2 "Pr(X>x) = kx{sup:-{stSymbol:z}} ", place(e)) ///
+>         text(-1.4 2 "{stSymbol:z}{sub:2016} = $zeta_2016", place(e)) 
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("Weighted degree") xline(0.75) ///
+>         text(-1 2 "Pr(X>x) = kx{sup:-{stSymbol:z}} ", place(e)) ///
+>         text(-1.4 2 "{stSymbol:z}{sub:2016} = $zeta_2016", place(e)) ///
+>         text(-1.8 2 "{stSymbol:z}{sub:2001} = $zeta_2001", place(e)) ///
+>         text(-2.2 2 "{stSymbol:z}{sub:1983} = $zeta_1983", place(e))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:Weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("x = Weighted degree") xline(0.75) ///
+>         text(-1 2 "Pr(X>x) = kx{sup:-{stSymbol:z}}", place(e)) ///
+>         text(-1.4 2 "OLS estimates for x>0.75", place(e)) ///
+>         text(-1.8 2 "{stSymbol:z}{sub:2016} = $zeta_2016", place(e)) ///
+>         text(-2.2 2 "{stSymbol:z}{sub:2001} = $zeta_2001", place(e)) ///
+>         text(-2.8 2 "{stSymbol:z}{sub:1983} = $zeta_1983", place(e))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:Weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("x = Weighted degree") xline(0.75) ///
+>         text(-1 2 "Pr(X>x) = kx{sup:-{stSymbol:z}}", place(e)) ///
+>         text(-1.4 2 "OLS estimates for x>0.75", place(e)) ///
+>         text(-1.8 2 "{stSymbol:z}{sub:2016} = $zeta_2016", place(e)) ///
+>         text(-2.2 2 "{stSymbol:z}{sub:2001} = $zeta_2001", place(e)) ///
+>         text(-2.6 2 "{stSymbol:z}{sub:1983} = $zeta_1983", place(e))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:Weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("x = Weighted degree") xline(0.75) ///
+>         text(-1 2 "Pr(X>x) = kx{sup:-{stSymbol:z}}", place(e)) ///
+>         text(-1.4 2 "{b:OLS estimates} (x>0.75):", place(e)) ///
+>         text(-1.8 2 "{stSymbol:z}{sub:2016} = $zeta_2016", place(e)) ///
+>         text(-2.2 2 "{stSymbol:z}{sub:2001} = $zeta_2001", place(e)) ///
+>         text(-2.6 2 "{stSymbol:z}{sub:1983} = $zeta_1983", place(e))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:Weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("x = Weighted degree") xline(0.75) ///
+>         text(-1 2 "Pr(X>x) = kx{sup:-{stSymbol:z}}", place(e)) ///
+>         text(-1.4 2 "{bf:OLS estimates} (x>0.75):", place(e)) ///
+>         text(-1.8 2 "{stSymbol:z}{sub:2016} = $zeta_2016", place(e)) ///
+>         text(-2.2 2 "{stSymbol:z}{sub:2001} = $zeta_2001", place(e)) ///
+>         text(-2.6 2 "{stSymbol:z}{sub:1983} = $zeta_1983", place(e))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:Weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("x = Weighted degree") xline(0.75) ///
+>         text(-0.8 2 "Pr(X>x) = kx{sup:-{stSymbol:z}}", place(e)) ///
+>         text(-1.4 2 "{bf:OLS estimates} (x>0.75):", place(e)) ///
+>         text(-1.8 2 "{stSymbol:z}{sub:2016} = $zeta_2016", place(e)) ///
+>         text(-2.2 2 "{stSymbol:z}{sub:2001} = $zeta_2001", place(e)) ///
+>         text(-2.6 2 "{stSymbol:z}{sub:1983} = $zeta_1983", place(e))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:Weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("x = Weighted degree") xline(0.75) ///
+>         text(-0.8 2 "Pr(X>x) = kx{sup:-{stSymbol:z}}", place(e)) ///
+>         text(-1.4 1.9 "{bf:OLS estimates} (x>0.75):", place(e)) ///
+>         text(-1.8 2 "{stSymbol:z}{sub:2016} = $zeta_2016", place(e)) ///
+>         text(-2.2 2 "{stSymbol:z}{sub:2001} = $zeta_2001", place(e)) ///
+>         text(-2.6 2 "{stSymbol:z}{sub:1983} = $zeta_1983", place(e))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:Weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("x = Weighted degree") xline(0.75) ///
+>         text(-0.8 2 "Pr(X>x) = kx{sup:-{stSymbol:z}}", place(e)) ///
+>         text(-1.4 1.95 "{bf:OLS estimates} (x>0.75):", place(e)) ///
+>         text(-1.8 2 "{stSymbol:z}{sub:2016} = $zeta_2016", place(e)) ///
+>         text(-2.2 2 "{stSymbol:z}{sub:2001} = $zeta_2001", place(e)) ///
+>         text(-2.6 2 "{stSymbol:z}{sub:1983} = $zeta_1983", place(e))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter d x if year == 2016, msymbol(Oh)) ///
+>         (scatter d x if year == 2001, msymbol(Oh)) ///
+>         (scatter d x if year == 1983, msymbol(Oh)), legend(lab(1 "2016") lab
+> (2 "2001") lab(3 "1983"))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter d x if year == 2016, msymbol(Oh)) ///
+>         (scatter d x if year == 2001, msymbol(Oh)) ///
+>         (scatter d x if year == 1983, msymbol(Oh)), legend(lab(1 "2016") lab
+> (2 "2001") lab(3 "1983"))
+
+. graph export "$outputs/${doNum}_histTS.pdf", as(pdf)
+(file /Users/ios/Documents/GitHub/mres_paper/outputs/004_histTS.pdf written in
+>  PDF format)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:Weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("x = Weighted degree") xline(0.75) ///
+>         text(-0.8 2 "Pr(X>x) = kx{sup:-{stSymbol:z}}", place(e)) ///
+>         text(-1.4 1.95 "{bf:OLS estimates} (x>0.75):", place(e)) ///
+>         text(-1.8 2 "{stSymbol:z}{sub:2016} = $zeta_2016", place(e)) ///
+>         text(-2.2 2 "{stSymbol:z}{sub:2001} = $zeta_2001", place(e)) ///
+>         text(-2.6 2 "{stSymbol:z}{sub:1983} = $zeta_1983", place(e))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh) mlwidth(thin)) 
+> ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:Weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("x = Weighted degree") xline(0.75) ///
+>         text(-0.8 2 "Pr(X>x) = kx{sup:-{stSymbol:z}}", place(e)) ///
+>         text(-1.4 1.95 "{bf:OLS estimates} (x>0.75):", place(e)) ///
+>         text(-1.8 2 "{stSymbol:z}{sub:2016} = $zeta_2016", place(e)) ///
+>         text(-2.2 2 "{stSymbol:z}{sub:2001} = $zeta_2001", place(e)) ///
+>         text(-2.6 2 "{stSymbol:z}{sub:1983} = $zeta_1983", place(e))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh) mlwidth(thin)) 
+> ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh) mlwidth(thin))
+>  ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh) mlwidth(thin))
+> , ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:Weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("x = Weighted degree") xline(0.75) ///
+>         text(-0.8 2 "Pr(X>x) = kx{sup:-{stSymbol:z}}", place(e)) ///
+>         text(-1.4 1.95 "{bf:OLS estimates} (x>0.75):", place(e)) ///
+>         text(-1.8 2 "{stSymbol:z}{sub:2016} = $zeta_2016", place(e)) ///
+>         text(-2.2 2 "{stSymbol:z}{sub:2001} = $zeta_2001", place(e)) ///
+>         text(-2.6 2 "{stSymbol:z}{sub:1983} = $zeta_1983", place(e))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD01084.000000"
+
+. graph export "$outputs/${doNum}_powerLawTS.pdf", as(pdf)
+(file /Users/ios/Documents/GitHub/mres_paper/outputs/004_powerLawTS.pdf writte
+> n in PDF format)
+
+. 
+end of do-file
+
