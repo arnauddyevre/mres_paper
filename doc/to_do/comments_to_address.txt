@@ -1,0 +1,26 @@
+Comments Xavier 07/03/2020
+	- There are two ways to edogenise markups:
+		- variable elasticity of substitution for consumers
+		- Atkeson and Burstein (2008), keep CES but add strategic interactions between firms (game theory)
+	- Need to endogenise markups at some point, to really make it an important contribution
+	- See work by Raval (federal Trade Commission), which uses various variable inputs to infer a better measure of markups
+	- Don't do comparative statics on markups, strange, do it on productivity increase instead
+	- explore si il y a des markups plus importants dans des parties centrales du reseau
+	- Skype with Francesco Nava
+
+Comments Peter 01/03/2020
+	- Use industry-specific price-deflator (see email)
+	- Shut down markups to get an interesting counterfactual
+	- Show extensive and intensive margins for descriptive statistics on links
+	- Show extensive and intensive margins for the Pareto distributions
+	- Before showing the weighted degree, show the simple unweighted statistic
+	- Present the in-degree/out-degree dichotomy in terms of monopoly power/monopsony
+	- Don't include financial firms
+	- profits: they should not be rebated! If markups -> this is only a waste
+	- Drop capital and labour (or keep only labour being supplied inelastically)
+	- Start with a time trend in markups, endogenise it later
+	- Nash bargaining, make the bargaining occur over the total slaes being supplied to the customer rather than generic sales
+	- Show how markup correlates with the position in the value chain
+	- Plot how many people I supply to versus how many I buy from
+
+Comments Yannick 26/02/2020

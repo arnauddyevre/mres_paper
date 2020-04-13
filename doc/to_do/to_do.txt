@@ -1,4 +1,5 @@
 Read:
+- Read Bond Hashemi Kaplan Zoch (2020) Some unpleasant markup arithmetic
 - Amiti Itskhoki & Konings (2019) International Shocks, Variable Markups, and Domestic Prices
 	Suggestion Xavier
 - Read Bjerre-Nielsen (2020): Jopurnal of economic theory - for network formation model
@@ -31,6 +32,8 @@ di Giovanni Levchenko & Mejean (2014) Firms destinations & agg fluctuations [FRE
 Ideas:
 	- Uses the envelope theorem to get rid of one of the two optimisation problems (link choice and cost minimisation)
 	- Show a summary of welfare losses under different markup estimation strategies
+	- Get one proof to be about convergence
+	- Get one result showing a trade-off (for instance high markups reward innovators but prevent innovation into other parts of the network)
 
 Robustness check:
 	- Presented as in https://twitter.com/hhsievertsen/status/1188780383736909825
@@ -54,6 +57,7 @@ Refine:
 	- Larger theoretical paper: different models of growth and technological change nested in network theory of growth
 	- Tax evasion as a cause of the rise of profitability of big firms -> decline of dynamism
 	(- Relate compustat data to Patents?)
+- Write a "companion paper" on the salient features of the US production network and features of Input-Output matrices
 
 Include:
 	- Proof
