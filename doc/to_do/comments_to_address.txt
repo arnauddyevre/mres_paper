@@ -1,3 +1,10 @@
+Comments cohort seminar 16/04/2020
+	- Check Liu (2017): QJE (Tim Dobermann) -> Can't find it!
+	- small players (likely below the threshold) are unimportant (Pete)
+	- Relate network to elasticities
+	- Use Melitz (2003) or Melitz & Ottaviano (2008)
+	- Model the markups as firms investing in making their products less substitutable (invest in making sigma lower for their buyers)
+
 Comments Xavier 07/03/2020
 	- There are two ways to edogenise markups:
 		- variable elasticity of substitution for consumers
