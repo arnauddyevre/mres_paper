@@ -1967,3 +1967,175 @@ end of do-file
 . 
 end of do-file
 
+------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_paper/log/004_summaryStats.log
+  log type:  text
+ opened on:  30 Apr 2020, 11:47:51
+
+. 
+end of do-file
+
+. use "$data/003_fullNet2019.dta", clear
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD42809.000000"
+
+. forval y=1980(3)2016{
+  2.         use "$data/003_fullNet`y'.dta", clear
+  3.         drop if Weight<=0.11
+  4.         collapse (firstnm) conm_customer (sum) Weight (mean) sales_custom
+> er, by(Source)
+  5. 
+.         *generating histogram of weighted degree
+.         kdensity Weight, bwidth(0.5) gen(x d) nograph
+  6.         gen year = `y'
+  7.         
+.         *Generating data to show the Pareto tail
+.         sort Weight
+  8.         gen n = _n
+  9.         gen ln_n = ln(n)
+ 10.         gen ln_w = ln(Weight)
+ 11.         gen CDF = n/_N
+ 12.         gen log_1mCDF = log(1 - CDF)
+ 13.         gen ln_1mCDF = ln(1 - CDF)
+ 14.         gen log_w = log(Weight)
+ 15. 
+.         save "$data/${doNum}_hist`y'_out.dta", replace
+ 16.         }
+(256 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist19
+> 80_out.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1980_out.
+> dta saved
+(582 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist19
+> 83_out.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1983_out.
+> dta saved
+(869 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist19
+> 86_out.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1986_out.
+> dta saved
+(798 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist19
+> 89_out.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1989_out.
+> dta saved
+(916 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist19
+> 92_out.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1992_out.
+> dta saved
+(1,070 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist19
+> 95_out.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1995_out.
+> dta saved
+(1,207 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+(1 missing value generated)
+(1 missing value generated)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist19
+> 98_out.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist1998_out.
+> dta saved
+(1,544 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist20
+> 01_out.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist2001_out.
+> dta saved
+(1,759 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+(1 missing value generated)
+(1 missing value generated)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist20
+> 04_out.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist2004_out.
+> dta saved
+(1,714 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist20
+> 07_out.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist2007_out.
+> dta saved
+(1,914 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist20
+> 10_out.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist2010_out.
+> dta saved
+(2,260 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist20
+> 13_out.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist2013_out.
+> dta saved
+(2,180 observations deleted)
+(1 missing value generated)
+(1 missing value generated)
+(note: file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist20
+> 16_out.dta not found)
+file /Users/ios/Documents/GitHub/mres_paper/data/001_network/004_hist2016_out.
+> dta saved
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD42809.000000"
+
+. use "$data/${doNum}_hist2016_out.dta", clear
+
+. append using "$data/${doNum}_hist1983_out.dta"
+
+. append using "$data/${doNum}_hist2001_out.dta"
+
+. 
+. twoway (scatter d x if year == 2016, msymbol(Oh)) ///
+>         (scatter d x if year == 2001, msymbol(Oh)) ///
+>         (scatter d x if year == 1983, msymbol(Oh)), legend(lab(1 "2016") lab
+> (2 "2001") lab(3 "1983"))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD42809.000000"
+
+. twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 2001, msymbol(Oh)) ///
+>         (scatter log_1mCDF log_w if year == 1983, msymbol(Oh)), ///
+>         legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) sub
+> title("log(1 - F({it:weighted degree}))", pos(11)) ///
+>         ytitle("") xtitle("Weighted degree") xline(0.75)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD42809.000000"
+
+. use "$data/${doNum}_hist2016.dta", clear
+
+. 
+end of do-file
+
+. sort Weight
+
