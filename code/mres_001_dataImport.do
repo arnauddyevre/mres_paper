@@ -28,8 +28,9 @@ set matsize 10000
 *ssc install strip
 
 *Paths
-global wd "C:/Users/dyevre/Documents/mres_paper"
-global orig "C:/Users/dyevre/Downloads/mres_paper_orig"							//using this folder for heavy files, otherwise I cannot commit to GitHub
+
+global wd "/Users/ios/Documents/GitHub/mres_paper"
+global orig "/Users/ios/Documents/mres_paper_orig"							// I'm using a different orig folder so as not to commit large datasets to GitHub
 global data "$wd/data"
 global outputs "$wd/outputs"
 global doc "$wd/doc"
@@ -68,8 +69,8 @@ gen links = 1
 gen freq = 1
 collapse freq (sum) links, by(year conm)
 collapse links (sum) freq, by(year)
-twoway (scatter links year, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(range(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(dkgreen))) ///
-	(scatter freq year, connect(direct) msymbol(O) mfcolor(white) yaxis(2) yscale(range(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(dkorange))), ///
+twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(range(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(dkgreen))) ///
+	(scatter freq year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(2) yscale(range(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(dkorange))), ///
 	legend(off) xtitle("")
 graph export "$outputs/${doNum}_descriptives/${doNum}_links&Companies.pdf", as(pdf) replace
 

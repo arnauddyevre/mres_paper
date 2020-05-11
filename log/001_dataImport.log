@@ -1149,3 +1149,149 @@ end of do-file
 . 
 . *log
 . cap log close
+-------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_paper/log/001_dataImport.log
+  log type:  text
+ opened on:   5 May 2020, 15:34:38
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD02748.000000"
+
+. import delimited "$orig/compustat_segment_customer_76_19.csv", clear
+(16 vars, 549,451 obs)
+
+. tostring srcdate, gen(dataStr)
+dataStr generated as str8
+
+. gen year = substr(dataStr, 1, 4)
+
+. destring year, replace
+year: all characters numeric; replaced as int
+
+. drop srcdate dataStr
+
+. tab ctype, sort
+
+      ctype |      Freq.     Percent        Cum.
+------------+-----------------------------------
+    COMPANY |    315,926       57.50       57.50
+     GEOREG |    107,725       19.61       77.10
+     MARKET |     83,282       15.16       92.26
+     GOVDOM |     36,083        6.57       98.83
+     GOVFRN |      4,665        0.85       99.68
+   GOVSTATE |      1,228        0.22       99.90
+     GOVLOC |        542        0.10      100.00
+------------+-----------------------------------
+      Total |    549,451      100.00
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD02748.000000"
+
+. graph hbar (count), over(ctype, sort(1) descending)             ///
+>         title("Types of links") ylabel(, grid)
+
+. graph export "$outputs/${doNum}_descriptives/${doNum}_histTypeOfLinks.pdf", as(pdf) replace
+(file /Users/ios/Documents/GitHub/mres_paper/outputs/001_descriptives/001_histTypeOfLinks.pdf wri
+> tten in PDF format)
+
+. 
+. *Number of links over time and number of companies over time
+. drop if ctype!="COMPANY"
+(233,525 observations deleted)
+
+. gen links = 1
+
+. gen freq = 1
+
+. collapse freq (sum) links, by(year conm)
+
+. collapse links (sum) freq, by(year)
+
+. twoway (scatter links year, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(range(1.5
+>  4) axis(1)) ytitle("Average number of customers", axis(1) color(dkgreen))) ///
+>         (scatter freq year, connect(direct) msymbol(O) mfcolor(white) yaxis(2) yscale(range(0 4
+> 000) axis(2)) ytitle("Total number of companies", axis(2) color(dkorange))), ///
+>         legend(off) xtitle("")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD02748.000000"
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) ys
+> cale(range(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(dkgreen))) ///
+>         (scatter freq year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(2) ys
+> cale(range(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(dkorange))), ///
+>         legend(off) xtitle("")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD02748.000000"
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) ys
+> cale(range(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(dkgreen))) ///
+>         (scatter freq year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(2) ys
+> cale(range(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(dkorange))), ///
+>         legend(off) xtitle("")
+
+. graph export "$outputs/${doNum}_descriptives/${doNum}_links&Companies.pdf", as(pdf) replace
+(file /Users/ios/Documents/GitHub/mres_paper/outputs/001_descriptives/001_links&Companies.pdf wri
+> tten in PDF format)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD02748.000000"
+
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Useful packages
+. /*net install scheme-modern, from("https://raw.githubusercontent.com/mdroste/stata-scheme-moder
+> n/master/")
+> ssc install gtools
+> gtools, upgrade*/
+. 
+. set scheme modern, perm
+(set scheme preference recorded)
+
+. 
+. *Paths
+. global wd "/Users/ios/Documents/GitHub/mres_paper"
+
+. global orig "/Users/ios/Documents/mres_paper_orig"                                             
+>          // I'm using a different orig folder so as not to commit large datasets to GitHub
+
+. global data "$wd/data/007_welfare"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. global DLEU "$orig/Data DLEU"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "007"                                      
+
+. 
+. *log
+. cap log close

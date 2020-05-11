@@ -1,0 +1,10 @@
+Arnaud Dyevre
+
+Market power and production networks: the welfare consequences of marginalisation along supply chains
+
+In this ongoing work, I study the evolution of the US production network and how it has amplified the welfare cost of market power on final consumers.
+Using firm-to-firm trade data from 1975 to 2019, I first document two facts about the American production network: (1) Supply chains have become longer and (2) firms have become connected to more suppliers and more customers.
+Using firm-level markup estimates, I then quantify the impact of markups applied at all stages of the supply chain on final consumers. My preliminary estimates suggest that the cost of markups applied by upstream suppliers has increased since 1975, and ignoring it would underestimate the welfare costs of market power by 11%.
+
+
+

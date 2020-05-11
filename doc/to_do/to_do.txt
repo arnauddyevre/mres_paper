@@ -29,6 +29,23 @@ Read:
 di Giovanni Levchenko & Mejean (2014) Firms destinations & agg fluctuations [FRENCH DATA]
 - Gabaix, Xavier, Jean-Michel Lasry, Pierre-Louis Lions, and Benjamin Moll (2016) The Dynamics of Inequality
 
+Improve empirics:
+	- Use sector-specific deflators provided by Pete
+
+Counterfactual analysis:
+	- Get a metric for welfare losses
+	- Show that the reduction in welfare can be due to:
+		- Increase in markups within firms +
+		- Increase in length of value chains
+		- Increase in connectedness of supply chain
+		- Reallocation of production to high markup firms
+		- reallocation of supply chain toward high betweeness centrality firms
+		- Net entry of firms, which come at different stages of the value chain
+
+
+Big problem:
+	- Share of imported inputs is higher for bigger firms
+
 Ideas:
 	- Uses the envelope theorem to get rid of one of the two optimisation problems (link choice and cost minimisation)
 	- Show a summary of welfare losses under different markup estimation strategies

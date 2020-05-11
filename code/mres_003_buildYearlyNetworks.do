@@ -133,19 +133,20 @@ use "$data/${doNum}_fullNet.dta", clear
 keep if _merge_customer == 3
 
 *generating 3 year windows
-gen year3 = floor((year-2)/3)*3+3													// so that 1976, 1977 and 1978 are grouped in year3 = 1977
+*gen year3 = floor((year-2)/3)*3+3-1													// so that 1976, 1977 and 1978 are grouped in year3 = 1977
 
-collapse (firstnm) conm_customer conm_supplier (sum) sale* , by(year3 sic_supplier sic_customer gvkey_supplier gvkey_customer comp_customer comp_supplier)
+collapse (firstnm) conm_customer conm_supplier (sum) sale* , by(/*year3*/ year sic_supplier sic_customer gvkey_supplier gvkey_customer comp_customer comp_supplier)
 gen share = salecs_supplier/sales_supplier
 replace share = 1 if share>=1
 replace share = . if share<0
 replace share = 0.1 if share == 0
-hist share, freq
-levelsof year3
+*hist share, freq
+*levelsof year3
+levelsof year
 
 foreach y in `r(levels)'{
 	preserve
-	keep if year3 == `y'
+	keep if /*year3*/ year == `y'
 	compress
 	
 	*Creating edge list
@@ -166,9 +167,9 @@ foreach y in `r(levels)'{
 	use "$data/${doNum}_allcomp.dta", clear
 	compress
 	do "$code/mres_xxx_coarseningSIC"
-	gen year3 = floor((year-2)/3)*3+3
-	keep if year3 == `y'
-	replace sales = . if year3!=`y'
+	gen year3 = floor((year-2)/3)*3+3-1
+	keep if /*year3*/ year == `y'
+	replace sales = . if /*year3*/ year !=`y'
 	collapse (firstnm) conm comp sic coarseSIC (mean) sales, by(gvkey) fast
 	rename gvkey Id
 	rename conm Label
