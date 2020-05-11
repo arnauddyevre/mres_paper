@@ -48,11 +48,211 @@ log using "$log/${doNum}_robustnessIOTables", text append
 
 
 /*******************************************************************************
-	Robustness of statistics for introduction
+	Robustness of statistics for introduction - Using IO tables
 *******************************************************************************/
 
+* 1963-1996
+
+*Using the historical use tables
+forval y = 1963/1996{
+	qui{
+		import excel "https://apps.bea.gov/industry/xls/io-annual/IOUse_Before_Redefinitions_PRO_1963-1996_Summary.xlsx", sheet("`y'") cellrange(A7) firstrow clear
+		compress
+		save "$data/${doNum}_orig`y'_use", replace
+		*https://apps.bea.gov/industry/xls/io-annual/IOUse_Before_Redefinitions_PRO_1963-1996_Summary.xlsx
+		foreach v of var * {
+			local lbl : var label `v'
+			local lbl = strtoname("`lbl'")
+			rename `v' code`lbl'
+			}
+		ren codeCode Code
+		ren codeCom Commodity_Description
+		foreach v of varlist code_111CA-code_81{
+			replace `v' = "" if `v' == "..."
+			destring `v', replace
+			}
+			
+		drop if Code == "GFG" | Code == "GFE" | Code == "GSLG" | Code == "GSLE" | Code == "Used" | Code == "Other" 
+		local extraObs = _N+3
+		set obs `extraObs'
+	
+		local extraObs = _N
+		local extraObs_4 = `extraObs'-4
+		local extraObs_2 = `extraObs'-2
+		local extraObs_1 = `extraObs'-1
+		
+		replace Comm = "Count" in `extraObs_2'
+		replace Comm = "Weight" in `extraObs_1'
+		replace Comm = "Sum" in `extraObs'
+
+		foreach v of varlist code_111CA-code_81{
+			count if `v'!=. & `v'!=0 & Code!="T007"
+			replace `v' = `r(N)' in `extraObs_2'
+			replace `v' = `r(N)'* `v'[`extraObs_4'] in `extraObs'
+			}
+		egen rowsum = rowtotal(code_111CA-code_81)
+		egen rowmean = rowmean(code_111CA-code_81)
+		}
+	global av`y' = rowsum[`extraObs']/rowsum[`extraObs_4']
+	global av`y'_unweighted = rowmean[`extraObs_2']
+	di ${av`y'}, ${av`y'_unweighted}
+	}
+
+clear
+set obs 34
+gen degree = .
+gen degree_unweighted = .
+gen y = .
+forval y = 1963/1996{
+	local pos = `y' - 1962
+	replace degree = ${av`y'} in `pos'
+	replace degree_unweighted = ${av`y'_unweighted} in `pos'
+	replace y = `y' in `pos'
+	}
+save "$data/${doNum}_use_6396", replace
+twoway (scatter degree y, connect(direct)) ///
+	(scatter degree_unweighted y, connect(direct)) 
 
 
+*Using the historical make tables
+forval y = 1963/1996{
+	qui{
+		import excel "https://apps.bea.gov/industry/xls/io-annual/IOMake_Before_Redefinitions_1963-1996_Summary.xlsx", sheet("`y'") cellrange(A7) firstrow clear
+		compress
+		save "$data/${doNum}_orig`y'_make", replace
+		foreach v of var * {
+			local lbl : var label `v'
+			local lbl = strtoname("`lbl'")
+			rename `v' code`lbl'
+			}
+		ren codeCode Code
+		ren codeIndustry Commodity_Description
+		foreach v of varlist code_111CA-code_81{
+			replace `v' = "" if `v' == "..."
+			destring `v', replace
+			}
+			
+		drop if Code == "GFG" | Code == "GFE" | Code == "GSLG" | Code == "GSLE" | Code == "Used" | Code == "Other" 
+		local extraObs = _N+3
+		set obs `extraObs'
+	
+		local extraObs = _N
+		local extraObs_4 = `extraObs'-4
+		local extraObs_2 = `extraObs'-2
+		local extraObs_1 = `extraObs'-1
+		
+		replace Comm = "Count" in `extraObs_2'
+		replace Comm = "Weight" in `extraObs_1'
+		replace Comm = "Sum" in `extraObs'
+
+		foreach v of varlist code_111CA-code_81{
+			count if `v'!=. & `v'!=0 & Code!="T007"
+			replace `v' = `r(N)' in `extraObs_2'
+			replace `v' = `r(N)'* `v'[`extraObs_4'] in `extraObs'
+			}
+		egen rowsum = rowtotal(code_111CA-code_81)
+		egen rowmean = rowmean(code_111CA-code_81)
+		}
+	global av`y' = rowsum[`extraObs']/rowsum[`extraObs_4']
+	global av`y'_unweighted = rowmean[`extraObs_2']
+	di ${av`y'}, ${av`y'_unweighted}
+	}
+
+gen degree = .
+gen degree_unweighted = .
+gen y = .
+forval y = 1963/1996{
+	local pos = `y' - 1962
+	replace degree = ${av`y'} in `pos'
+	replace degree_unweighted = ${av`y'_unweighted} in `pos'
+	replace y = `y' in `pos'
+	}
+twoway (scatter degree y, connect(direct)) ///
+	(scatter degree_unweighted y, connect(direct)) 	
+	
+*1997-2018
+forval y=1997/2018{
+	qui{
+		import excel "$orig/Input Output tables 1997-2018/`y'.xls", cellrange(A6) firstrow clear
+		drop BV-CV
+		foreach v of var * {
+			local lbl : var label `v'
+			local lbl = strtoname("`lbl'")
+			rename `v' code`lbl'
+			}
+		*dropping observations that are not present in the earlier input-output tables
+		*drop if code == "441" | code == "445" |code == "452" |code == "4A0" |code == "HS" |code == "ORE" |code == "623"
+		*drop code
+		drop if codeCommodities == ""
+		*drop code_441 code_445 code_452 code_4A0 codeHS codeORE code_623
+		drop if _n == 1
+		foreach v of varlist code_111CA-code_81{
+			replace `v' = "" if `v' == "..."
+			destring `v', replace
+			}
+			
+		drop if code == "GFG" | code == "GFE" | code == "GSLG" | code == "GSLE" | code == "Used" | code == "Other" | /// 
+			code == "GFGD" | code == "GFGN" | code == "V001" | code == "V002" | code == "V003" | ///
+			code == "" & codeCommodities!="Total Value Added"
+		
+		local extraObs = _N+3
+		set obs `extraObs'
+	
+		local extraObs = _N
+		local extraObs_4 = `extraObs'-4
+		local extraObs_2 = `extraObs'-2
+		local extraObs_1 = `extraObs'-1
+		
+		replace codeComm = "Count" in `extraObs_2'
+		replace codeComm = "Weight" in `extraObs_1'
+		replace codeComm = "Sum" in `extraObs'
+
+		foreach v of varlist code_111CA-code_81{
+			count if `v'!=. & `v'!=0 & codeComm!="Total Value Added"
+			replace `v' = `r(N)' in `extraObs_2'
+			replace `v' = `r(N)'* `v'[`extraObs_4'] in `extraObs'
+			}
+		egen rowsum = rowtotal(code_111CA-code_81)
+		egen rowmean = rowmean(code_111CA-code_81)
+		}
+	global av`y' = rowsum[`extraObs']/rowsum[`extraObs_4']
+	global av`y'_unweighted = rowmean[`extraObs_2']
+	di ${av`y'}, ${av`y'_unweighted}
+	}
+
+clear
+set obs 22
+gen degree = .
+gen degree_unweighted = .
+gen y = .
+forval y = 1997/2018{
+	local pos = `y' - 1996
+	replace degree = ${av`y'} in `pos'
+	replace degree_unweighted = ${av`y'_unweighted} in `pos'
+	replace y = `y' in `pos'
+	}
+save "$data/${doNum}_use_9718", replace
+twoway (scatter degree y, connect(direct)) ///
+	(scatter degree_unweighted y, connect(direct)) 
+
+use "$data/${doNum}_use_6396", clear
+append using "$data/${doNum}_use_9718"
+twoway (scatter degree y, connect(direct)) ///
+	(scatter degree_unweighted y, connect(direct))
+
+
+
+
+
+replace 
+
+di Otherservicesexceptgovernmen[1]
+
+rename Otherservicesexceptgovernmen `Otherservicesexceptgovernmen[1]'
+
+replace 
+
+*Using historical tables
 
 
 

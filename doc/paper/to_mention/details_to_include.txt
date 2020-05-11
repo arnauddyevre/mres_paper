@@ -1,0 +1,12 @@
+Details to include in the paper at some point
+
+International marginalisation
+- This project does not look at marginalisation from international suppliers. Supply chains have increased in length even more so at the international level than at the domestic one. The total welfare costs of marginalisation are likely to be higher when foreign suppliers are taken into account. Jan de Loecker and jan Eeckhout document a rise in markups of large firms around the world (2019: Global Market Power).
+
+Make-Use I-O tables
+- The Make table shows the value of each commodity produced by each industry, using producers' prices. See the definition p. "Glossary-19" of the IO manual https://www.bea.gov/sites/default/files/methodologies/IOmanual_092906.pdf.
+- The Use table: Matrix that shows the consumption of commodities by each industry or final user.
+- Total requirement table: Leontief inverse
+
+Advantages and disadvantages of the input-output tables and the firm-to-firm trade data
+- firm-to-firm: The firm-to-firm trade data allows me to study the long-term evolution of network-marginalisation, at the cost of missing some firm to firm links. The Input-output tables have the advantage of capturing all transactions in the US economy, but their scattered avalability makes it hard to follow the evolution of network-marginalisation more frequently.
