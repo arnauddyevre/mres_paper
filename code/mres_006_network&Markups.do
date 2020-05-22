@@ -32,7 +32,7 @@ set scheme modern, perm
 *Paths
 global wd "/Users/ios/Documents/GitHub/mres_paper"
 global orig "/Users/ios/Documents/mres_paper_orig"							// I'm using a different orig folder so as not to commit large datasets to GitHub
-global data "$wd/data/006_network&Markups"
+global data "$orig/Data_output/006_network&Markups"
 global outputs "$wd/outputs"
 global doc "$wd/doc"
 global code "$wd/code"
@@ -52,8 +52,8 @@ log using "$log/${doNum}_network&Markups", text append
 *******************************************************************************/
 
 *Getting the markups in a usable + portable format
-forval y = 1976/2016{
-	use "$wd/data/005_markups/temp_file.dta", clear
+forval y = 1963/2016{
+	use "$orig/Data_output/005_markups/temp_file.dta", clear
 	destring gvkey, replace
 	keep if year == `y'
 	gen mu = mu_1					// measure of markups used in the welfare analysis

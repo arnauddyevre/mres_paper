@@ -1,3 +1,4 @@
 
 - Keep customer other than companies in the dataset (ex: government, market)
 - Check with Compustat that the increase in the number of links is not an artifact of reporting
+- Use production function estimation with factor augmenting tech as in Demirer (2020)

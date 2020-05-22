@@ -1,5 +1,63 @@
 Details to include in the paper at some point
 
+Theory:
+- proof about the speed of decay of the impact of markups along the value chain
+- Decomposition of the impact of greater markups:
+	- Level 1 markups
+	- Higher level markups
+	- Longer supply chains
+	- Composition - Firms with higher markups have higher market shares
+	Firms with higher market shares have more suppliers
+- Stylised facts that the model should deliver:
+	- More productive/bigger firms have higher markups
+	- More productive/bigger firms have more connections
+	- Incomplete pass through of cost shocks
+- Comparative statics:
+	- Increase in productivity leads firms to have more suppliers
+	- Increase in productivity percolates through the network but less than 1-for-1 passthrough
+
+Acknowledge the contribution of the trade literature:
+	- See the paper by "Importers, Exporters, and Exchange Rate Disconnect"
+
+Vertical integration:
+	- Find a way to include a discussion about it
+	- comments Johannes: try to think about the impact of vertical integration
+	- Read paper by Kory Kroft and Matthew J. Notowidigdo "A New Empirical Method for Valuing Product Variety". Interesting estimate of product variety!
+
+Motivation of the paper:
+- Paper takes a historical perspective on the evolution of supply chains. Unlike other papers.
+- Baqaee and 
+- Motivation of the paper: This paper presents a model to study both how the extensive margin of the input-output matrix evolves (which suppliers are being chosen), and the intensive one: how much input is being sourced.
+
+Plug:
+- Morrishima elasticity
+- Allen-Uzawa elasticity
+
+Comments from Xaviers:
+- Non-homothetic preferences and their impact on the propagation of shocks or the formation of the network (see this appendix of their paper on HA in IO network: https://scholar.harvard.edu/files/farhi/files/ha-io-appendix.pdf)
+- Include CES production functions and not Cobb-Douglas
+- Clearly state difference of paper compared to what is done before
+- Gain dus a la co plexification fu reseau: plus d'innovation, plus de variete, qualite des produits
+- Think about estimation of markups with monopsony power. Firms don't take inputs as given
+
+Get a dynamic version of the model where productivity follows a continuous Ulen-Olenbeck difussion process
+
+Show how degree and markups are connected, we should expect higher markup associated with more 
+
+What the model should deliver:
+	- Variable markups
+	- Endogenous network formation
+	- One stylised fact about markups on the value chain (for instance higher markups  at earlier stages of the value chain)
+
+Comments on assumptions and strength of the results:
+- See how work relates to other work
+
+Stylised facts about the US production network:
+- Long data section describing the facts. To be put in perspective with data on firm-to-firm trade
+
+Summary of the model:
+- Use graph as in EC539 assignment
+
 International marginalisation
 - This project does not look at marginalisation from international suppliers. Supply chains have increased in length even more so at the international level than at the domestic one. The total welfare costs of marginalisation are likely to be higher when foreign suppliers are taken into account. Jan de Loecker and jan Eeckhout document a rise in markups of large firms around the world (2019: Global Market Power).
 
@@ -10,3 +68,8 @@ Make-Use I-O tables
 
 Advantages and disadvantages of the input-output tables and the firm-to-firm trade data
 - firm-to-firm: The firm-to-firm trade data allows me to study the long-term evolution of network-marginalisation, at the cost of missing some firm to firm links. The Input-output tables have the advantage of capturing all transactions in the US economy, but their scattered avalability makes it hard to follow the evolution of network-marginalisation more frequently.
+
+History of the input-output analysis:
+- In the 1930s and 1940s, Nobel laureate Wassily W. Leontief developed I-O tables as a tool for economic analysis and created the first modern-day I-O tables for the United States. While teaching at Harvard University, Leontief constructed I-O tables for the U.S. economy for the years 1919, 1929, and 1939.5 Leontief’s I-O model was partly inspired by the Walrasian (Leon Walras, 1834-1910) analysis of general equilibrium via interindustry flows, which in turn was inspired by Que-snay’s (Francois Quesnay, 1694-1774) Tableau Economique. The economic theo-ries of both Quesnay and Walras were based on the concept of a “closed model.” In closed models, all economic sectors are considered both producers and consumers; households are treated as an industry whose output is labor and whose inputs are the commodities it consumes. Such models “do not lend themselves readily to algebraic manipulation since they are completely circular with no exogenous vari-ables.”6 In contrast, Leontief’s I-O model recognized that the object of economic
+activity is the satisfaction of final demand. In the I-O system, final demand (house-hold consumption, government consumption and investment, private investment, and exports) is assumed to be determined by outside factors, so the system is called an “open model.” As Leontief stated, “Input-output analysis is a practical exten-sion of the classical theory of general independence which views the whole econ-omy of a region, a country, and even the entire world as a single system and sets out to describe and to interpret its operation in terms of directly observable basic structural relationships.”
+(from BEA description of Input-Output methodology: https://www.bea.gov/sites/default/files/methodologies/IOmanual_092906.pdf)

@@ -24494,3 +24494,1025 @@ end of do-file
 . 
 end of do-file
 
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_paper/log/007_welfare.log
+  log type:  text
+ opened on:  12 May 2020, 19:34:25
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD12005.000000"
+
+. forval y = 1976/1976{
+  2. 
+. qui{
+  3. 
+. *Adding a_ij's i.e. input expenditures as a share of sales
+. use "$wd/data/001_network/003_fullNet`y'.dta", clear
+  4. collapse (sum) salecs_supplier (mean) sales_customer (firstnm) comp_suppli
+> er comp_customer , by(Source Target year)
+  5. gen a = salecs_supplier/sales_customer
+  6. keep Source comp_supplier comp_customer Target /*year3*/ year a
+  7. *rename year3 year
+. replace a = 1 if a>1
+  8. save "$data/007_aij`y'.dta", replace
+  9. 
+. *Starting from the supply chain
+. use "$wd/data/006_network&Markups/006_endPoint`y'_wide.dta", clear
+ 10. 
+. *Getting the sales share of the end point
+. rename endPoint_0 gvkey
+ 11. gen year = `y'
+ 12. merge m:1 gvkey year using "$wd/data/006_network&Markups/006_markups`y'.dt
+> a", keepusing(mu_1 sale)
+ 13. drop if _merge == 2
+ 14. drop _merge
+ 15. }
+ 16. }
+file
+    /Users/ios/Documents/GitHub/mres_paper/data/001_network/003_fullNet1976.d
+    > ta not found
+r(601);
+
+end of do-file
+
+r(601);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD12005.000000"
+
+. forval y = 1976/1976{
+  2. 
+. qui{
+  3. 
+. *Adding a_ij's i.e. input expenditures as a share of sales
+. use "$data/001_network/003_fullNet`y'.dta", clear
+  4. collapse (sum) salecs_supplier (mean) sales_customer (firstnm) comp_suppli
+> er comp_customer , by(Source Target year)
+  5. gen a = salecs_supplier/sales_customer
+  6. keep Source comp_supplier comp_customer Target /*year3*/ year a
+  7. *rename year3 year
+. replace a = 1 if a>1
+  8. save "$data/007_welfare/007_aij`y'.dta", replace
+  9. 
+. *Starting from the supply chain
+. use "$data/006_network&Markups/006_endPoint`y'_wide.dta", clear
+ 10. 
+. *Getting the sales share of the end point
+. rename endPoint_0 gvkey
+ 11. gen year = `y'
+ 12. merge m:1 gvkey year using "$data/006_network&Markups/006_markups`y'.dta",
+>  keepusing(mu_1 sale)
+ 13. drop if _merge == 2
+ 14. drop _merge
+ 15. }
+ 16. }
+file
+    /Users/ios/Documents/GitHub/mres_paper/data/007_welfare/001_network/003_f
+    > ullNet1976.dta not found
+r(601);
+
+end of do-file
+
+r(601);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD12005.000000"
+
+. 
+. /****************************************************************************
+> ***
+>         
+>         DESCRIPTION: Generation of welfare statistics
+>         
+>         INFILES:        - 
+>         
+>         OUTFILES:       - 
+>         
+>         LOG: Created 04/05/2020
+>                         Last modified XX/05/2020
+>         
+> *****************************************************************************
+> **/
+. 
+. /****************************************************************************
+> ***
+>         SETUP
+> *****************************************************************************
+> **/
+. 
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Useful packages
+. /*net install scheme-modern, from("https://raw.githubusercontent.com/mdroste/
+> stata-scheme-modern/master/")
+> ssc install gtools
+> gtools, upgrade*/
+. 
+. set scheme modern, perm
+(set scheme preference recorded)
+
+. 
+. *Paths
+. global wd "/Users/ios/Documents/GitHub/mres_paper"
+
+. global orig "/Users/ios/Documents/mres_paper_orig"                           
+>                            // I'm using a different orig folder so as not to 
+> commit large datasets to GitHub
+
+. global data "$orig/Data_output"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. global DLEU "$orig/Data DLEU"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "007"                                      
+
+. 
+. *log
+. cap log close
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_paper/log/007_welfare.log
+  log type:  text
+ opened on:  12 May 2020, 19:36:30
+
+. 
+. 
+. /****************************************************************************
+> ***
+>         Getting the all the supply chains leading to final demand
+> *****************************************************************************
+> **/
+. 
+. forval y = 1976/1976{
+  2. 
+. qui{
+  3. 
+. *Adding a_ij's i.e. input expenditures as a share of sales
+. use "$data/001_network/003_fullNet`y'.dta", clear
+  4. collapse (sum) salecs_supplier (mean) sales_customer (firstnm) comp_suppli
+> er comp_customer , by(Source Target year)
+  5. gen a = salecs_supplier/sales_customer
+  6. keep Source comp_supplier comp_customer Target /*year3*/ year a
+  7. *rename year3 year
+. replace a = 1 if a>1
+  8. save "$data/007_welfare/007_aij`y'.dta", replace
+  9. 
+. *Starting from the supply chain
+. use "$data/006_network&Markups/006_endPoint`y'_wide.dta", clear
+ 10. 
+. *Getting the sales share of the end point
+. rename endPoint_0 gvkey
+ 11. gen year = `y'
+ 12. merge m:1 gvkey year using "$data/006_network&Markups/006_markups`y'.dta",
+>  keepusing(mu_1 sale)
+ 13. drop if _merge == 2
+ 14. drop _merge
+ 15. }
+ 16. }
+
+. stop
+command stop is unrecognized
+r(199);
+
+end of do-file
+
+r(199);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD12005.000000"
+
+. 
+. forval y = 1976/1976{
+  2. 
+. qui{
+  3. 
+. *Adding a_ij's i.e. input expenditures as a share of sales
+. use "$data/001_network/003_fullNet`y'.dta", clear
+  4. collapse (sum) salecs_supplier (mean) sales_customer (firstnm) comp_suppli
+> er comp_customer , by(Source Target year)
+  5. gen a = salecs_supplier/sales_customer
+  6. keep Source comp_supplier comp_customer Target /*year3*/ year a
+  7. *rename year3 year
+. replace a = 1 if a>1
+  8. save "$data/007_welfare/007_aij`y'.dta", replace
+  9. 
+. *Starting from the supply chain
+. use "$data/006_network&Markups/006_endPoint`y'_wide.dta", clear
+ 10. 
+. *Getting the sales share of the end point
+. rename endPoint_0 gvkey
+ 11. gen year = `y'
+ 12. merge m:1 gvkey year using "$data/006_network&Markups/006_markups`y'.dta",
+>  keepusing(mu_1 sale)
+ 13. drop if _merge == 2
+ 14. drop _merge
+ 15. 
+. *Replacing missing markup by average markup
+. su mu_1
+ 16. replace mu_1 = `r(mean)' if mu_1 == .
+ 17. }
+ 18. }
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD12005.000000"
+
+. forval y = 1976/1976{
+  2. 
+. *qui{
+. 
+. *Adding a_ij's i.e. input expenditures as a share of sales
+. use "$data/001_network/003_fullNet`y'.dta", clear
+  3. collapse (sum) salecs_supplier (mean) sales_customer (firstnm) comp_suppli
+> er comp_customer , by(Source Target year)
+  4. gen a = salecs_supplier/sales_customer
+  5. keep Source comp_supplier comp_customer Target /*year3*/ year a
+  6. *rename year3 year
+. replace a = 1 if a>1
+  7. save "$data/007_welfare/007_aij`y'.dta", replace
+  8. 
+. *Starting from the supply chain
+. use "$data/006_network&Markups/006_endPoint`y'_wide.dta", clear
+  9. 
+. *Getting the sales share of the end point
+. rename endPoint_0 gvkey
+ 10. gen year = `y'
+ 11. merge m:1 gvkey year using "$data/006_network&Markups/006_markups`y'.dta",
+>  keepusing(mu_1 sale)
+ 12. drop if _merge == 2
+ 13. drop _merge
+ 14. 
+. *Replacing missing markup by average markup
+. su mu_1
+ 15. replace mu_1 = `r(mean)' if mu_1 == .
+ 16. *}
+. }
+(0 real changes made)
+file /Users/ios/Documents/mres_paper_orig/Data_output/007_welfare/007_aij1976.d
+> ta saved
+(note: variable gvkey was float, now double to accommodate using data's
+       values)
+(note: variable year was float, now double to accommodate using data's
+       values)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,950
+        from master                        57  (_merge==1)
+        from using                      2,893  (_merge==2)
+
+    matched                               521  (_merge==3)
+    -----------------------------------------
+(2,893 observations deleted)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        mu_1 |        521    1.325209    .3597008   .9956127   2.801528
+(57 real changes made)
+
+. 
+end of do-file
+
+. do "/Users/ios/Documents/GitHub/mres_paper/code/mres_007_welfare.do"
+
+. 
+. /****************************************************************************
+> ***
+>         
+>         DESCRIPTION: Generation of welfare statistics
+>         
+>         INFILES:        - 
+>         
+>         OUTFILES:       - 
+>         
+>         LOG: Created 04/05/2020
+>                         Last modified XX/05/2020
+>         
+> *****************************************************************************
+> **/
+. 
+. /****************************************************************************
+> ***
+>         SETUP
+> *****************************************************************************
+> **/
+. 
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Useful packages
+. /*net install scheme-modern, from("https://raw.githubusercontent.com/mdroste/
+> stata-scheme-modern/master/")
+> ssc install gtools
+> gtools, upgrade*/
+. 
+. set scheme modern, perm
+(set scheme preference recorded)
+
+. 
+. *Paths
+. global wd "/Users/ios/Documents/GitHub/mres_paper"
+
+. global orig "/Users/ios/Documents/mres_paper_orig"                           
+>                            // I'm using a different orig folder so as not to 
+> commit large datasets to GitHub
+
+. global data "$orig/Data_output"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. global DLEU "$orig/Data DLEU"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "007"                                      
+
+. 
+. *log
+. cap log close
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_paper/log/007_welfare.log
+  log type:  text
+ opened on:  12 May 2020, 19:39:22
+
+. 
+. 
+. /****************************************************************************
+> ***
+>         Getting the all the supply chains leading to final demand
+> *****************************************************************************
+> **/
+. 
+. forval y = 1976/2016{
+  2. 
+. qui{
+  3. 
+. *Adding a_ij's i.e. input expenditures as a share of sales
+. use "$data/001_network/003_fullNet`y'.dta", clear
+  4. collapse (sum) salecs_supplier (mean) sales_customer (firstnm) comp_suppli
+> er comp_customer , by(Source Target year)
+  5. gen a = salecs_supplier/sales_customer
+  6. keep Source comp_supplier comp_customer Target /*year3*/ year a
+  7. *rename year3 year
+. replace a = 1 if a>1
+  8. save "$data/007_welfare/007_aij`y'.dta", replace
+  9. 
+. *Starting from the supply chain
+. use "$data/006_network&Markups/006_endPoint`y'_wide.dta", clear
+ 10. 
+. *Getting the sales share of the end point
+. rename endPoint_0 gvkey
+ 11. gen year = `y'
+ 12. merge m:1 gvkey year using "$data/006_network&Markups/006_markups`y'.dta",
+>  keepusing(mu_1 sale)
+ 13. drop if _merge == 2
+ 14. drop _merge
+ 15. 
+. *Replacing missing markup by average markup
+. su mu_1
+ 16. replace mu_1 = `r(mean)' if mu_1 == .
+ 17. 
+. *Getting company names
+. merge m:1 gvkey year using "$data/001_network/003_allcomp.dta", keepusing(con
+> m)
+ 18. drop if _merge == 2
+ 19. drop _merge
+ 20. 
+. rename sale finalSale
+ 21. rename mu_1 mu_0
+ 22. 
+. *Now including sales of shares and markups further up the value chain
+. rename gvkey Target 
+ 23. rename endPoint_1 Source
+ 24. merge m:1 Source Target year using "$data/007_welfare/007_aij`y'.dta", kee
+> pusing(a)
+ 25. drop if _merge == 2
+ 26. drop _merge
+ 27. rename a a10
+ 28. rename Target endPoint_0
+ 29. rename Source endPoint_1
+ 30. 
+. *Now including markups and sales shares of other steps in the value chain
+. forval step = 1/8{
+ 31.         local nextStep = `step'+1
+ 32.         local previousStep = `step'-1
+ 33.         rename endPoint_`step' gvkey
+ 34.         merge m:1 gvkey year using "$data/006_network&Markups/006_markups`
+> y'.dta", keepusing(mu) //markups
+ 35.         drop if _merge == 2
+ 36.         drop _merge
+ 37.         rename mu mu_`step'
+ 38.         rename gvkey Target 
+ 39.         rename endPoint_`nextStep' Source
+ 40.         merge m:1 Source Target year using "$data/007_welfare/007_aij`y'.d
+> ta", keepusing(a)
+ 41.         drop if _merge == 2
+ 42.         drop _merge
+ 43.         rename a a`nextStep'`step'
+ 44.         rename Target endPoint_`step'
+ 45.         rename Source endPoint_`nextStep'
+ 46.         }
+ 47.         
+. *e(q1, u1)
+. 
+. *Last endpoint
+. bys endPoint_0: gen n = _n
+ 48. gen sales = finalSale if n==1
+ 49. egen totSales = sum(sales)
+ 50. gen salesSh = sales/totSales
+ 51. gen sales_mu0 = sales/mu_0
+ 52. 
+. 
+. *Shutting down all markups in the value chain
+. *generating product\mu_j^{a_ij}
+. gen a_ln_mu_1 = ln(mu_1)*a10
+ 53. bys endPoint_0: egen ln_pi_1 = sum(a_ln_mu_1)
+ 54. gen pi_1 = exp(ln_pi_1) if n == 1
+ 55. 
+. *gen sales_mu0mu1 = sales/(mu_0*pi_1)
+. *egen totSales_mu0mu1 = sum(sales_mu0mu1)
+. *gen ratio_mu0mu1 = totSales/totSales_mu0mu1                                 
+>                                                    //19%, looks credible
+. 
+. gen a_ln_mu_2 = ln(mu_2)*a10*a21
+ 56. bys endPoint_0: egen ln_pi_2 = sum(a_ln_mu_2)
+ 57. gen pi_2 = exp(ln_pi_2) if n == 1
+ 58. 
+. gen a_ln_mu_3 = ln(mu_3)*a10*a21*a32
+ 59. bys endPoint_0: egen ln_pi_3 = sum(a_ln_mu_3)
+ 60. gen pi_3 = exp(ln_pi_3) if n == 1
+ 61. 
+. gen a_ln_mu_4 = ln(mu_4)*a10*a21*a32*a43
+ 62. bys endPoint_0: egen ln_pi_4 = sum(a_ln_mu_4)
+ 63. gen pi_4 = exp(ln_pi_4) if n == 1
+ 64. 
+. gen a_ln_mu_5 = ln(mu_5)*a10*a21*a32*a43*a54
+ 65. bys endPoint_0: egen ln_pi_5 = sum(a_ln_mu_5)
+ 66. gen pi_5 = exp(ln_pi_5) if n == 1
+ 67. 
+. gen a_ln_mu_6 = ln(mu_6)*a10*a21*a32*a43*a54*a65
+ 68. bys endPoint_0: egen ln_pi_6 = sum(a_ln_mu_6)
+ 69. gen pi_6 = exp(ln_pi_6) if n == 1
+ 70. 
+. gen a_ln_mu_7 = ln(mu_7)*a10*a21*a32*a43*a54*a65*a76
+ 71. bys endPoint_0: egen ln_pi_7 = sum(a_ln_mu_7)
+ 72. gen pi_7 = exp(ln_pi_7) if n == 1
+ 73. 
+. gen a_ln_mu_8 = ln(mu_8)*a10*a21*a32*a43*a54*a65*a76*a87
+ 74. bys endPoint_0: egen ln_pi_8 = sum(a_ln_mu_8)
+ 75. gen pi_8 = exp(ln_pi_8) if n == 1
+ 76. 
+. 
+. *Final welfare loss
+. gen denom = mu_0*pi_1*pi_2*pi_3*pi_4*pi_5*pi_6*pi_7*pi_8
+ 77. 
+. *First step i  value chain
+. egen totSales_mu0 = sum(sales_mu0)
+ 78. gen ratio_mu0 = totSales/totSales_mu0                                     
+>                                               //18%, looks credible 
+ 79. su ratio_mu0
+ 80. global mu0_`y' = `r(mean)'
+ 81. 
+. gen sales_mu = sales/denom
+ 82. egen totSales_mu = sum(sales_mu)
+ 83. gen ratio_mu = totSales/totSales_mu                                       
+>                                               //18%, looks credible 
+ 84. su ratio_mu
+ 85. global mu_`y' = `r(mean)'
+ 86. 
+. *Accounting for substitution of consumption
+. *Setting the quantity of the most commonly consumed good equal before and aft
+> er the price increase
+. *(the expenses just decrease by the network-adjusted markup)
+. *Multiply each sales without markup by alpha/beta (sales share of numeraire/s
+> ales share of this product)
+. 
+. *Finding the numeraire (max sales shares)
+. *sort finalSale
+. *egen topSale = max(finalSale)
+. *gen alphaOverBeta = topSale/finalSale
+. 
+. *gen sales_mu_subs = (sales/denom)*(alphaOverBeta)
+. *egen totSales_mu_subs = sum(sales_mu_subs)
+. *gen ratio_mu_subs = totSales/totSales_mu_subs                               
+>                                                    //18%, looks credible 
+. *su ratio_mu_subs
+. *global mu_`y' = `r(mean)'
+. 
+. *equalising shares of expenditures
+. gen shInitial = finalSale/totSales
+ 87. gen shFinal = sales_mu/totSales_mu
+ 88. gen shInitial0 = finalSale/totSales
+ 89. gen shFinal0 = sales_mu0/totSales_mu0
+ 90. gen sales_mu_subs=sales_mu
+ 91. gen sales_mu0_subs=sales_mu0
+ 92. 
+. 
+. gen shFinal_subs = shFinal
+ 93. gen shInitial_subs = shInitial if shFinal_subs!=.
+ 94. gen shFinal_subs0 = shFinal0
+ 95. gen shInitial_subs0 = shInitial0 if shFinal_subs0!=.
+ 96. 
+. forval i=1/30{
+ 97. replace sales_mu_subs=sales_mu_subs*0.99 if shFinal_subs>shInitial_subs & 
+> shFinal_subs!=.                       //decrease expenditure on that good
+ 98. egen totSales_mu_subs=sum(sales_mu_subs)
+ 99. replace shFinal_subs=sales_mu_subs/totSales_mu_subs
+100. drop totSales_mu_subs   
+101. 
+. replace sales_mu_subs=sales_mu_subs*1.01 if shFinal_subs<shInitial_subs & shF
+> inal_subs!=.                       //increase expenditure on that good
+102. egen totSales_mu_subs=sum(sales_mu_subs)
+103. replace shFinal_subs=sales_mu_subs/totSales_mu_subs
+104. drop totSales_mu_subs
+105. 
+. replace sales_mu0_subs=sales_mu0_subs*0.99 if shFinal_subs0>shInitial_subs0 &
+>  shFinal_subs0!=.                  //decrease expenditure on that good
+106. egen totSales_mu0_subs=sum(sales_mu0_subs)
+107. replace shFinal_subs0=sales_mu0_subs/totSales_mu0_subs
+108. drop totSales_mu0_subs  
+109. 
+. replace sales_mu0_subs=sales_mu0_subs*1.01 if shFinal_subs0<shInitial_subs0 &
+>  shFinal_subs0!=.                  //increase expenditure on that good
+110. egen totSales_mu0_subs=sum(sales_mu0_subs)
+111. replace shFinal_subs=sales_mu0_subs/totSales_mu0_subs
+112. drop totSales_mu0_subs
+113. 
+. }
+114.         
+. twoway (scatter shFinal_subs shInitial_subs) ///
+>         (scatter shFinal shInitial)
+115. 
+. twoway (scatter shFinal_subs0 shInitial_subs0) ///
+>         (scatter shFinal shInitial)
+116. 
+. 
+. *gen subs_ratio = shInitial/shFinal
+. *replace subs_ratio=4 if subs_ratio>4 & subs_ratio!=.
+. 
+. *gen sales_mu_subs = sales_mu*subs_ratio
+. egen totSales_mu_subs = sum(sales_mu_subs)
+117. gen ratio_mu_subs = totSales/totSales_mu_subs                             
+>                                                       //18%, looks credible 
+118. su ratio_mu_subs
+119. global mu_`y'_subs = `r(mean)'
+120. 
+. *gen sales_mu0_subs = sales_mu0*subs_ratio
+. egen totSales_mu0_subs = sum(sales_mu0_subs)
+121. gen ratio_mu0_subs = totSales/totSales_mu0_subs                           
+>                                                       //18%, looks credible 
+122. su ratio_mu0_subs
+123. global mu0_`y'_subs = `r(mean)'
+124. 
+. }
+125. di "`y'"
+126. di ${mu0_`y'}, ${mu_`y'}, ${mu0_`y'_subs}, ${mu_`y'_subs}
+127. }
+1976
+1.2462733 1.2470191 1.4890848 1.4997873
+1977
+1.2514908 1.2545708 1.4899161 1.5073533
+1978
+1.2461021 1.25065 1.4869797 1.4976287
+1979
+1.2212306 1.2252241 1.4424191 1.4601908
+1980
+1.1845839 1.1893389 1.3762289 1.3980703
+1981
+1.1561338 1.161692 1.3552448 1.3757544
+1982
+1.1672745 1.1717163 1.3741283 1.3915497
+1983
+1.1978852 1.203681 1.4085091 1.4234492
+1984
+1.1951668 1.2012508 1.4032267 1.4194773
+1985
+1.2118467 1.2185867 1.4117056 1.432427
+1986
+1.214764 1.2234739 1.3815339 1.3958137
+1987
+1.2249029 1.2351422 1.4062883 1.4286361
+1988
+1.2756764 1.2847062 1.4480616 1.466192
+1989
+1.2562001 1.2629728 1.403471 1.422104
+1990
+1.2608562 1.2685417 1.4298937 1.4415566
+1991
+1.261023 1.2701826 1.4058119 1.4194078
+1992
+1.2763993 1.2864141 1.4403753 1.454754
+1993
+1.2933741 1.3098754 1.4508944 1.4880106
+1994
+1.3046876 1.3172969 1.4556472 1.4727401
+1995
+1.297031 1.3100673 1.4588901 1.476873
+1996
+1.3036669 1.3139817 1.4868485 1.4997962
+1997
+1.3011936 1.3285367 1.48728 1.571571
+1998
+1.2972523 1.311579 1.4666923 1.5028533
+1999
+1.3168288 1.3383976 1.5164474 1.5763216
+2000
+1.31749 1.3463537 1.5529985 1.5859227
+2001
+1.3336548 1.3668854 1.5963371 1.6294249
+2002
+1.3420149 1.3807535 1.5991231 1.6461011
+2003
+1.3440522 1.379342 1.5843298 1.6338834
+2004
+1.3576841 1.3957651 1.6024131 1.653093
+2005
+1.3357953 1.3878981 1.593416 1.6719654
+2006
+1.307541 1.3378433 1.5731801 1.6120424
+2007
+1.3116162 1.3376291 1.5637081 1.5920397
+2008
+1.3100889 1.3527344 1.5541263 1.611663
+2009
+1.3039891 1.3293927 1.5270886 1.5482608
+2010
+1.3205963 1.3544036 1.5637839 1.5944892
+2011
+1.3101102 1.3379862 1.5605019 1.58613
+2012
+1.3158644 1.3372812 1.5590168 1.5828563
+2013
+1.3124787 1.3311018 1.5394285 1.5600203
+2014
+1.3106097 1.3270282 1.5361038 1.5487875
+2015
+1.3071151 1.3250663 1.4902743 1.5089128
+2016
+1.3216358 1.3559417 1.5214241 1.5774329
+
+. 
+. stop
+command stop is unrecognized
+r(199);
+
+end of do-file
+
+r(199);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD12005.000000"
+
+. clear
+
+. set obs 41
+number of observations (_N) was 0, now 41
+
+. gen y = 1975 + _n
+
+. gen mu0 = .
+(41 missing values generated)
+
+. gen mu = .
+(41 missing values generated)
+
+. gen mu0_subs = .
+(41 missing values generated)
+
+. gen mu_subs = .
+(41 missing values generated)
+
+. forval y = 1976/2016{
+  2.         replace mu0 = ${mu0_`y'} if y == `y'
+  3.         replace mu = ${mu_`y'} if y == `y'
+  4.         replace mu0_subs = ${mu0_`y'_subs} if y == `y'
+  5.         replace mu_subs = ${mu_`y'_subs} if y == `y'
+  6.         }
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+
+. 
+. twoway (scatter mu0 y, msymbol(O) mfcolor(white) connect(direct)) ///
+>         (scatter mu y, msymbol(O) mfcolor(white) connect(direct)), ///
+>         ylabel(1(0.1)1.4) xtitle("Year") subtitle("Ratio of expenditure funct
+> ions", pos(11)) ///
+>         yline(1) legend( ring(0) pos(11) col(1) order(1 "e(q{superscript:1},u
+> {superscript:1})/e(q{superscript:0},u{superscript:1} | {&mu}{subscript:0}=0)"
+>  2 "e(q{superscript:1},u{superscript:1})/e(q{superscript:0},u{superscript:1} 
+> | {bf:{&mu}} = 0)"))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD12005.000000"
+
+. twoway (scatter mu0_subs y, msymbol(O) mfcolor(white) connect(direct)) ///
+>         (scatter mu_subs y, msymbol(O) mfcolor(white) connect(direct)), ///
+>         ylabel(1(0.1)1.7) xtitle("Year") subtitle("Ratio of expenditure funct
+> ions", pos(11)) ///
+>         yline(1) legend( ring(0) pos(11) col(1) order(1 "e(q{superscript:1},u
+> {superscript:1})/e(q{superscript:0},u{superscript:1} | {&mu}{subscript:0}=0)"
+>  2 "e(q{superscript:1},u{superscript:1})/e(q{superscript:0},u{superscript:1} 
+> | {bf:{&mu}} = 0)"))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD12005.000000"
+
+. twoway (scatter mu0 y, msymbol(O) mfcolor(white) connect(direct)) ///
+>         (scatter mu y, msymbol(O) mfcolor(white) connect(direct)), ///
+>         ylabel(1(0.1)1.4) xtitle("Year") subtitle("Ratio of expenditure funct
+> ions", pos(11)) ///
+>         yline(1) legend( ring(0) pos(11) col(1) order(1 "e(q{superscript:1},u
+> {superscript:1})/e(q{superscript:0},u{superscript:1} | {&mu}{subscript:0}=0)"
+>  2 "e(q{superscript:1},u{superscript:1})/e(q{superscript:0},u{superscript:1} 
+> | {bf:{&mu}} = 0)"))
+
+. graph export "$outputs/007_welfare.pdf", as(pdf) replace
+(file /Users/ios/Documents/GitHub/mres_paper/outputs/007_welfare.pdf written in
+>  PDF format)
+
+. 
+. twoway (scatter mu0_subs y, msymbol(O) mfcolor(white) connect(direct)) ///
+>         (scatter mu_subs y, msymbol(O) mfcolor(white) connect(direct)), ///
+>         ylabel(1(0.1)1.7) xtitle("Year") subtitle("Ratio of expenditure funct
+> ions", pos(11)) ///
+>         yline(1) legend( ring(0) pos(11) col(1) order(1 "e(q{superscript:1},u
+> {superscript:1})/e(q{superscript:0},u{superscript:1} | {&mu}{subscript:0}=0)"
+>  2 "e(q{superscript:1},u{superscript:1})/e(q{superscript:0},u{superscript:1} 
+> | {bf:{&mu}} = 0)"))
+
+. graph export "$outputs/007_welfare_2.pdf", as(pdf) replace
+(file /Users/ios/Documents/GitHub/mres_paper/outputs/007_welfare_2.pdf written 
+> in PDF format)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD12005.000000"
+
+. 
+. /****************************************************************************
+> ***
+>         
+>         DESCRIPTION: Calculating welfare losses using input-output matrices
+>         
+>         INFILES:        - 
+>         
+>         OUTFILES:       - 
+>         
+>         LOG: Created 12/05/2020
+>                         Last modified XX/05/2020
+>         
+> *****************************************************************************
+> **/
+. 
+. /****************************************************************************
+> ***
+>         SETUP
+> *****************************************************************************
+> **/
+. 
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Useful packages
+. /*net install scheme-modern, from("https://raw.githubusercontent.com/mdroste/
+> stata-scheme-modern/master/")
+> ssc install gtools
+> gtools, upgrade*/
+. 
+. set scheme modern, perm
+(set scheme preference recorded)
+
+. 
+. *Paths
+. global wd "/Users/ios/Documents/GitHub/mres_paper"
+
+. global orig "/Users/ios/Documents/mres_paper_orig"                           
+>                            // I'm using a different orig folder so as not to 
+> commit large datasets to GitHub
+
+. global data "$orig/Data_output/007_welfare"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. global DLEU "$orig/Data DLEU"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "007"                                      
+
+. 
+. *log
+. cap log close

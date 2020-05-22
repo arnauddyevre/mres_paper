@@ -1,0 +1,34 @@
+Description of existing empirical exercises
+
+*Acemoglu and Azar (2020)
+- Study the importance of new combinations of technologies in accounting for TFP growth
+- "We use data from the U.S. economy from 1987 to 2007
+in order to estimate the contribution of changes in supplier sets to industry productivity.
+Our estimates suggest that new input combinations may account for between 40% and
+64% of average industry TFP growth. Naturally, this exercise should be interpreted with
+caution, since it relies on the simplified structure of our model, and the observed relationship
+between new input combinations and industry productivity growth could be driven
+by other omitted factors. Nevertheless, this illustrative exercise highlights that the contribution
+of new input combinations to productivity growth could be quite important and
+should be studied more systematically in the future." 
+
+*Baqaee and Farhi (2020): Productivity and Misallocation in General Equilibrium (QJE)
+- Figure III: decompose markups in between (reallocation) and within (firm-level increase) firm changes. Just like in DLEU (no network)
+- More network-based exercise: Decompose aggregate TFP growth into changes in allocative efficiency and in technology using the input-output network. and "We implement our growth accounting results to decompose
+the sources of TFP growth as measured by the cumulated
+distortion-adjusted Solow residual in the U.S. over the period
+1997–2015, in the presence of these changing markups."
+- They show that allocative efficiency happens within industry and not across, so dissagregation at the firm level is key.
+- "Gains from eliminating markups". Calibrate model as in section IV and show that accounting for higher elasticities of substitutions (for instance between firms in a given industry as opposed to across) and intermediate inputs magnifies the losses from missallocation "we set θ = 0.5, θ0 = 0.9, and  =
+0.2. We set η = 1,"
+- "changes
+in allocative efficiency due to reallocation have contributed positively
+to aggregate TFP growth since the start of the sample. Intuitively,
+the distance to the frontier has increased because markups
+have become more dispersed over time."
+- They don't consider the fact that longer supply chains and more clustering of the network contribute to higher allocative inefficiency.
+- Take productivity and markups as endogenous
+
+*Baqaee & Farhi (2019) Beyond Hulten's theorem
+- Calibrate multi-sector model to see what the impact of sectoral shocks on several moments of aggregate GDP
+- No markups, simply an example of the importance of non-linearities in matching aggregate TFP

@@ -32,7 +32,7 @@ set scheme modern, perm
 *Paths
 global wd "/Users/ios/Documents/GitHub/mres_paper"
 global orig "/Users/ios/Documents/mres_paper_orig"							// I'm using a different orig folder so as not to commit large datasets to GitHub
-global data "$wd/data/007_welfare"
+global data "$orig/Data_output"
 global outputs "$wd/outputs"
 global doc "$wd/doc"
 global code "$wd/code"
@@ -56,26 +56,30 @@ forval y = 1976/2016{
 qui{
 
 *Adding a_ij's i.e. input expenditures as a share of sales
-use "$wd/data/001_network/003_fullNet`y'.dta", clear
+use "$data/001_network/003_fullNet`y'.dta", clear
 collapse (sum) salecs_supplier (mean) sales_customer (firstnm) comp_supplier comp_customer , by(Source Target year)
 gen a = salecs_supplier/sales_customer
 keep Source comp_supplier comp_customer Target /*year3*/ year a
 *rename year3 year
 replace a = 1 if a>1
-save "$data/007_aij`y'.dta", replace
+save "$data/007_welfare/007_aij`y'.dta", replace
 
-*Starting from the value chain
-use "$wd/data/006_network&Markups/006_endPoint`y'_wide.dta", clear
+*Starting from the supply chain
+use "$data/006_network&Markups/006_endPoint`y'_wide.dta", clear
 
 *Getting the sales share of the end point
 rename endPoint_0 gvkey
 gen year = `y'
-merge m:1 gvkey year using "$wd/data/006_network&Markups/006_markups`y'.dta", keepusing(mu_1 sale)
+merge m:1 gvkey year using "$data/006_network&Markups/006_markups`y'.dta", keepusing(mu_1 sale)
 drop if _merge == 2
 drop _merge
 
+*Replacing missing markup by average markup
+su mu_1
+replace mu_1 = `r(mean)' if mu_1 == .
+
 *Getting company names
-merge m:1 gvkey year using "$wd/data/001_network/003_allcomp.dta", keepusing(conm)
+merge m:1 gvkey year using "$data/001_network/003_allcomp.dta", keepusing(conm)
 drop if _merge == 2
 drop _merge
 
@@ -85,7 +89,7 @@ rename mu_1 mu_0
 *Now including sales of shares and markups further up the value chain
 rename gvkey Target 
 rename endPoint_1 Source
-merge m:1 Source Target year using "$data/007_aij`y'.dta", keepusing(a)
+merge m:1 Source Target year using "$data/007_welfare/007_aij`y'.dta", keepusing(a)
 drop if _merge == 2
 drop _merge
 rename a a10
@@ -97,13 +101,13 @@ forval step = 1/8{
 	local nextStep = `step'+1
 	local previousStep = `step'-1
 	rename endPoint_`step' gvkey
-	merge m:1 gvkey year using "$wd/data/006_network&Markups/006_markups`y'.dta", keepusing(mu) //markups
+	merge m:1 gvkey year using "$data/006_network&Markups/006_markups`y'.dta", keepusing(mu) //markups
 	drop if _merge == 2
 	drop _merge
 	rename mu mu_`step'
 	rename gvkey Target 
 	rename endPoint_`nextStep' Source
-	merge m:1 Source Target year using "$data/007_aij`y'.dta", keepusing(a)
+	merge m:1 Source Target year using "$data/007_welfare/007_aij`y'.dta", keepusing(a)
 	drop if _merge == 2
 	drop _merge
 	rename a a`nextStep'`step'
