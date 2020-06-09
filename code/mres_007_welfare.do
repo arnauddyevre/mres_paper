@@ -51,6 +51,9 @@ log using "$log/${doNum}_welfare", text append
 	Getting the all the supply chains leading to final demand
 *******************************************************************************/
 
+
+
+
 forval y = 1976/2016{
 
 qui{

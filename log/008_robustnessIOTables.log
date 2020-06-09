@@ -28311,3 +28311,218 @@ end of do-file
 . 
 . *log
 . cap log close
+-------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_paper/log/008_robustnessIOTables.log
+  log type:  text
+ opened on:   3 Jun 2020, 22:08:34
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. use "$data/${doNum}_use_0712", clear
+
+. 
+. append using "$data/${doNum}_use_6396"
+
+. append using "$data/${doNum}_use_9718"
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter degree y if y<=1996 & full!=1, connect(direct) msymbol(O) mfcolor(white)) ///
+>         (scatter degree y if y>1996 & full!=1, connect(direct) msymbol(O) mfcolor(white)), ///
+>         legend( ring(0) pos(5) col(1) order(1 "Historical I-O data (SIC)" 2 "Current I-O data (NAICS)
+> ")) ///
+>         xlabel(1960(5)2020) xtitle("") ytitle("") subtitle("Average number of suppliers per sector", 
+> pos(11))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter degree y if y<=1996 & full!=1, connect(direct) msymbol(O) mfcolor(white)) ///
+>         (scatter degree y if y>1996 & full!=1, connect(direct) msymbol(O) mfcolor(white)), ///
+>         legend( ring(0) pos(5) col(1) order(1 "Historical I-O data (SIC)" 2 "Current I-O data (NAICS)
+> ")) ///
+>         xlabel(1960(5)2020, labsize(large)) ylabel(, labsize(large)) xtitle("") ytitle("") subtitle("
+> Average number of suppliers per sector", pos(11) size(large))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter degree y if y<=1996 & full!=1, connect(direct) msymbol(O) mfcolor(white)) ///
+>         (scatter degree y if y>1996 & full!=1, connect(direct) msymbol(O) mfcolor(white)), ///
+>         legend( ring(0) pos(5) col(1) order(1 "Historical I-O data (SIC)" 2 "Current I-O data (NAICS)
+> ")) ///
+>         xlabel(1960(10)2020, labsize(large)) ylabel(, labsize(large)) xtitle("") ytitle("") subtitle(
+> "Average number of suppliers per sector", pos(11) size(large))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter degree y if y<=1996 & full!=1, connect(direct) msymbol(O) mfcolor(white)) ///
+>         (scatter degree y if y>1996 & full!=1, connect(direct) msymbol(O) mfcolor(white)), ///
+>         legend( ring(0) pos(5) col(1) order(1 "Historical I-O data (SIC)" 2 "Current I-O data (NAICS)
+> ") size(large)) ///
+>         xlabel(1960(10)2020, labsize(large)) ylabel(, labsize(large)) xtitle("") ytitle("") subtitle(
+> "Average number of suppliers per sector", pos(11) size(large))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. graph export "$outputs/${doNum}_suppliersOverTime.pdf", as(pdf) replace
+(file /Users/ios/Documents/GitHub/mres_paper/outputs/008_robustnessIOTables/008_suppliersOverTime.pdf w
+> ritten in PDF format)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme modern, perm
+(set scheme preference recorded)
+
+. set matsize 10000
+
+. 
+. *Useful packages
+. /*net install scheme-modern, from("https://raw.githubusercontent.com/mdroste/stata-scheme-modern/mast
+> er/")
+> ssc install gtools
+> gtools, upgrade*/
+. 
+. 
+. *Paths
+. global wd "/Users/ios/Documents/GitHub/mres_paper"
+
+. global orig "/Users/ios/Documents/mres_paper_orig"                                                   
+>    // I'm using a different orig folder so as not to commit large datasets to GitHub
+
+. global data "$orig/Data_output/001_network"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "004"                                      
+
+. 
+. *log
+. cap log close
+-------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_paper/log/008_robustnessIOTables.log
+  log type:  text
+ opened on:   3 Jun 2020, 22:43:00
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. use "$data/${doNum}_use_0712", clear
+
+. 
+. append using "$data/${doNum}_use_6396"
+
+. append using "$data/${doNum}_use_9718"
+
+. twoway (scatter degree y if y<=1996 & full!=1, connect(direct) msymbol(O) mfcolor(white)) ///
+>         (scatter degree y if y>1996 & full!=1, connect(direct) msymbol(O) mfcolor(white)), ///
+>         legend( ring(0) pos(5) col(1) order(1 "Historical I-O data (SIC)" 2 "Current I-O data (NAICS)
+> ") size(large)) ///
+>         xlabel(1960(10)2020, labsize(large)) ylabel(, labsize(large)) xtitle("") ytitle("") subtitle(
+> "Average number of suppliers per sector", pos(11) size(large))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter degree y if y<=1996 & full!=1, connect(direct) msymbol(O) mfcolor(white)) ///
+>         (scatter degree y if y>1996 & full!=1, connect(direct) msymbol(O) mfcolor(white)), ///
+>         legend( ring(0) pos(5) col(1) order(1 "Historical I-O data (SIC)" 2 "Current I-O data (NAICS)
+> ") size(large)) ///
+>         xlabel(1960(10)2020, labsize(large)) ylabel(, labsize(large)) xtitle("") ytitle("") subtitle(
+> /*"Average number of suppliers per sector"*/, pos(11) size(large))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. graph export "$outputs/${doNum}_suppliersOverTime.pdf", as(pdf) replace
+(file /Users/ios/Documents/GitHub/mres_paper/outputs/008_robustnessIOTables/008_suppliersOverTime.pdf w
+> ritten in PDF format)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme modern, perm
+(set scheme preference recorded)
+
+. set matsize 10000
+
+. 
+. *Useful packages
+. /*net install scheme-modern, from("https://raw.githubusercontent.com/mdroste/stata-scheme-modern/mast
+> er/")
+> ssc install gtools
+> gtools, upgrade*/
+. 
+. 
+. *Paths
+. global wd "/Users/ios/Documents/GitHub/mres_paper"
+
+. global orig "/Users/ios/Documents/mres_paper_orig"                                                   
+>    // I'm using a different orig folder so as not to commit large datasets to GitHub
+
+. global data "$orig/Data_output/001_network"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "004"                                      
+
+. 
+. *log
+. cap log close

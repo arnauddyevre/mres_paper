@@ -19,15 +19,13 @@
 clear all
 set more off
 macro drop _all
-set scheme s1color
+set scheme modern, perm
 set matsize 10000
 
 *Useful packages
 /*net install scheme-modern, from("https://raw.githubusercontent.com/mdroste/stata-scheme-modern/master/")
 ssc install gtools
 gtools, upgrade*/
-
-set scheme modern, perm
 
 *Paths
 global wd "/Users/ios/Documents/GitHub/mres_paper"
@@ -305,8 +303,8 @@ append using "$data/${doNum}_use_6396"
 append using "$data/${doNum}_use_9718"
 twoway (scatter degree y if y<=1996 & full!=1, connect(direct) msymbol(O) mfcolor(white)) ///
 	(scatter degree y if y>1996 & full!=1, connect(direct) msymbol(O) mfcolor(white)), ///
-	legend( ring(0) pos(5) col(1) order(1 "Historical I-O data (SIC)" 2 "Current I-O data (NAICS)")) ///
-	xlabel(1960(5)2020) xtitle("") ytitle("") subtitle("Average number of suppliers per sector", pos(11))
+	legend( ring(0) pos(5) col(1) order(1 "Historical I-O data (SIC)" 2 "Current I-O data (NAICS)") size(large)) ///
+	xlabel(1960(10)2020, labsize(large)) ylabel(, labsize(large)) xtitle("") ytitle("") subtitle(/*"Average number of suppliers per sector"*/, pos(11) size(large))
 graph export "$outputs/${doNum}_suppliersOverTime.pdf", as(pdf) replace
 	
 	

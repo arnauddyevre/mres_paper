@@ -19,7 +19,7 @@
 clear all
 set more off
 macro drop _all
-set scheme s1color
+set scheme modern, perm
 set matsize 10000
 
 *Useful packages
@@ -27,12 +27,11 @@ set matsize 10000
 ssc install gtools
 gtools, upgrade*/
 
-set scheme modern, perm
 
 *Paths
 global wd "/Users/ios/Documents/GitHub/mres_paper"
 global orig "/Users/ios/Documents/mres_paper_orig"							// I'm using a different orig folder so as not to commit large datasets to GitHub
-global data "$wd/data/001_network"
+global data "$orig/Data_output/001_network"
 global outputs "$wd/outputs"
 global doc "$wd/doc"
 global code "$wd/code"
@@ -51,12 +50,12 @@ log using "$log/${doNum}_summaryStats", text append
 
 import excel "$doc/summary_stats/summary_stats_3ynetwork.xlsx", sheet("Sheet1") firstrow clear
 twoway (scatter Averageweighteddegree Year, msymbol(O) mfcolor(white) connect(direct) lpattern(dash) ///
-	ytitle("") subtitle("Average weighted degree: {stSymbol:S}{sub:i}{bf:1}[neighbour=1]{it:w}{sub:i}/n{stSymbol:S}{sub:i}{it:w}{sub:i}", pos(11)))
-graph export "$outputs/${doNum}_degreeTS.pdf", as(pdf)
+	ytitle("") xtitle("") ylabel(, labsize(large)) xlabel(, labsize(large)) subtitle(/*"Average number of suppliers per firm"*/ /*"Average weighted degree: {stSymbol:S}{sub:i}{bf:1}[neighbour=1]{it:w}{sub:i}/n{stSymbol:S}{sub:i}{it:w}{sub:i}"*/, pos(11) size(large)))
+graph export "$outputs/${doNum}_degreeTS.pdf", as(pdf) replace
 
-twoway (scatter Clusteringcoefficientdirected Year, msymbol(O) mfcolor(white) connect(direct) lpattern(dash) ytitle("Clustering")) ///
-	(scatter Averagepathlengthdirected Year, msymbol(O) mfcolor(white) connect(direct) lpattern(dash) yaxis(2) ytitle("Path length", axis(2)) ) ///
-	, legend( ring(0) pos(5) col(1))
+twoway (scatter Clusteringcoefficientdirected Year, msymbol(O) mfcolor(white) connect(direct) lpattern(dash) ylabel(, labsize("large")) ytitle("Clustering", size(large)))  ///
+	(scatter Averagepathlengthdirected Year, msymbol(O) mfcolor(white) connect(direct) lpattern(dash) yaxis(2) ytitle("Path length", axis(2) size(large)) ylabel(, labsize("large"))) ///
+	, legend( ring(0) pos(5) col(1) size("large") order(1 "Clustering coefficient" 2 "Average path length")) xtitle("") xlabel(, labsize(large))
 graph export "$outputs/${doNum}_clusterPathTS.pdf", as(pdf)
 
 
@@ -138,14 +137,14 @@ global zeta_1983 = round(_b[log_w], 0.01)
 twoway (scatter log_1mCDF log_w if year == 2016, msymbol(Oh) mlwidth(thin)) ///
 	(scatter log_1mCDF log_w if year == 2001, msymbol(Oh) mlwidth(thin)) ///
 	(scatter log_1mCDF log_w if year == 1983, msymbol(Oh) mlwidth(thin)), ///
-	legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983")) subtitle("log(1 - F({it:Weighted degree}))", pos(11)) ///
-	ytitle("") xtitle("x = Weighted degree") xline(0.75) ///
-	text(-0.8 2 "Pr(X>x) = kx{sup:-{stSymbol:z}}", place(e)) ///
-	text(-1.4 1.95 "{bf:OLS estimates} (x>0.75):", place(e)) ///
-	text(-1.8 2 "{stSymbol:z}{sub:2016} = $zeta_2016", place(e)) ///
-	text(-2.2 2 "{stSymbol:z}{sub:2001} = $zeta_2001", place(e)) ///
-	text(-2.6 2 "{stSymbol:z}{sub:1983} = $zeta_1983", place(e))
-graph export "$outputs/${doNum}_powerLawTS.pdf", as(pdf)
+	legend(pos(5) ring(0) lab(1 "2016") lab(2 "2001") lab(3 "1983") size(large)) subtitle("log(1 - F(Degree))", pos(11) size(large)) ///
+	ytitle("") xtitle("log(Degree)", size(large)) xline(0.75) xlabel(, labsize(large)) ylabel( , labsize(large)) ///
+	text(-0.8 2 "Pr(X>x) = kx{sup:-{stSymbol:z}}", place(e) size(large)) ///
+	text(-1.4 1 "{bf:OLS estimates} (x>0.75):", place(e) size(large)) ///
+	text(-1.9 2 "{stSymbol:z}{sub:2016} = $zeta_2016", place(e) size(large)) ///
+	text(-2.4 2 "{stSymbol:z}{sub:2001} = $zeta_2001", place(e) size(large)) ///
+	text(-2.9 2 "{stSymbol:z}{sub:1983} = $zeta_1983", place(e) size(large))
+graph export "$outputs/${doNum}_powerLawTS.pdf", as(pdf) replace
 	
 
 twoway (scatter ln_1mCDF ln_w if year == 2016, msymbol(Oh)) ///

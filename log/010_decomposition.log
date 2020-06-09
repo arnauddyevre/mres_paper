@@ -1,0 +1,967 @@
+-------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_paper/log/010_decomposition.log
+  log type:  text
+ opened on:   2 Jun 2020, 23:23:21
+
+. 
+. /*******************************************************************************
+>         Getting all datasets together
+> *******************************************************************************/
+. 
+. use "$data/009_calibration/${doNum}_welfare_constantNSuppliers.dta", clear
+file
+    /Users/ios/Documents/mres_paper_orig/Data_output/009_calibration/010_welfare_constantNSuppliers.d
+    > ta not found
+r(601);
+
+end of do-file
+
+r(601);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. use "$data/009_calibration/009_welfare_constantNSuppliers.dta", clear
+
+. gen series = 1
+
+. append using "$data/009_calibration/009_welfare_buyingSameFirms.dta"
+
+. replace series = 2 if series == .
+(41 real changes made)
+
+. append using "$data/009_calibration/009_welfare_constantLength.dta"
+
+. replace series = 3 if series == .
+(41 real changes made)
+
+. append using "$data/009_calibration/009_welfare_constantMarkups.dta"
+
+. replace series = 4 if series == .
+(41 real changes made)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. gen diff = ratio_all_ma - ratio_last
+
+. 
+. 
+. twoway (scatter diff year if series == 1, connect(direct)) ///
+>         (scatter diff year if series == 2, connect(direct)) ///
+>         (scatter diff year if series == 3, connect(direct)) ///
+>         (scatter diff year if series == 4, connect(direct))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. bys year: egen sum_year = sum(diff)
+
+. gen sh = diff/sum_year
+
+. 
+. twoway (scatter sh year if series == 1, connect(direct)) ///
+>         (scatter sh year if series == 2, connect(direct)) ///
+>         (scatter sh year if series == 3, connect(direct)) ///
+>         (scatter sh year if series == 4, connect(direct))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. gen collapse_level1 = sh if series ==2
+(123 missing values generated)
+
+. gen collapse_level2 = sh if series == 2 | series == 3
+(82 missing values generated)
+
+. gen collapse_level3 = sh if series == 2 | series == 3 | series == 4
+(41 missing values generated)
+
+. gen collapse_level4 = sh if series == 2 | series == 3 | series == 4 | series == 1
+
+. 
+. collapse (sum) collapse_*, by(year)
+
+. 
+. gen zero = 0
+
+. replace zero = collapse_level1 if zero>collapse_level1
+(0 real changes made)
+
+. replace collapse_level1 = 0 if collapse_level1<0
+(0 real changes made)
+
+. 
+. twoway (rarea collapse_level1 zero year) ///
+>         (rarea collapse_level2 collapse_level1 year) ///
+>         (rarea collapse_level3 collapse_level2 year) ///
+>         (rarea collapse_level4 collapse_level3 year)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. use "$data/009_calibration/009_welfare_constantNSuppliers.dta", clear
+
+. gen series = 1
+
+. append using "$data/009_calibration/009_welfare_buyingSameFirms.dta"
+
+. replace series = 2 if series == .
+(41 real changes made)
+
+. append using "$data/009_calibration/009_welfare_constantLength.dta"
+
+. replace series = 3 if series == .
+(41 real changes made)
+
+. append using "$data/009_calibration/009_welfare_constantMarkups.dta"
+
+. replace series = 4 if series == .
+(41 real changes made)
+
+. 
+. gen diff = ratio_all_ma - ratio_last
+
+. 
+. 
+. twoway (scatter diff year if series == 1, connect(direct)) ///
+>         (scatter diff year if series == 2, connect(direct)) ///
+>         (scatter diff year if series == 3, connect(direct)) ///
+>         (scatter diff year if series == 4, connect(direct))
+
+.         
+. bys year: egen sum_year = sum(diff)
+
+. gen sh = diff/sum_year
+
+. 
+. twoway (scatter sh year if series == 1, connect(direct)) ///
+>         (scatter sh year if series == 2, connect(direct)) ///
+>         (scatter sh year if series == 3, connect(direct)) ///
+>         (scatter sh year if series == 4, connect(direct))
+
+. 
+. gen collapse_level1 = sh if series ==2
+(123 missing values generated)
+
+. gen collapse_level2 = sh if series == 2 | series == 3
+(82 missing values generated)
+
+. gen collapse_level3 = sh if series == 2 | series == 3 | series == 4
+(41 missing values generated)
+
+. gen collapse_level4 = sh if series == 2 | series == 3 | series == 4 | series == 1
+
+. 
+. collapse (sum) collapse_*, by(year)
+
+. 
+. gen zero = 0
+
+. replace zero = collapse_level1 if zero>collapse_level1
+(0 real changes made)
+
+. replace collapse_level1 = 0 if collapse_level1<0
+(0 real changes made)
+
+. 
+. twoway (rarea collapse_level1 zero year) ///
+>         (rarea collapse_level2 collapse_level1 year) ///
+>         (rarea collapse_level3 collapse_level2 year) ///
+>         (rarea collapse_level4 collapse_level3 year)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (rarea collapse_level1 zero year) ///
+>         (rarea collapse_level2 collapse_level1 year) ///
+>         (rarea collapse_level3 collapse_level2 year) ///
+>         (rarea collapse_level4 collapse_level3 year), ///
+>         ytitle("Year")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (rarea collapse_level1 zero year) ///
+>         (rarea collapse_level2 collapse_level1 year) ///
+>         (rarea collapse_level3 collapse_level2 year) ///
+>         (rarea collapse_level4 collapse_level3 year), ///
+>         xtitle("Year") legend(col(1) order(4 "Increase # suppliers" 3 "Increase in markups" 2 "Increa
+> se in length of chain" 1 "Buying from high-markup firms"))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. use "$data/009_calibration/009_welfare_constantNSuppliers.dta", clear
+
+. gen series = 1
+
+. append using "$data/009_calibration/009_welfare_buyingSameFirms.dta"
+
+. replace series = 2 if series == .
+(41 real changes made)
+
+. append using "$data/009_calibration/009_welfare_constantLength.dta"
+
+. replace series = 3 if series == .
+(41 real changes made)
+
+. append using "$data/009_calibration/009_welfare_constantMarkups.dta"
+
+. replace series = 4 if series == .
+(41 real changes made)
+
+. 
+. gen diff = ratio_all_ma - ratio_last
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. xtset series year
+       panel variable:  series (strongly balanced)
+        time variable:  year, 1976 to 2016
+                delta:  1 unit
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. bys series: replace diff = (L.diff + diff + F.diff)/3
+(164 real changes made, 164 to missing)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. use "$data/009_calibration/009_welfare_constantNSuppliers.dta", clear
+
+. gen series = 1
+
+. append using "$data/009_calibration/009_welfare_buyingSameFirms.dta"
+
+. replace series = 2 if series == .
+(41 real changes made)
+
+. append using "$data/009_calibration/009_welfare_constantLength.dta"
+
+. replace series = 3 if series == .
+(41 real changes made)
+
+. append using "$data/009_calibration/009_welfare_constantMarkups.dta"
+
+. replace series = 4 if series == .
+(41 real changes made)
+
+. 
+. gen diff = ratio_all_ma - ratio_last
+
+. xtset series year
+       panel variable:  series (strongly balanced)
+        time variable:  year, 1976 to 2016
+                delta:  1 unit
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. gen diff_sm = (L.diff + diff + F.diff)/3
+(8 missing values generated)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. replace diff_sm = diff if diff_sm == .
+(8 real changes made)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter diff_sm year if series == 1, connect(direct)) ///
+>         (scatter diff_sm year if series == 2, connect(direct)) ///
+>         (scatter diff_sm year if series == 3, connect(direct)) ///
+>         (scatter diff_sm year if series == 4, connect(direct))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. bys year: egen sum_year = sum(diff_sm)
+
+. gen sh = diff_sm/sum_year
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter sh year if series == 1, connect(direct)) ///
+>         (scatter sh year if series == 2, connect(direct)) ///
+>         (scatter sh year if series == 3, connect(direct)) ///
+>         (scatter sh year if series == 4, connect(direct))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. gen collapse_level1 = sh if series ==2
+(123 missing values generated)
+
+. gen collapse_level2 = sh if series == 2 | series == 3
+(82 missing values generated)
+
+. gen collapse_level3 = sh if series == 2 | series == 3 | series == 4
+(41 missing values generated)
+
+. gen collapse_level4 = sh if series == 2 | series == 3 | series == 4 | series == 1
+
+. 
+. collapse (sum) collapse_*, by(year)
+
+. 
+. gen zero = 0
+
+. replace zero = collapse_level1 if zero>collapse_level1
+(0 real changes made)
+
+. replace collapse_level1 = 0 if collapse_level1<0
+(0 real changes made)
+
+. 
+. twoway (rarea collapse_level1 zero year) ///
+>         (rarea collapse_level2 collapse_level1 year) ///
+>         (rarea collapse_level3 collapse_level2 year) ///
+>         (rarea collapse_level4 collapse_level3 year), ///
+>         xtitle("Year") legend(col(1) order(4 "Increase # suppliers" 3 "Increase in markups" 2 "Increa
+> se in length of chain" 1 "Buying from high-markup firms"))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. use "$data/009_calibration/009_welfare_constantNSuppliers.dta", clear
+
+. gen series = 1
+
+. append using "$data/009_calibration/009_welfare_buyingSameFirms.dta"
+
+. replace series = 2 if series == .
+(41 real changes made)
+
+. append using "$data/009_calibration/009_welfare_constantLength.dta"
+
+. replace series = 3 if series == .
+(41 real changes made)
+
+. append using "$data/009_calibration/009_welfare_constantMarkups.dta"
+
+. replace series = 4 if series == .
+(41 real changes made)
+
+. 
+. gen diff = ratio_all_ma - ratio_last
+
+. xtset series year
+       panel variable:  series (strongly balanced)
+        time variable:  year, 1976 to 2016
+                delta:  1 unit
+
+. gen diff_sm = (L.diff + diff + F.diff)/3
+(8 missing values generated)
+
+. replace diff_sm = diff if diff_sm == .
+(8 real changes made)
+
+. 
+. 
+. twoway (scatter diff_sm year if series == 1, connect(direct)) ///
+>         (scatter diff_sm year if series == 2, connect(direct)) ///
+>         (scatter diff_sm year if series == 3, connect(direct)) ///
+>         (scatter diff_sm year if series == 4, connect(direct))
+
+.         
+. bys year: egen sum_year = sum(diff_sm)
+
+. gen sh = diff_sm/sum_year
+
+. 
+. twoway (scatter sh year if series == 1, connect(direct)) ///
+>         (scatter sh year if series == 2, connect(direct)) ///
+>         (scatter sh year if series == 3, connect(direct)) ///
+>         (scatter sh year if series == 4, connect(direct))
+
+. 
+end of do-file
+
+. sort series sh
+
+. sort series year
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. gen collapse_level1 = sh if series ==2
+(123 missing values generated)
+
+. gen collapse_level2 = sh if series == 2 | series == 3
+(82 missing values generated)
+
+. gen collapse_level3 = sh if series == 2 | series == 3 | series == 4
+(41 missing values generated)
+
+. gen collapse_level4 = sh if series == 2 | series == 3 | series == 4 | series == 1
+
+. 
+. collapse (sum) collapse_*, by(year)
+
+. 
+. gen zero = 0
+
+. replace zero = collapse_level1 if zero>collapse_level1
+(0 real changes made)
+
+. replace collapse_level1 = 0 if collapse_level1<0
+(0 real changes made)
+
+. 
+. twoway (rarea collapse_level1 zero year) ///
+>         (rarea collapse_level2 collapse_level1 year) ///
+>         (rarea collapse_level3 collapse_level2 year) ///
+>         (rarea collapse_level4 collapse_level3 year), ///
+>         xtitle("Year") legend(col(1) order(4 "Increase # suppliers" 3 "Increase in markups" 2 "Increa
+> se in length of chain" 1 "Buying from high-markup firms"))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (rarea collapse_level1 zero year) ///
+>         (rarea collapse_level2 collapse_level1 year) ///
+>         (rarea collapse_level3 collapse_level2 year) ///
+>         (rarea collapse_level4 collapse_level3 year), ///
+>         xtitle("Year") legend(col(1) order(4 "Increase in # suppliers" 3 "Increase in markups" 2 "Inc
+> rease in length of chain" 1 "Buying from high-markup firms"))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. graph export "$outputs/010_decomposition/010_decomposition.pdf", as(pdf) replace                
+error creating metafile
+r(693);
+
+end of do-file
+
+r(693);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (rarea collapse_level1 zero year) ///
+>         (rarea collapse_level2 collapse_level1 year) ///
+>         (rarea collapse_level3 collapse_level2 year) ///
+>         (rarea collapse_level4 collapse_level3 year), ///
+>         xtitle("Year") legend(col(1) order(4 "Increase in # suppliers" 3 "Increase in markups" 2 "Inc
+> rease in length of chain" 1 "Buying from high-markup firms"))
+
+. 
+. graph export "$outputs/010_decomposition/010_decomposition.pdf", as(pdf) replace                
+error creating metafile
+r(693);
+
+end of do-file
+
+r(693);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. graph export "$outputs/010_decomposition/010_decomposition.pdf", as(pdf) replace                
+(file /Users/ios/Documents/GitHub/mres_paper/outputs/010_decomposition/010_decomposition.pdf written in
+>  PDF format)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. 
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Useful packages
+. /*net install scheme-modern, from("https://raw.githubusercontent.com/mdroste/stata-scheme-modern/mast
+> er/")
+> ssc install gtools
+> gtools, upgrade*/
+. 
+. set scheme modern, perm
+(set scheme preference recorded)
+
+. 
+. *Paths
+. global wd "/Users/ios/Documents/GitHub/mres_paper"
+
+. global orig "/Users/ios/Documents/mres_paper_orig"                                                   
+>    // I'm using a different orig folder so as not to commit large datasets to GitHub
+
+. global data "$orig/Data_output"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. global DLEU "$orig/Data DLEU"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "009"                                      
+
+. 
+. *log
+. cap log close
+-------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_paper/log/010_decomposition.log
+  log type:  text
+ opened on:   4 Jun 2020, 18:01:12
+
+. 
+. /*******************************************************************************
+>         Getting all datasets together
+> *******************************************************************************/
+. 
+. use "$data/009_calibration/009_welfare_constantNSuppliers.dta", clear
+
+. gen series = 1
+
+. append using "$data/009_calibration/009_welfare_buyingSameFirms.dta"
+
+. replace series = 2 if series == .
+(41 real changes made)
+
+. append using "$data/009_calibration/009_welfare_constantLength.dta"
+
+. replace series = 3 if series == .
+(41 real changes made)
+
+. append using "$data/009_calibration/009_welfare_constantMarkups.dta"
+
+. replace series = 4 if series == .
+(41 real changes made)
+
+. 
+. gen diff = ratio_all_ma - ratio_last
+
+. xtset series year
+       panel variable:  series (strongly balanced)
+        time variable:  year, 1976 to 2016
+                delta:  1 unit
+
+. gen diff_sm = (L.diff + diff + F.diff)/3
+(8 missing values generated)
+
+. replace diff_sm = diff if diff_sm == .
+(8 real changes made)
+
+. 
+. 
+. twoway (scatter diff_sm year if series == 1, connect(direct)) ///
+>         (scatter diff_sm year if series == 2, connect(direct)) ///
+>         (scatter diff_sm year if series == 3, connect(direct)) ///
+>         (scatter diff_sm year if series == 4, connect(direct))
+
+.         
+. bys year: egen sum_year = sum(diff_sm)
+
+. gen sh = diff_sm/sum_year
+
+. 
+. twoway (scatter sh year if series == 1, connect(direct)) ///
+>         (scatter sh year if series == 2, connect(direct)) ///
+>         (scatter sh year if series == 3, connect(direct)) ///
+>         (scatter sh year if series == 4, connect(direct))
+
+. 
+. gen collapse_level1 = sh if series ==2
+(123 missing values generated)
+
+. gen collapse_level2 = sh if series == 2 | series == 3
+(82 missing values generated)
+
+. gen collapse_level3 = sh if series == 2 | series == 3 | series == 4
+(41 missing values generated)
+
+. gen collapse_level4 = sh if series == 2 | series == 3 | series == 4 | series == 1
+
+. 
+. collapse (sum) collapse_*, by(year)
+
+. 
+. gen zero = 0
+
+. replace zero = collapse_level1 if zero>collapse_level1
+(0 real changes made)
+
+. replace collapse_level1 = 0 if collapse_level1<0
+(0 real changes made)
+
+. 
+. twoway (rarea collapse_level1 zero year) ///
+>         (rarea collapse_level2 collapse_level1 year) ///
+>         (rarea collapse_level3 collapse_level2 year) ///
+>         (rarea collapse_level4 collapse_level3 year), ///
+>         xtitle("Year") legend(col(1) order(4 "Increase in # suppliers" 3 "Increase in markups" 2 "Inc
+> rease in length of chain" 1 "Buying from high-markup firms"))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. use "$data/009_calibration/${doNum}_welfare_1976.dta", clear
+file /Users/ios/Documents/mres_paper_orig/Data_output/009_calibration/010_welfare_1976.dta not found
+r(601);
+
+end of do-file
+
+r(601);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set matsize 10000
+
+. 
+. *Useful packages
+. /*net install scheme-modern, from("https://raw.githubusercontent.com/mdroste/stata-scheme-modern/mast
+> er/")
+> ssc install gtools
+> gtools, upgrade*/
+. 
+. set scheme modern, perm
+(set scheme preference recorded)
+
+. 
+. *Paths
+. global wd "/Users/ios/Documents/GitHub/mres_paper"
+
+. global orig "/Users/ios/Documents/mres_paper_orig"                                                   
+>    // I'm using a different orig folder so as not to commit large datasets to GitHub
+
+. global data "$orig/Data_output"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. global DLEU "$orig/Data DLEU"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "009"                                      
+
+. 
+. *log
+. cap log close
+-------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_paper/log/010_decomposition.log
+  log type:  text
+ opened on:   4 Jun 2020, 18:21:46
+
+. 
+. /*******************************************************************************
+>         Getting all datasets together
+> *******************************************************************************/
+. 
+. use "$data/009_calibration/009_welfare_constantNSuppliers.dta", clear
+
+. gen series = 1
+
+. append using "$data/009_calibration/009_welfare_buyingSameFirms.dta"
+
+. replace series = 2 if series == .
+(41 real changes made)
+
+. append using "$data/009_calibration/009_welfare_constantLength.dta"
+
+. replace series = 3 if series == .
+(41 real changes made)
+
+. append using "$data/009_calibration/009_welfare_constantMarkups.dta"
+
+. replace series = 4 if series == .
+(41 real changes made)
+
+. 
+. gen diff = ratio_all_ma - ratio_last
+
+. xtset series year
+       panel variable:  series (strongly balanced)
+        time variable:  year, 1976 to 2016
+                delta:  1 unit
+
+. gen diff_sm = (L.diff + diff + F.diff)/3
+(8 missing values generated)
+
+. replace diff_sm = diff if diff_sm == .
+(8 real changes made)
+
+. 
+. 
+. twoway (scatter diff_sm year if series == 1, connect(direct)) ///
+>         (scatter diff_sm year if series == 2, connect(direct)) ///
+>         (scatter diff_sm year if series == 3, connect(direct)) ///
+>         (scatter diff_sm year if series == 4, connect(direct))
+
+.         
+. bys year: egen sum_year = sum(diff_sm)
+
+. gen sh = diff_sm/sum_year
+
+. 
+. twoway (scatter sh year if series == 1, connect(direct)) ///
+>         (scatter sh year if series == 2, connect(direct)) ///
+>         (scatter sh year if series == 3, connect(direct)) ///
+>         (scatter sh year if series == 4, connect(direct))
+
+. 
+. gen collapse_level1 = sh if series ==2
+(123 missing values generated)
+
+. gen collapse_level2 = sh if series == 2 | series == 3
+(82 missing values generated)
+
+. gen collapse_level3 = sh if series == 2 | series == 3 | series == 4
+(41 missing values generated)
+
+. gen collapse_level4 = sh if series == 2 | series == 3 | series == 4 | series == 1
+
+. 
+. collapse (sum) collapse_*, by(year)
+
+. 
+. gen zero = 0
+
+. replace zero = collapse_level1 if zero>collapse_level1
+(0 real changes made)
+
+. replace collapse_level1 = 0 if collapse_level1<0
+(0 real changes made)
+
+. 
+. twoway (rarea collapse_level1 zero year) ///
+>         (rarea collapse_level2 collapse_level1 year) ///
+>         (rarea collapse_level3 collapse_level2 year) ///
+>         (rarea collapse_level4 collapse_level3 year), ///
+>         xtitle("Year") legend(col(1) order(4 "Increase in # suppliers" 3 "Increase in markups" 2 "Inc
+> rease in length of chain" 1 "Buying from high-markup firms"))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (rarea collapse_level1 zero year) ///
+>         (rarea collapse_level2 collapse_level1 year) ///
+>         (rarea collapse_level3 collapse_level2 year) ///
+>         (rarea collapse_level4 collapse_level3 year), ///
+>         xtitle("") legend(col(1) order(4 "Increase in # suppliers" 3 "Increase in markups" 2 "Increas
+> e in length of chain" 1 "Buying from high-markup firms") size(large)) ///
+>         xlabel(, labsize(large)) ylabel(, labsize(large))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (rarea collapse_level1 zero year) ///
+>         (rarea collapse_level2 collapse_level1 year) ///
+>         (rarea collapse_level3 collapse_level2 year) ///
+>         (rarea collapse_level4 collapse_level3 year), ///
+>         xtitle("") legend(col(1) order(4 "# suppliers" 3 "Markups" 2 "Length" 1 "Reallocation") size(
+> large)) ///
+>         xlabel(, labsize(large)) ylabel(, labsize(large))
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. graph export "$outputs/010_decomposition/010_decomposition.pdf", as(pdf) replace                
+(file /Users/ios/Documents/GitHub/mres_paper/outputs/010_decomposition/010_decomposition.pdf written in
+>  PDF format)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. use "$data/009_calibration/009_welfare_constantNSuppliers.dta", clear
+
+. gen series = 1
+
+. append using "$data/009_calibration/009_welfare_buyingSameFirms.dta"
+
+. replace series = 2 if series == .
+(41 real changes made)
+
+. append using "$data/009_calibration/009_welfare_constantLength.dta"
+
+. replace series = 3 if series == .
+(41 real changes made)
+
+. append using "$data/009_calibration/009_welfare_constantMarkups.dta"
+
+. replace series = 4 if series == .
+(41 real changes made)
+
+. 
+. gen diff = ratio_all_ma - ratio_last
+
+. xtset series year
+       panel variable:  series (strongly balanced)
+        time variable:  year, 1976 to 2016
+                delta:  1 unit
+
+. gen diff_sm = (L.diff + diff + F.diff)/3
+(8 missing values generated)
+
+. replace diff_sm = diff if diff_sm == .
+(8 real changes made)
+
+. 
+. 
+. twoway (scatter diff_sm year if series == 1, connect(direct)) ///
+>         (scatter diff_sm year if series == 2, connect(direct)) ///
+>         (scatter diff_sm year if series == 3, connect(direct)) ///
+>         (scatter diff_sm year if series == 4, connect(direct))
+
+.         
+. bys year: egen sum_year = sum(diff_sm)
+
+. gen sh = diff_sm/sum_year
+
+. 
+. twoway (scatter sh year if series == 1, connect(direct)) ///
+>         (scatter sh year if series == 2, connect(direct)) ///
+>         (scatter sh year if series == 3, connect(direct)) ///
+>         (scatter sh year if series == 4, connect(direct))
+
+. 
+. gen collapse_level1 = sh if series ==2
+(123 missing values generated)
+
+. gen collapse_level2 = sh if series == 2 | series == 3
+(82 missing values generated)
+
+. gen collapse_level3 = sh if series == 2 | series == 3 | series == 4
+(41 missing values generated)
+
+. gen collapse_level4 = sh if series == 2 | series == 3 | series == 4 | series == 1
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. use "$data/009_calibration/${doNum}_welfare_1976.dta", clear
+file /Users/ios/Documents/mres_paper_orig/Data_output/009_calibration/010_welfare_1976.dta not found
+r(601);
+
+end of do-file
+
+r(601);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set matsize 10000
+
+. 
+. *Useful packages
+. /*net install scheme-modern, from("https://raw.githubusercontent.com/mdroste/stata-scheme-modern/mast
+> er/")
+> ssc install gtools
+> gtools, upgrade*/
+. 
+. set scheme modern, perm
+(set scheme preference recorded)
+
+. 
+. *Paths
+. global wd "/Users/ios/Documents/GitHub/mres_paper"
+
+. global orig "/Users/ios/Documents/mres_paper_orig"                                                   
+>    // I'm using a different orig folder so as not to commit large datasets to GitHub
+
+. global data "$orig/Data_output"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. global DLEU "$orig/Data DLEU"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "009"                                      
+
+. 
+. *log
+. cap log close

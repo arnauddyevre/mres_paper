@@ -1295,3 +1295,590 @@ end of do-file
 . 
 . *log
 . cap log close
+-----------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_paper/log/001_dataImport.log
+  log type:  text
+ opened on:  31 May 2020, 16:10:01
+
+. 
+. /*******************************************************************************
+>         DATA CLEANING
+> *******************************************************************************/
+. 
+. *Customer data
+. import delimited "$orig/compustat_segment_customer_76_19.csv", clear
+--Break--
+r(1);
+
+end of do-file
+
+--Break--
+r(1);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. 
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Useful packages
+. /*net install scheme-modern, from("https://raw.githubusercontent.com/mdroste/stata-scheme-mod
+> ern/master/")
+> ssc install gtools
+> gtools, upgrade*/
+. 
+. set scheme modern, perm
+(set scheme preference recorded)
+
+. 
+. *Paths
+. global wd "/Users/ios/Documents/GitHub/mres_paper"
+
+. global orig "/Users/ios/Documents/mres_paper_orig"                                           
+>            // I'm using a different orig folder so as not to commit large datasets to GitHub
+
+. global data "$orig/Data_output/009_calibration"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. global DLEU "$orig/Data DLEU"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "009"                                      
+
+. 
+. *log
+. cap log close
+-------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_paper/log/001_dataImport.log
+  log type:  text
+ opened on:   3 Jun 2020, 21:00:27
+
+. 
+. /*******************************************************************************
+>         DATA CLEANING
+> *******************************************************************************/
+. 
+. *Customer data
+. import delimited "$orig/compustat_segment_customer_76_19.csv", clear
+(16 vars, 549,451 obs)
+
+. tostring srcdate, gen(dataStr)
+dataStr generated as str8
+
+. gen year = substr(dataStr, 1, 4)
+
+. destring year, replace
+year: all characters numeric; replaced as int
+
+. drop srcdate dataStr
+
+. tab ctype, sort
+
+      ctype |      Freq.     Percent        Cum.
+------------+-----------------------------------
+    COMPANY |    315,926       57.50       57.50
+     GEOREG |    107,725       19.61       77.10
+     MARKET |     83,282       15.16       92.26
+     GOVDOM |     36,083        6.57       98.83
+     GOVFRN |      4,665        0.85       99.68
+   GOVSTATE |      1,228        0.22       99.90
+     GOVLOC |        542        0.10      100.00
+------------+-----------------------------------
+      Total |    549,451      100.00
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. graph hbar (count), over(ctype, sort(1) descending)             ///
+>         title("Types of links") ylabel(, grid)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. drop if ctype!="COMPANY"
+(233,525 observations deleted)
+
+. gen links = 1
+
+. gen freq = 1
+
+. collapse freq (sum) links, by(year conm)
+
+. collapse links (sum) freq, by(year)
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(r
+> ange(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(dkgreen))) ///
+>         (scatter freq year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(2) yscale(r
+> ange(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(dkorange))), ///
+>         legend(off) xtitle("")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. *set scheme s1color
+. set matsize 10000
+
+. 
+. *Useful modules
+. *ssc install charlist
+. *ssc install matchit
+. *ssc install strip
+. 
+. *Paths
+. 
+. global wd "/Users/ios/Documents/GitHub/mres_paper"
+
+. global orig "/Users/ios/Documents/mres_paper_orig"                                                   
+>    // I'm using a different orig folder so as not to commit large datasets to GitHub
+
+. global data "$wd/data"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "001"                                      
+
+. 
+. *log
+. cap log close
+-------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_paper/log/001_dataImport.log
+  log type:  text
+ opened on:   3 Jun 2020, 21:01:26
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. import delimited "$orig/compustat_segment_customer_76_19.csv", clear
+(16 vars, 549,451 obs)
+
+. tostring srcdate, gen(dataStr)
+dataStr generated as str8
+
+. gen year = substr(dataStr, 1, 4)
+
+. destring year, replace
+year: all characters numeric; replaced as int
+
+. drop srcdate dataStr
+
+. tab ctype, sort
+
+      ctype |      Freq.     Percent        Cum.
+------------+-----------------------------------
+    COMPANY |    315,926       57.50       57.50
+     GEOREG |    107,725       19.61       77.10
+     MARKET |     83,282       15.16       92.26
+     GOVDOM |     36,083        6.57       98.83
+     GOVFRN |      4,665        0.85       99.68
+   GOVSTATE |      1,228        0.22       99.90
+     GOVLOC |        542        0.10      100.00
+------------+-----------------------------------
+      Total |    549,451      100.00
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. drop if ctype!="COMPANY"
+(233,525 observations deleted)
+
+. gen links = 1
+
+. gen freq = 1
+
+. collapse freq (sum) links, by(year conm)
+
+. collapse links (sum) freq, by(year)
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(r
+> ange(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(dkgreen))) ///
+>         (scatter freq year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(2) yscale(r
+> ange(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(dkorange))), ///
+>         legend(off) xtitle("")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(r
+> ange(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) /*color(dkgreen)*/)) ///
+>         (scatter freq year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(2) yscale(r
+> ange(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(dkorange))), ///
+>         legend(off) xtitle("")
+
+. 
+end of do-file
+
+. h set scheme
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme modern, perm
+(set scheme preference recorded)
+
+. set matsize 10000
+
+. 
+. *Useful modules
+. *ssc install charlist
+. *ssc install matchit
+. *ssc install strip
+. 
+. *Paths
+. 
+. global wd "/Users/ios/Documents/GitHub/mres_paper"
+
+. global orig "/Users/ios/Documents/mres_paper_orig"                                                   
+>    // I'm using a different orig folder so as not to commit large datasets to GitHub
+
+. global data "$wd/data"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "001"                                      
+
+. 
+. *log
+. cap log close
+-------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_paper/log/001_dataImport.log
+  log type:  text
+ opened on:   3 Jun 2020, 21:03:58
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. import delimited "$orig/compustat_segment_customer_76_19.csv", clear
+(16 vars, 549,451 obs)
+
+. tostring srcdate, gen(dataStr)
+dataStr generated as str8
+
+. gen year = substr(dataStr, 1, 4)
+
+. destring year, replace
+year: all characters numeric; replaced as int
+
+. drop srcdate dataStr
+
+. tab ctype, sort
+
+      ctype |      Freq.     Percent        Cum.
+------------+-----------------------------------
+    COMPANY |    315,926       57.50       57.50
+     GEOREG |    107,725       19.61       77.10
+     MARKET |     83,282       15.16       92.26
+     GOVDOM |     36,083        6.57       98.83
+     GOVFRN |      4,665        0.85       99.68
+   GOVSTATE |      1,228        0.22       99.90
+     GOVLOC |        542        0.10      100.00
+------------+-----------------------------------
+      Total |    549,451      100.00
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. drop if ctype!="COMPANY"
+(233,525 observations deleted)
+
+. gen links = 1
+
+. gen freq = 1
+
+. collapse freq (sum) links, by(year conm)
+
+. collapse links (sum) freq, by(year)
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(r
+> ange(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) /*color(dkgreen)*/)) ///
+>         (scatter freq year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(2) yscale(r
+> ange(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(dkorange))), ///
+>         legend(off) xtitle("")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(r
+> ange(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(dknavy))) ///
+>         (scatter freq year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(2) yscale(r
+> ange(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(dkred))), ///
+>         legend(off) xtitle("")
+(note:  named style dkred not found in class color, default attributes used)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(r
+> ange(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(navy))) ///
+>         (scatter freq year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(2) yscale(r
+> ange(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(red))), ///
+>         legend(off) xtitle("")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(r
+> ange(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(navy))) ///
+>         (scatter freq year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(2) yscale(r
+> ange(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(red) size(large))), ///
+>         legend(off) xtitle("")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(r
+> ange(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(navy) size(large))) ///
+>         (scatter freq year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(2) yscale(r
+> ange(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(red) size(large))), ///
+>         legend(off) xtitle("")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(r
+> ange(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(navy) size(large)) xlabel(, 
+> size(large))) ///
+>         (scatter freq year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(2) yscale(r
+> ange(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(red) size(large))), ///
+>         legend(off) xtitle("")
+option size() not allowed
+r(198);
+
+end of do-file
+
+r(198);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(r
+> ange(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(navy) size(large)) xlabel(, 
+> labsize(large))) ///
+>         (scatter freq year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(2) yscale(r
+> ange(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(red) size(large))), ///
+>         legend(off) xtitle("")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(r
+> ange(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(navy) size(large)) xlabel(, 
+> labsize(large))) ///
+>         (scatter freq year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(2) yscale(r
+> ange(0 4000) axis(2), labsize(large)) ytitle("Total number of companies", axis(2) color(red) size(lar
+> ge))), ///
+>         legend(off) xtitle("")
+invalid 'labsize' 
+r(198);
+
+end of do-file
+
+r(198);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(r
+> ange(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(navy) size(large)) xlabel(, 
+> labsize(large))) ///
+>         (scatter freq year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(2) yscale(r
+> ange(0 4000) axis(2) labsize(large)) ytitle("Total number of companies", axis(2) color(red) size(larg
+> e))), ///
+>         legend(off) xtitle("")
+option labsize() not allowed
+r(198);
+
+end of do-file
+
+r(198);
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(r
+> ange(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(navy) size(large)) xlabel(, 
+> labsize(large))) ///
+>         (scatter freq year if year<=2018, connect(direct) lcolor(red) msymbol(O) mfcolor(white) mcolo
+> r(red) yaxis(2) yscale(range(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(red) 
+> size(large))), ///
+>         legend(off) xtitle("")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(r
+> ange(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(navy) size(large)) xlabel(, 
+> labsize(large))) ///
+>         (scatter freq year if year<=2018, connect(direct) lcolor(red) msymbol(O) mfcolor(white) mcolo
+> r(red) yaxis(2) yscale(range(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(red) 
+> size(large)) ylabel(, labsize(large))), ///
+>         legend(off) xtitle("")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(r
+> ange(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(navy) size(large)) xlabel(, 
+> labsize(large)) ylabel(, labsize(large)) ) ///
+>         (scatter freq year if year<=2018, connect(direct) lcolor(red) msymbol(O) mfcolor(white) mcolo
+> r(red) yaxis(2) yscale(range(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(red) 
+> size(large)) ylabel(, labsize(large))), ///
+>         legend(off) xtitle("")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(r
+> ange(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(navy) size(large)) xlabel(, 
+> labsize(large)) ylabel(, labsize(large)) ) ///
+>         (scatter freq year if year<=2018, connect(direct) lcolor(red) msymbol(O) mfcolor(white) mcolo
+> r(red) yaxis(2) yscale(range(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(red) 
+> size(large)) ylabel(, labsize(large)) ), ///
+>         legend(off) xtitle("")
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(r
+> ange(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(navy) size(large)) xlabel(, 
+> labsize(large)) ylabel(, labsize(vlarge)) ) ///
+>         (scatter freq year if year<=2018, connect(direct) lcolor(red) msymbol(O) mfcolor(white) mcolo
+> r(red) yaxis(2) yscale(range(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(red) 
+> size(large)) ylabel(, labsize(large)) ), ///
+>         legend(off) xtitle("")
+
+. 
+end of do-file
+
+. graph save Graph "/Users/ios/Documents/GitHub/mres_paper/outputs/001_descriptives/001_links&Companies
+> 2.gph"
+(file /Users/ios/Documents/GitHub/mres_paper/outputs/001_descriptives/001_links&Companies2.gph saved)
+
+. 
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD19881.000000"
+
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Useful packages
+. /*net install scheme-modern, from("https://raw.githubusercontent.com/mdroste/stata-scheme-modern/mast
+> er/")
+> ssc install gtools
+> gtools, upgrade*/
+. 
+. set scheme modern, perm
+(set scheme preference recorded)
+
+. 
+. *Paths
+. global wd "/Users/ios/Documents/GitHub/mres_paper"
+
+. global orig "/Users/ios/Documents/mres_paper_orig"                                                   
+>    // I'm using a different orig folder so as not to commit large datasets to GitHub
+
+. global data "$orig/Data_output/008_robustnessIOTables"
+
+. global outputs "$wd/outputs/008_robustnessIOTables"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. global DLEU "$orig/Data DLEU"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "008"                                      
+
+. 
+. *log
+. cap log close

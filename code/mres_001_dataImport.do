@@ -19,7 +19,7 @@
 clear all
 set more off
 macro drop _all
-set scheme s1color
+set scheme modern, perm
 set matsize 10000
 
 *Useful modules
@@ -69,8 +69,8 @@ gen links = 1
 gen freq = 1
 collapse freq (sum) links, by(year conm)
 collapse links (sum) freq, by(year)
-twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(range(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(dkgreen))) ///
-	(scatter freq year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(2) yscale(range(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(dkorange))), ///
+twoway (scatter links year if year<=2018, connect(direct) msymbol(O) mfcolor(white) yaxis(1) yscale(range(1.5 4) axis(1)) ytitle("Average number of customers", axis(1) color(navy) size(large)) xlabel(, labsize(large)) ylabel(, labsize(vlarge)) ) ///
+	(scatter freq year if year<=2018, connect(direct) lcolor(red) msymbol(O) mfcolor(white) mcolor(red) yaxis(2) yscale(range(0 4000) axis(2)) ytitle("Total number of companies", axis(2) color(red) size(large)) ylabel(, labsize(large)) ), ///
 	legend(off) xtitle("")
 graph export "$outputs/${doNum}_descriptives/${doNum}_links&Companies.pdf", as(pdf) replace
 
@@ -127,6 +127,8 @@ restore
 
 *See "Standard - UChicago (quarterly)" data query
 import delimited "$orig/compustat_quarterly_61_19.csv", clear
+
+
 keep gvkey conm
 gen count = 1
 

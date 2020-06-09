@@ -19,7 +19,7 @@
 clear all
 set more off
 macro drop _all
-set scheme s1color
+set scheme modern, perm
 set matsize 10000
 
 *Useful packages
@@ -27,13 +27,11 @@ set matsize 10000
 ssc install gtools
 gtools, upgrade*/
 
-set scheme modern, perm
-
 *Paths
 global wd "/Users/ios/Documents/GitHub/mres_paper"
 global orig "/Users/ios/Documents/mres_paper_orig"							// I'm using a different orig folder so as not to commit large datasets to GitHub
 global data "$orig/Data_output/006_network&Markups"
-global outputs "$wd/outputs"
+global outputs "$wd/outputs/006_network&Markups"
 global doc "$wd/doc"
 global code "$wd/code"
 global log "$wd/log"
@@ -203,25 +201,25 @@ twoway (scatter mu_c step if t==1, mlabel(count)) ///
 	(scatter p50 step if t==1) ///
 	(rcap p95 p5 step if t==1, color(blue) lpattern(dot)) ///
 	(rcap p75 p25 step if t==1, color(dknavy) lpattern(dash)), ///
-	ytitle("") subtitle("{it: {&mu}} (controlling for firm size and NAICS2 industry)", pos(11)) ///
-	xtitle("{it:Downstream} <-              Position in supply chain              -> {it:Upstream}") ///
-	ylabel(0(1)6) xlabel(0(1)10) legend( ring(0) pos(2) col(1))
+	ytitle("") subtitle("{it: {&mu}} (controlling for firm size and NAICS2 industry)", pos(11) size(large)) ///
+	xtitle("{it:Downstream} <-       Position in supply chain       -> {it:Upstream}" , size(large)) ///
+	ylabel(0(1)6) xlabel(0(1)10) legend( ring(0) pos(2) col(1) size(large)) ylabel( , labsize(large)) xlabel( , labsize(large))
 graph export "$outputs/006_markupsSC_1996_CI.pdf", as(pdf) replace
 
 twoway (scatter mu_c step if t==0 & step<6, mlabel(count)) ///
 	(scatter p50 step if t==0 & step<6) ///
 	(rcap p95 p5 step if t==0 & step<6, color(blue) lpattern(dot)) ///
 	(rcap p75 p25 step if t==0 & step<6, color(dknavy) lpattern(dash)), ///
-	ytitle("") subtitle("{it: {&mu}} (controlling for firm size and NAICS2 industry)", pos(11)) ///
-	xtitle("{it:Downstream} <-              Position in supply chain              -> {it:Upstream}") ///
-	ylabel(0(1)6) xlabel(0(1)10) legend( ring(0) pos(2) col(1))
+	ytitle("") subtitle("{it: {&mu}} (controlling for firm size and NAICS2 industry)", pos(11) size(large)) ///
+	xtitle("{it:Downstream} <-       Position in supply chain       -> {it:Upstream}" , size(large)) ///
+	ylabel(0(1)6) xlabel(0(1)10) legend( ring(0) pos(2) col(1) size(large)) ylabel( , labsize(large)) xlabel( , labsize(large))
 graph export "$outputs/006_markupsSC_1976_CI.pdf", as(pdf) replace
 
 twoway (scatter mu_c step if t==1, mlabel(count)) ///
 	(scatter mu_c step if t==0 & step<6, mlabel(count)), ///
-	ytitle("") subtitle("{it: {&mu}} (controlling for firm size and NAICS2 industry)", pos(11)) ///
-	xtitle("{it:Downstream} <-              Position in supply chain              -> {it:Upstream}") ///
-	ylabel(1(1)4) xlabel(0(1)10) legend( ring(0) pos(2) col(1) order(1 "1986-2016" 2 "1976-1985"))
+	ytitle("") subtitle("{it: {&mu}} (controlling for firm size and NAICS2 industry)", pos(11) size(large)) ///
+	xtitle("{it:Downstream} <-       Position in supply chain       -> {it:Upstream}" , size(large)) ///
+	ylabel(1(1)4) xlabel(0(1)10) legend( ring(0) pos(2) col(1) order(1 "1996-2016" 2 "1976-1995") size(large)) ylabel( , labsize(large)) xlabel( , labsize(large)) 
 graph export "$outputs/006_markupsSC.pdf", as(pdf) replace
 
 
@@ -250,3 +248,84 @@ gen firms = 1
 collapse mu_1 (sum) firms, by(count)
 scatter mu_1 count
 graph export "$outputs/006_markupsVSIndegree.pdf", as(pdf) replace
+
+*Link between markups and firm number of suppliers
+*(going back to the original data)
+import delimited "$orig/compustat_segment_customer_76_19.csv", clear
+keep if ctype == "COMPANY"
+tostring srcdate, gen(dataStr)
+gen year = substr(dataStr, 1, 4)
+destring year, replace
+drop srcdate dataStr
+gen count=1
+collapse (sum) count, by(gvkey year)
+
+forval y=1976/2016{
+	preserve
+	keep if year == `y'
+	merge 1:1 gvkey using "$data/006_markups`y'.dta"
+	drop if _merge!=3
+	save "$data/${doNum}_markupsVSCustomers_`y'_uncollapsed", replace
+	*scatter mu_1 count
+	gen hist = 1
+	collapse (mean) mu_1 (sum) hist , by(count)
+	gen year = `y'
+	save "$data/${doNum}_markupsVSCustomers_`y'", replace
+	*twoway (scatter mu_1 count)
+	*graph export "$outputs/${doNum}_markupsVScustomer`y'.pdf"
+	restore
+	}
+
+* Graph
+use "$data/${doNum}_markupsVSCustomers_1976", clear
+forval y=1977/2016{
+	append using "$data/${doNum}_markupsVSCustomers_`y'"
+	}
+gen ln_hist = ln(hist)
+gen ln_count = ln(count)
+
+gen yearL = "1976-1985" if year<=1985
+replace yearL = "1986-1995" if year <=1995 & yearL==""
+replace yearL = "1996-2005" if year <=2005 & yearL==""
+replace yearL = "2006-2016" if year <=2016 & yearL==""
+
+
+twoway (scatter mu_1 count [fw=hist] if yearL=="1976-1985" & mu_1<4, msymbol(Oh) mlwidth(thin) mcolor(%50)) ///
+	(scatter mu_1 count [fw=hist] if yearL=="1986-1995" & mu_1<4, msymbol(Oh) mlwidth(thin) mcolor(%50)) ///
+	(scatter mu_1 count [fw=hist] if yearL=="1996-2005" & mu_1<4, msymbol(Oh) mlwidth(thin) mcolor(%50)) ///
+	(scatter mu_1 count [fw=hist] if yearL=="2006-2016" & mu_1<4, msymbol(Oh) mlwidth(thin) mcolor(%50)) ///
+	(lfit mu_1 count [w=hist] if mu_1<4), ///	
+	legend( ring(0) pos(11) col(1) order(1 "1976-1985" 2 "1986-1995" 3 "1996-2005" 4 "2006-2016") size(large)) ///
+	ytitle("") xtitle("Number of customers", size(large)) xscale(log) xlabel( , labsize(large)) ylabel( , labsize(large))
+graph export "$outputs/${doNum}_markupsVScustomer.pdf", replace
+
+*Regression
+use "$data/${doNum}_markupsVSCustomers_1976_uncollapsed", clear
+forval y=1977/2016{
+	append using "$data/${doNum}_markupsVSCustomers_`y'_uncollapsed"
+	}
+
+gen ln_count = ln(count)
+gen ln_c_sq = ln_count*ln_count
+gen sale_D_bil = sale_D/1000000
+gen ln_sale = ln(sale_D)
+xtile size = ln_sale, nq(5)
+
+/*
+reghdfe mu_1 ln_count /*i.year i.ind2*/ ln_sale, vce(robust) noabsorb
+outreg2 using "$outputs/${doNum}_markupsVSCustomers_reg", tex(pretty) replace
+reghdfe mu_1 ln_count /*i.year i.ind2*/ ln_sale, absorb(year) vce(robust)
+outreg2 using "$outputs/${doNum}_markupsVSCustomers_reg", tex(pretty) append
+reghdfe mu_1 ln_count /*i.year i.ind2*/ ln_sale, absorb(year ind2) vce(robust)
+outreg2 using "$outputs/${doNum}_markupsVSCustomers_reg", tex(pretty) append
+*/
+
+reghdfe mu_1 ln_count /*i.year i.ind2*/ i.size, vce(robust) noabsorb
+outreg2 using "$outputs/${doNum}_markupsVSCustomers_reg", tex(pretty) replace
+reghdfe mu_1 ln_count /*i.year i.ind2*/ i.size, absorb(year) vce(robust)
+outreg2 using "$outputs/${doNum}_markupsVSCustomers_reg", tex(pretty) append
+reghdfe mu_1 ln_count /*i.year i.ind2*/ i.size, absorb(year ind2) vce(robust)
+outreg2 using "$outputs/${doNum}_markupsVSCustomers_reg", tex(pretty) append
+
+**** Simulation, relationship between productivity and price + productivity and markup
+
