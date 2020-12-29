@@ -1882,3 +1882,151 @@ end of do-file
 . 
 . *log
 . cap log close
+-------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/ios/Documents/GitHub/mres_paper/log/001_dataImp
+> ort.log
+  log type:  text
+ opened on:  29 Nov 2020, 18:17:31
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD04263.000
+> 000"
+
+. import delimited "$orig/compustat_segment_customer_76_19.csv", cl
+> ear
+(16 vars, 549,451 obs)
+
+. 
+end of do-file
+
+. do "/var/folders/sx/s0vrcm_s2vx1br13ck5gvstw0000gn/T//SD04263.000
+> 000"
+
+. tostring srcdate, gen(dataStr)
+dataStr generated as str8
+
+. gen year = substr(dataStr, 1, 4)
+
+. destring year, replace
+year: all characters numeric; replaced as int
+
+. drop srcdate dataStr
+
+. tab ctype, sort
+
+      ctype |      Freq.     Percent        Cum.
+------------+-----------------------------------
+    COMPANY |    315,926       57.50       57.50
+     GEOREG |    107,725       19.61       77.10
+     MARKET |     83,282       15.16       92.26
+     GOVDOM |     36,083        6.57       98.83
+     GOVFRN |      4,665        0.85       99.68
+   GOVSTATE |      1,228        0.22       99.90
+     GOVLOC |        542        0.10      100.00
+------------+-----------------------------------
+      Total |    549,451      100.00
+
+. 
+end of do-file
+
+. sort gvkey year cid
+
+. sort gvkey cid year
+
+. sort gvkey year cid
+
+. duplicates tag cid year gvkey
+option generate() required
+r(198);
+
+. duplicates tag cid year gvkey, gen(tag)
+
+Duplicates in terms of cid year gvkey
+
+. tab tag
+
+        tag |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |    548,519       99.83       99.83
+          1 |        932        0.17      100.00
+------------+-----------------------------------
+      Total |    549,451      100.00
+
+. br if tag==1
+
+. do "/Users/ios/Documents/GitHub/Infinitesimal input output/code/i
+> o_001_evolutionIOTablesUS.do"
+
+. 
+. /****************************************************************
+> ***************
+>         
+>         DESCRIPTION: Exploratory analysis on the structure of inp
+> ut-output tables
+>         
+>         INFILES:        - recent IO tables as provided by the BEA
+>                                 - Historical IO tables as provide
+> d by the BEA
+>         
+>         OUTFILES:       - IO heatmap tables
+>         
+>         LOG: Created 20/11/2020
+>                         Last modified XX/1/2020
+>         
+> *****************************************************************
+> **************/
+. 
+. /****************************************************************
+> ***************
+>         SETUP
+> *****************************************************************
+> **************/
+. 
+. clear all
+
+. set more off
+
+. macro drop _all
+
+. set scheme s1color
+
+. set matsize 10000
+
+. 
+. *Useful packages
+. /*net install scheme-modern, from("https://raw.githubusercontent.
+> com/mdroste/stata-scheme-modern/master/")
+> ssc install gtools
+> gtools, upgrade*/
+. 
+. set scheme modern, perm
+(set scheme preference recorded)
+
+. 
+. *Paths
+. global wd "/Users/ios/Documents/GitHub/Infinitesimal input output
+> "
+
+. global orig "$wd/orig"                                           
+>        
+
+. global data "$wd/data"
+
+. global outputs "$wd/outputs"
+
+. global doc "$wd/doc"
+
+. global code "$wd/code"
+
+. global log "$wd/log"
+
+. 
+. *do-file number, used to save outputs 
+. global doNum "001"                                      
+
+. 
+. *log
+. cap log close
